@@ -1,14 +1,18 @@
-const NUMBER_WITH_SUFFIX = /^(\d*\.?\d+(?:e[+-]?\d+)?)([kmb])?/i;
-const SUFFIX_MULTIPLIERS: Record<string, number> = { k: 1e3, m: 1e6, b: 1e9 };
+const NUMBER = /^\d*\.?\d+/;
+const IDENTIFIER = /^[A-Za-z_][A-Za-z0-9_]*/;
 
 /**
- * Evaluates keypad arithmetic by recursive descent: + − × ÷ ^ and
- * parentheses over decimals with optional exponent notation and k/m/b
- * suffixes. ASCII operators, spaces, and thousands separators are accepted.
- * Exponent is right associative; a leading minus negates. Throws on
- * malformed input or a result that is not finite. Never uses eval.
+ * Evaluates arithmetic by recursive descent: + − × ÷ ^ and parentheses over
+ * decimal literals and the named variables in the record. ASCII operators,
+ * spaces, and thousands separators are accepted. Exponent is right
+ * associative; a leading minus negates. Throws, naming the position or the
+ * variable, on malformed input, a variable missing from the record, or a
+ * result that is not finite. Never uses eval.
  */
-export function evaluateExpression(source: string): number {
+export function evaluateExpression(
+  source: string,
+  variables: Record<string, number>,
+): number {
   const text = source
     .replace(/\s+/g, "")
     .replace(/×/g, "*")
@@ -21,12 +25,22 @@ export function evaluateExpression(source: string): number {
     new Error(`cannot evaluate "${source}" at character ${position + 1}`);
 
   const readNumber = (): number => {
-    const match = NUMBER_WITH_SUFFIX.exec(text.slice(position));
+    const match = NUMBER.exec(text.slice(position));
     if (!match) throw cannotEvaluate();
     position += match[0].length;
-    const [, digits, suffix] = match;
-    const multiplier = suffix ? SUFFIX_MULTIPLIERS[suffix.toLowerCase()] : 1;
-    return parseFloat(digits) * multiplier;
+    return parseFloat(match[0]);
+  };
+
+  const readVariable = (): number => {
+    const match = IDENTIFIER.exec(text.slice(position));
+    if (!match) throw cannotEvaluate();
+    const name = match[0];
+    if (!(name in variables))
+      throw new Error(
+        `cannot evaluate "${source}": "${name}" is not a known variable`,
+      );
+    position += name.length;
+    return variables[name];
   };
 
   const readAtom = (): number => {
@@ -41,6 +55,7 @@ export function evaluateExpression(source: string): number {
       position += 1;
       return -readAtom();
     }
+    if (IDENTIFIER.test(text.slice(position))) return readVariable();
     return readNumber();
   };
 
