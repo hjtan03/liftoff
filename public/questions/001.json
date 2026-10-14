@@ -1,0 +1,116 @@
+{
+  "id": "001",
+  "questions": [
+    {
+      "id": "marathon-walk",
+      "category": "Everyday",
+      "prompt": "Walking at a steady 5 km/h, how many minutes does it take to finish a marathon?",
+      "unit": "min",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest minute.",
+      "factors": [
+        {
+          "key": "d",
+          "label": "Marathon distance",
+          "unit": "km",
+          "value": 42.195,
+          "source": "World Athletics standard"
+        }
+      ],
+      "formula": "d / 5 * 60"
+    },
+    {
+      "id": "letter-sheets-on-a-field",
+      "category": "Sport",
+      "prompt": "How many US Letter sheets, laid long edge to long edge, cover a football field from goal line to goal line?",
+      "unit": "sheets",
+      "rounding": "ceil",
+      "roundingNote": "Partial sheet counts as a whole sheet (round up).",
+      "factors": [
+        {
+          "key": "yd",
+          "label": "Goal line to goal line",
+          "unit": "yd",
+          "value": 100,
+          "source": "NFL rulebook"
+        },
+        {
+          "key": "in",
+          "label": "Long edge of a Letter sheet",
+          "unit": "in",
+          "value": 11,
+          "source": "ANSI Letter, 8.5 × 11 in"
+        }
+      ],
+      "formula": "yd * 36 / in"
+    },
+    {
+      "id": "golf-balls-in-a-lane",
+      "category": "Sport",
+      "prompt": "How many golf balls fit in a single touching line along a 100 m sprint lane?",
+      "unit": "balls",
+      "rounding": "floor",
+      "roundingNote": "Complete balls only (round down). Use the minimum legal diameter.",
+      "factors": [
+        {
+          "key": "mm",
+          "label": "Golf ball diameter",
+          "unit": "mm",
+          "value": 42.67,
+          "source": "R&A / USGA minimum, 1.68 in"
+        }
+      ],
+      "formula": "100000 / mm"
+    },
+    {
+      "id": "credit-cards-to-the-rim",
+      "category": "Everyday",
+      "prompt": "How many credit cards would you stack to reach the rim of a regulation basketball hoop?",
+      "unit": "cards",
+      "rounding": "ceil",
+      "roundingNote": "You need to reach the rim (round up).",
+      "factors": [
+        {
+          "key": "ft",
+          "label": "Rim height",
+          "unit": "ft",
+          "value": 10,
+          "source": "NBA / FIBA regulation"
+        },
+        {
+          "key": "mm",
+          "label": "Credit card thickness",
+          "unit": "mm",
+          "value": 0.76,
+          "source": "ISO/IEC 7810 ID-1"
+        }
+      ],
+      "formula": "ft * 304.8 / mm"
+    },
+    {
+      "id": "light-laps-in-a-minute",
+      "category": "Science",
+      "prompt": "How many complete laps of Earth’s equator could a beam of light make in one minute?",
+      "unit": "laps",
+      "rounding": "floor",
+      "roundingNote": "Complete laps only (round down).",
+      "factors": [
+        {
+          "key": "c",
+          "label": "Speed of light",
+          "unit": "km/s",
+          "value": 299792.458,
+          "source": "SI definition"
+        },
+        {
+          "key": "eq",
+          "label": "Equator circumference",
+          "unit": "km",
+          "value": 40075,
+          "source": "WGS 84"
+        }
+      ],
+      "formula": "c * 60 / eq"
+    }
+  ]
+}
