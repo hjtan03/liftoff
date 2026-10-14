@@ -15,8 +15,11 @@ docs/archive/.
 - The rules live in `src/game/` as pure functions with colocated unit
   tests. Components in `src/components/` render state and dispatch actions
   to the reducer in `src/game/state.ts`; they hold no rules of their own.
-- Questions follow docs/questions.md: TypeScript objects in
-  `src/game/questions.ts` whose answer is computed, never written down.
+- Questions follow docs/questions.md: JSON documents under
+  `public/questions/`, checked against `src/questions/schema.ts` by a test
+  on the producer's side. The game fetches a set through
+  `src/questions/source.ts`, trusts it, and computes every answer; an
+  answer is never written down.
 - Animations run through `src/animation.ts` on requestAnimationFrame and
   honour `prefers-reduced-motion`.
 - One global stylesheet, `src/app.css`.
@@ -29,6 +32,6 @@ docs/archive/.
 
 ## What is simulated
 
-Crowd stats (`simulatedCrowdLockedInHitPercent` on each question) and the
-launch number (`src/game/launch.ts`) are placeholders until the roadmap's
-backend and daily rotation exist.
+Crowd stats are a placeholder in `src/game/crowd.ts` until the real crowd
+exists. The question set URL in `src/App.tsx` names the one fixed day until
+daily rotation exists.
