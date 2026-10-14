@@ -3,7 +3,7 @@ import {
   CONFIDENCE_BANDS,
   EXACT_ANSWER_BONUS_POINTS,
   MAX_POINTS_PER_STAGE,
-  MAX_TOTAL_POINTS,
+  maxTotalPoints,
   scoreGuess,
 } from "./scoring";
 
@@ -23,10 +23,11 @@ describe("confidence bands", () => {
     expect(CONFIDENCE_BANDS.rough.lowBound(100)).toBe(50);
     expect(CONFIDENCE_BANDS.rough.highBound(100)).toBe(200);
   });
-  it("a stage is worth at most the locked-in points plus the exact bonus, five stages in all", () => {
+  it("a stage is worth at most the locked-in points plus the exact bonus, times the stages in the set", () => {
     expect(EXACT_ANSWER_BONUS_POINTS).toBe(250);
     expect(MAX_POINTS_PER_STAGE).toBe(1250);
-    expect(MAX_TOTAL_POINTS).toBe(6250);
+    expect(maxTotalPoints(5)).toBe(6250);
+    expect(maxTotalPoints(2)).toBe(2500);
   });
 });
 

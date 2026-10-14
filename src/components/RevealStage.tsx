@@ -1,7 +1,7 @@
 import { Fragment, useEffect, useEffectEvent, useRef, useState } from "react";
 import { easeOutCubic, prefersReducedMotion, tween } from "../animation";
 import { formatNumber } from "../game/numbers";
-import { canonicalFactorValues, type Question } from "../game/questions";
+
 import {
   BAND_KEYS,
   CONFIDENCE_BANDS,
@@ -9,6 +9,7 @@ import {
   MAX_POINTS_PER_STAGE,
 } from "../game/scoring";
 import type { StageResult } from "../game/state";
+import { type LoadedQuestion, workedSolution } from "../questions/source";
 import { RangeAxis } from "./RangeAxis";
 
 const FILL_MS = 1300;
@@ -51,8 +52,9 @@ function startingTankAnimation(
 }
 
 type Props = {
-  question: Question;
+  question: LoadedQuestion;
   result: StageResult;
+  crowdLockedInHitPercent: number;
   isLastStage: boolean;
   isAnimating: boolean;
   onAnimationFinished: () => void;
@@ -62,6 +64,7 @@ type Props = {
 export function RevealStage({
   question,
   result,
+  crowdLockedInHitPercent,
   isLastStage,
   isAnimating,
   onAnimationFinished,
@@ -228,8 +231,8 @@ export function RevealStage({
         {result.exact
           ? `, and hit it exactly for a +${EXACT_ANSWER_BONUS_POINTS} bonus`
           : ""}
-        . Simulated crowd: <b>{question.simulatedCrowdLockedInHitPercent}%</b>{" "}
-        locked in and hit this one.
+        . Simulated crowd: <b>{crowdLockedInHitPercent}%</b> locked in and hit
+        this one.
       </p>
       <div className="work">
         <h3>Debrief</h3>
@@ -269,9 +272,7 @@ export function RevealStage({
             </li>
           ))}
         </ul>
-        <div className="wline num">
-          {question.workedSolution(canonicalFactorValues(question))}
-        </div>
+        <div className="wline num">{workedSolution(question)}</div>
         <p className="round-note">
           {question.roundingNote} →{" "}
           <b>

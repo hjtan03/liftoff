@@ -8,27 +8,37 @@ import {
   LAUNCH_PAD_ALTITUDE_KM,
   MILESTONES,
 } from "../game/altitude";
-import { LAUNCH_NUMBER } from "../game/launch";
 import { formatNumber } from "../game/numbers";
-import { QUESTIONS } from "../game/questions";
-import { MAX_TOTAL_POINTS } from "../game/scoring";
+import { maxTotalPoints } from "../game/scoring";
 import type { StageResult } from "../game/state";
+import type { LoadedQuestion } from "../questions/source";
 
 const CLIMB_MS = 3600;
 /** The rocket starts just above the ground strip. */
 const ROCKET_REST_PERCENT = 2.5;
 
-type Props = { stageResults: StageResult[]; onRestart: () => void };
+type Props = {
+  launchNumber: string;
+  questions: LoadedQuestion[];
+  stageResults: StageResult[];
+  onRestart: () => void;
+};
 
-export function LaunchReport({ stageResults, onRestart }: Props) {
+export function LaunchReport({
+  launchNumber,
+  questions,
+  stageResults,
+  onRestart,
+}: Props) {
   const totalPoints = stageResults.reduce(
     (sum, result) => sum + result.points,
     0,
   );
-  const peakAltitudeKm = altitudeForScore(totalPoints);
+  const maxPoints = maxTotalPoints(questions.length);
+  const peakAltitudeKm = altitudeForScore(totalPoints, maxPoints);
   const destination = destinationForAltitude(peakAltitudeKm);
   const emojiGrid = stageResults.map((result) => result.emoji).join("");
-  const shareText = `🚀 Liftoff ${LAUNCH_NUMBER} ${emojiGrid}\nReached: ${destination} (${formatAltitude(peakAltitudeKm)})\nThrust ${formatNumber(totalPoints)} / ${formatNumber(MAX_TOTAL_POINTS)}`;
+  const shareText = `🚀 Liftoff #${launchNumber} ${emojiGrid}\nReached: ${destination} (${formatAltitude(peakAltitudeKm)})\nThrust ${formatNumber(totalPoints)} / ${formatNumber(maxPoints)}`;
 
   const [climbProgress, setClimbProgress] = useState(0);
   const [copyStatus, setCopyStatus] = useState("");
@@ -86,7 +96,7 @@ export function LaunchReport({ stageResults, onRestart }: Props) {
           {stageResults.map((result, index) => (
             <li key={index}>
               <span>{result.emoji}</span>
-              <span>{QUESTIONS[index].prompt}</span>
+              <span>{questions[index].prompt}</span>
               <span className="pt">+{formatNumber(result.points)}</span>
             </li>
           ))}

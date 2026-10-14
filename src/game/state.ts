@@ -1,4 +1,5 @@
-import { type FactorValues, QUESTIONS } from "./questions";
+import type { FactorValues } from "../questions/factors";
+import type { LoadedQuestion, LoadedQuestionSet } from "../questions/source";
 import { type BandKey, type ScoredGuess, scoreGuess } from "./scoring";
 
 export type GamePhase = "ask" | "assume" | "reveal" | "done";
@@ -6,6 +7,8 @@ export type GamePhase = "ask" | "assume" | "reveal" | "done";
 export type StageResult = ScoredGuess & { assumedFactorValues: FactorValues };
 
 export type GameState = {
+  launchNumber: string;
+  questions: LoadedQuestion[];
   stageIndex: number;
   phase: GamePhase;
   selectedBand: BandKey;
@@ -28,15 +31,19 @@ export type GameAction =
 
 const DEFAULT_BAND: BandKey = "solid";
 
-export const INITIAL_GAME_STATE: GameState = {
-  stageIndex: 0,
-  phase: "ask",
-  selectedBand: DEFAULT_BAND,
-  guessText: "",
-  stageResults: [],
-  pendingResult: null,
-  animatingStageIndex: null,
-};
+export function initialGameState(questionSet: LoadedQuestionSet): GameState {
+  return {
+    launchNumber: questionSet.id,
+    questions: questionSet.questions,
+    stageIndex: 0,
+    phase: "ask",
+    selectedBand: DEFAULT_BAND,
+    guessText: "",
+    stageResults: [],
+    pendingResult: null,
+    animatingStageIndex: null,
+  };
+}
 
 export function gameReducer(state: GameState, action: GameAction): GameState {
   switch (action.type) {
@@ -45,7 +52,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
     case "band-selected":
       return { ...state, selectedBand: action.band };
     case "stage-fired": {
-      const answer = QUESTIONS[state.stageIndex].answer;
+      const answer = state.questions[state.stageIndex].answer;
       const pendingResult = scoreGuess({
         answer,
         guess: action.guess,
@@ -71,7 +78,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
     case "reveal-animation-finished":
       return { ...state, animatingStageIndex: null };
     case "next-stage": {
-      const isLastStage = state.stageIndex === QUESTIONS.length - 1;
+      const isLastStage = state.stageIndex === state.questions.length - 1;
       if (isLastStage) return { ...state, phase: "done" };
       return {
         ...state,
@@ -81,6 +88,9 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       };
     }
     case "game-restarted":
-      return INITIAL_GAME_STATE;
+      return initialGameState({
+        id: state.launchNumber,
+        questions: state.questions,
+      });
   }
 }

@@ -1,13 +1,13 @@
 import { type CSSProperties, useEffect, useRef, useState } from "react";
 import { easeOutCubic, prefersReducedMotion, tween } from "../animation";
 import { formatNumber } from "../game/numbers";
-import { QUESTIONS } from "../game/questions";
 import { MAX_POINTS_PER_STAGE } from "../game/scoring";
 import type { GamePhase, StageResult } from "../game/state";
 
 const TALLY_COUNT_UP_MS = 700;
 
 type Props = {
+  stageCount: number;
   stageResults: StageResult[];
   stageIndex: number;
   phase: GamePhase;
@@ -15,6 +15,7 @@ type Props = {
 };
 
 export function RocketStack({
+  stageCount,
   stageResults,
   stageIndex,
   phase,
@@ -22,15 +23,16 @@ export function RocketStack({
 }: Props) {
   const visibleResult = (index: number): StageResult | undefined =>
     index === animatingStageIndex ? undefined : stageResults[index];
-  const bankedPoints = QUESTIONS.reduce(
-    (sum, _, index) => sum + (visibleResult(index)?.points ?? 0),
+  const stages = Array.from({ length: stageCount }, (_, index) => index);
+  const bankedPoints = stages.reduce(
+    (sum, index) => sum + (visibleResult(index)?.points ?? 0),
     0,
   );
   const shownPoints = useTweenedNumber(bankedPoints, TALLY_COUNT_UP_MS);
   const justRevealedIndex =
     phase === "reveal" && animatingStageIndex === null ? stageIndex : null;
 
-  const segments = QUESTIONS.map((_, index) => {
+  const segments = stages.map((index) => {
     const result = visibleResult(index);
     const isCurrent = index === stageIndex && phase !== "done";
     const status = result
