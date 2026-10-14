@@ -36,6 +36,14 @@ npm run build         # type-check with tsc, then bundle to dist/
 npm run test:e2e      # Playwright: plays the built game in Chromium (build first)
 ```
 
+CI runs every one of these on each pull request.
+
+## Deploy
+
+A push to `main` builds the site and publishes `dist/` to GitHub Pages from `.github/workflows/ci.yml`. The repository's Pages source has to be **GitHub Actions** (Settings → Pages → Build and deployment → Source).
+
+For Cloudflare Pages instead: connect the repo, build command `npm run build`, output directory `dist`. For a custom domain on either host, set `base` in `vite.config.ts` to `/` (GitHub Pages also needs a `CNAME` file containing the domain).
+
 ## Layout
 
 ```
@@ -48,6 +56,7 @@ src/game/                  the rules: questions, scoring, altitude, state
 src/calculator/            the pop-up calculator and its expression parser
 src/components/            one component per screen piece
 e2e/                       Playwright play-through
+.github/workflows/ci.yml   checks on every PR, Pages deploy from main
 ```
 
 Unit tests sit beside the module they test, as `*.test.ts`.
