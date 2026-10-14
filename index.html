@@ -1,0 +1,601 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="A daily estimation game. Five math questions, one rocket. Work it out, pick your confidence, and see how high you fly.">
+<meta property="og:title" content="Liftoff — daily estimation game">
+<meta property="og:description" content="Five math questions, one rocket. How high can you fly today?">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🚀%3C/text%3E%3C/svg%3E">
+<style>[hidden]{display:none!important}body{margin:0}img{max-width:100%}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}</style>
+<title>Liftoff Daily</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: mission-control console. Question card left, the rocket stack builds on the right; launch screen is a log-scale altitude ruler. */
+:root{
+  --bg:#E8EDF2; --panel:#F8FAFC; --ink:#12213A; --muted:#55657C; --line:#C3CEDA;
+  --accent:#F2541B; --accent-ink:#FFFFFF; --go:#12825A; --go-soft:#D4EFE3; --warn:#9A6A12; --fail:#C42F28; --fail-soft:#F6DAD7;
+  --sky-top:#0F1B33; --sky-mid:#3B5B8C; --sky-low:#BCD3EA;
+  --f-display:"Big Shoulders Display","Arial Narrow",Impact,sans-serif;
+  --f-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0B1320; --panel:#131F33; --ink:#E5ECF5; --muted:#8D9BB1; --line:#25344D;
+  --accent:#FF6B35; --accent-ink:#1A0A03; --go:#3CC488; --go-soft:#123528; --warn:#E2A644; --fail:#F2685D; --fail-soft:#3A1715;
+  --sky-top:#040812; --sky-mid:#1A2C4C; --sky-low:#40618F; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0B1320; --panel:#131F33; --ink:#E5ECF5; --muted:#8D9BB1; --line:#25344D;
+  --accent:#FF6B35; --accent-ink:#1A0A03; --go:#3CC488; --go-soft:#123528; --warn:#E2A644; --fail:#F2685D; --fail-soft:#3A1715;
+  --sky-top:#040812; --sky-mid:#1A2C4C; --sky-low:#40618F; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5;padding-inline:16px;padding-block:20px 48px}
+.wrap{max-width:1080px;margin:0 auto;display:flex;flex-direction:column;gap:24px}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+
+/* top bar */
+.bar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;border-bottom:2px solid var(--ink);padding-bottom:12px}
+.brand{font-family:var(--f-display);font-weight:900;font-size:28px;letter-spacing:.04em;text-transform:uppercase;line-height:1}
+.brand span{color:var(--accent)}
+.meta{font-family:var(--f-mono);font-size:13px;color:var(--muted);letter-spacing:.04em;text-transform:uppercase}
+
+.grid{display:grid;grid-template-columns:minmax(0,1fr) 220px;gap:32px;align-items:start}
+@media (max-width:820px){.grid{grid-template-columns:minmax(0,1fr)}.stack-col{order:-1}}
+
+/* question */
+.chip{display:inline-block;font-family:var(--f-mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;border:1.5px solid var(--ink);padding:3px 10px;border-radius:2px}
+.stage-tag{font-family:var(--f-mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);font-weight:600}
+.q{font-family:var(--f-display);font-weight:800;font-size:clamp(30px,4.6vw,48px);line-height:1;letter-spacing:.005em;text-transform:uppercase;text-wrap:balance;margin:10px 0 0}
+.qhead{display:flex;flex-direction:column;gap:8px}
+.qrow{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.round-note{color:var(--muted);font-size:14px;margin:0}
+
+.card{background:var(--panel);border:2px solid var(--ink);border-radius:4px;padding:20px;display:flex;flex-direction:column;gap:18px}
+.label{font-family:var(--f-mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0}
+
+/* scratchpad */
+details.scratch{border:1.5px dashed var(--line);border-radius:4px;padding:12px 14px}
+details.scratch summary{cursor:pointer;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:8px}
+details.scratch summary::-webkit-details-marker{display:none}
+details.scratch summary::after{content:"+";font-family:var(--f-mono);color:var(--muted)}
+details.scratch[open] summary::after{content:"−"}
+.sp-body{display:flex;flex-direction:column;gap:12px;margin-top:12px}
+.given{font-size:14px;color:var(--muted)}
+.given b{color:var(--ink);font-weight:600}
+.frow{display:grid;grid-template-columns:minmax(0,1fr) 150px;gap:10px;align-items:center}
+.frow label{font-size:15px}
+.fin{display:flex;align-items:center;border-bottom:2px solid var(--ink);background:transparent}
+.fin input{width:100%;min-width:0;border:0;background:transparent;font-family:var(--f-mono);font-size:16px;padding:6px 4px;color:var(--ink)}
+.fin input:focus{outline:none}
+.fin:focus-within{border-color:var(--accent)}
+.fin .u{font-family:var(--f-mono);font-size:13px;color:var(--muted);padding-right:4px;white-space:nowrap}
+.mycalc{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;font-size:15px}
+.tape{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:2px;font-family:var(--f-mono);font-size:14px}
+.tape:empty{display:none}
+.tape li{display:flex;justify-content:space-between;gap:12px;padding:3px 4px;border-bottom:1px dotted var(--line);overflow-wrap:anywhere}
+.tape b{font-weight:600;white-space:nowrap}
+.locked{font-size:clamp(22px,4vw,30px);font-weight:600}
+.locked span{font-size:15px;color:var(--muted);font-weight:500}
+.calcbtn{align-self:flex-start}
+.calc[hidden]{display:none}
+.calc{position:fixed;right:20px;bottom:calc(20px + env(safe-area-inset-bottom,0px));width:272px;max-width:calc(100vw - 32px);background:var(--panel);border:2px solid var(--ink);border-radius:8px;box-shadow:0 12px 32px rgba(10,20,40,.28);padding:12px;display:flex;flex-direction:column;gap:10px;z-index:20}
+@media (max-width:520px){.calc{left:16px;right:16px;width:auto;max-width:none}}
+.calc-top{display:flex;justify-content:space-between;align-items:center}
+.calc-x{background:transparent;border:0;font-size:16px;padding:4px 8px;color:var(--muted)}
+.calc-disp{background:var(--bg);border-radius:4px;padding:8px 10px;text-align:right;min-width:0}
+.calc-hist{font-size:13px;color:var(--muted);overflow-x:auto;white-space:nowrap}
+.calc-main{font-size:26px;font-weight:600;overflow-x:auto;white-space:nowrap}
+.keys{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.k{border:1.5px solid var(--line);background:var(--panel);border-radius:6px;padding:12px 0;font-family:var(--f-mono);font-size:18px;font-weight:500}
+.k:hover{border-color:var(--ink)}
+.k:active{transform:translateY(1px)}
+.k.fn{background:var(--bg)}
+.k.op{color:var(--accent);font-weight:600}
+.k.eq{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
+.ghost{background:transparent;border:1.5px solid var(--ink);border-radius:999px;padding:5px 14px;font-size:14px;font-weight:500}
+.ghost:disabled{opacity:.4;cursor:default}
+
+/* guess */
+.guess{display:flex;align-items:flex-end;gap:10px;border-bottom:3px solid var(--ink)}
+.guess input{flex:1;min-width:0;border:0;background:transparent;font-family:var(--f-mono);font-weight:600;font-size:clamp(28px,5vw,40px);padding:4px 2px;color:var(--ink)}
+.guess input:focus{outline:none}
+.guess:focus-within{border-color:var(--accent)}
+.guess .u{font-family:var(--f-mono);color:var(--muted);padding-bottom:10px}
+.err{color:var(--fail);font-size:14px;margin:0;min-height:1.5em}
+
+.conf{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media (max-width:520px){.conf{grid-template-columns:minmax(0,1fr)}}
+.cbtn{text-align:left;background:transparent;border:2px solid var(--line);border-radius:4px;padding:10px 12px;display:flex;flex-direction:column;gap:2px}
+.cbtn .t{font-weight:600}
+.cbtn .p{font-family:var(--f-mono);font-size:13px;color:var(--muted)}
+.cbtn .r{font-family:var(--f-mono);font-size:13px;color:var(--ink);font-variant-numeric:tabular-nums;min-height:1.5em}
+.cbtn[aria-pressed="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+
+.fire{align-self:flex-start;background:var(--accent);color:var(--accent-ink);border:0;border-radius:999px;padding:12px 28px;font-family:var(--f-display);font-weight:800;font-size:22px;letter-spacing:.06em;text-transform:uppercase}
+.fire:disabled{opacity:.35;cursor:default}
+
+/* reveal */
+.verdict{font-family:var(--f-display);font-weight:900;font-size:clamp(44px,8vw,72px);line-height:.9;text-transform:uppercase;margin:0}
+.verdict.ok{color:var(--go)} .verdict.bad{color:var(--fail)}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.stats .v{font-family:var(--f-mono);font-weight:600;font-size:clamp(20px,3.4vw,28px);font-variant-numeric:tabular-nums;line-height:1.2;overflow-wrap:anywhere}
+.stats .v.pts{color:var(--go)} .stats .v.zero{color:var(--fail)}
+@media (max-width:460px){.stats{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
+.crowd{font-size:14px;color:var(--muted);margin:0}
+.crowd b{color:var(--ink)}
+
+.axis{position:relative;height:56px;margin-top:4px}
+.axis .base{position:absolute;left:0;right:0;top:26px;height:2px;background:var(--line)}
+.axis .band{position:absolute;top:18px;height:18px;border-radius:2px}
+.axis .band.ok{background:var(--go-soft);border:1.5px solid var(--go)}
+.axis .band.bad{background:var(--fail-soft);border:1.5px solid var(--fail)}
+.axis .mk{position:absolute;top:8px;width:2px;height:38px;background:var(--ink);transform:translateX(-1px)}
+.axis .mk span{position:absolute;top:40px;left:50%;transform:translateX(-50%);font-family:var(--f-mono);font-size:11px;white-space:nowrap;color:var(--ink)}
+.axis .gs{position:absolute;top:-2px;transform:translateX(-50%);font-family:var(--f-mono);font-size:11px;color:var(--muted);white-space:nowrap}
+
+.work{border-top:1.5px solid var(--line);padding-top:14px;display:flex;flex-direction:column;gap:10px}
+.work h3{margin:0;font-size:15px}
+.wline{font-family:var(--f-mono);font-size:14px;overflow-x:auto;white-space:nowrap;padding-bottom:2px}
+.facts{display:flex;flex-direction:column;gap:6px;margin:0;padding:0;list-style:none}
+.facts li{font-size:14px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.facts .src{color:var(--muted)}
+.diff{font-size:14px;padding:8px 10px;border-radius:3px;background:var(--bg)}
+.diff b.off{color:var(--fail)} .diff b.on{color:var(--go)}
+.next{align-self:flex-start;background:var(--ink);color:var(--panel);border:0;border-radius:999px;padding:11px 24px;font-weight:600}
+
+/* rocket stack */
+.stack-col{display:flex;flex-direction:column;gap:12px}
+.stack{display:flex;flex-direction:column;align-items:center;gap:3px}
+.nose{width:0;height:0;border-left:44px solid transparent;border-right:44px solid transparent;border-bottom:52px solid var(--ink)}
+.seg{width:88px;height:46px;border:2px solid var(--ink);display:flex;align-items:center;justify-content:center;font-family:var(--f-mono);font-size:12px;font-weight:600;background:var(--panel);position:relative}
+.seg.pending{border-style:dashed;border-color:var(--line);color:var(--muted)}
+.seg.current{border-color:var(--accent);color:var(--accent);animation:pulse 1.6s ease-in-out infinite}
+.seg.fired{border-color:var(--go)}
+.seg .sf{position:absolute;inset:0;overflow:hidden}
+.seg .sf i{position:absolute;left:0;right:0;bottom:0;height:var(--f,0%);background:linear-gradient(to top,var(--go),color-mix(in srgb,var(--go) 65%,var(--panel)));box-shadow:inset 0 2px 0 rgba(255,255,255,.35);transition:height 1s cubic-bezier(.2,.8,.2,1)}
+.seg .lbl{position:relative;z-index:1;background:var(--panel);padding:0 4px;border-radius:2px}
+.seg.misfire .lbl{color:var(--fail)}
+.seg.pop{animation:pop .75s cubic-bezier(.3,1.5,.5,1);z-index:3}
+@keyframes pop{0%{transform:none}35%{transform:translateX(-22px) scale(1.35) rotate(-6deg)}100%{transform:none}}
+
+/* reveal tank */
+.rv-top{display:flex;gap:24px;align-items:center;flex-wrap:wrap}
+.rv-main{flex:1;min-width:220px;display:flex;flex-direction:column;gap:14px}
+.tankwrap{position:relative;width:170px;flex:none;display:flex;flex-direction:column;align-items:flex-start}
+.tank-cap{width:80px;height:10px;margin-left:8px;background:var(--ink);border-radius:4px 4px 0 0}
+.tank-mid{position:relative}
+.tank-body{position:relative;width:96px;height:150px;border:2.5px solid var(--ink);background:var(--bg);overflow:hidden;border-radius:3px}
+.tankwrap.bad .tank-body{background:repeating-linear-gradient(135deg,var(--fail-soft) 0 6px,var(--bg) 6px 12px)}
+.fuel{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(to top,var(--go),color-mix(in srgb,var(--go) 60%,var(--panel)));box-shadow:inset 0 3px 0 rgba(255,255,255,.4)}
+.tankwrap.bad .fuel{background:var(--fail)}
+.fuel b{position:absolute;bottom:6px;width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.6);animation:bub 2s ease-in infinite}
+.fuel b:nth-child(1){left:22%}.fuel b:nth-child(2){left:52%;animation-delay:.7s;width:4px;height:4px}.fuel b:nth-child(3){left:74%;animation-delay:1.3s}
+@keyframes bub{0%{transform:translateY(0);opacity:0}20%{opacity:1}100%{transform:translateY(-120px);opacity:0}}
+.tank-read{position:absolute;top:8px;left:50%;transform:translateX(-50%);background:var(--panel);border:1.5px solid var(--ink);border-radius:3px;padding:0 6px;font-size:15px;font-weight:600;z-index:2}
+.ticks{position:absolute;inset:0;pointer-events:none}
+.tk{position:absolute;left:0;width:96px;border-top:1.5px dashed var(--ink);opacity:.45}
+.tk span{position:absolute;left:calc(100% + 8px);top:-9px;font-family:var(--f-mono);font-size:11px;white-space:nowrap;color:var(--ink)}
+.tk.me{opacity:1;border-top-style:solid}
+.tk.me span{font-weight:600;color:var(--accent)}
+.tank-noz{width:56px;height:16px;margin-left:20px;background:var(--ink);clip-path:polygon(15% 0,85% 0,100% 100%,0 100%)}
+.tflame{width:30px;height:0;margin-left:33px;background:linear-gradient(#FFF1C4,#FFB020 45%,#F2541B);clip-path:polygon(0 0,100% 0,50% 100%);transform-origin:50% 0;transition:height .35s ease-out}
+.tankwrap.lit .tflame{height:44px;animation:flick .12s infinite alternate}
+.smoke{position:relative;width:96px;height:0}
+.smoke i{position:absolute;top:-30px;width:24px;height:24px;border-radius:50%;background:var(--muted);opacity:0}
+.smoke i:nth-child(1){left:26px}.smoke i:nth-child(2){left:44px;animation-delay:.2s!important}.smoke i:nth-child(3){left:34px;animation-delay:.4s!important}
+.tankwrap.smoking .smoke i{animation:puff 1.6s ease-out forwards}
+@keyframes puff{0%{opacity:.55;transform:translateY(0) scale(.5)}100%{opacity:0;transform:translateY(-70px) scale(1.9)}}
+.tankwrap.shake{animation:shake .45s}
+@keyframes shake{20%,60%{transform:translateX(-5px) rotate(-1.5deg)}40%,80%{transform:translateX(5px) rotate(1.5deg)}}
+.seg.misfire{background:repeating-linear-gradient(135deg,var(--fail-soft) 0 6px,transparent 6px 12px);border-color:var(--fail);color:var(--fail)}
+.seg .e{position:absolute;right:-30px;font-size:14px}
+.fins{display:flex;gap:56px;margin-top:-10px}
+.fins i{width:16px;height:22px;background:var(--ink);display:block}
+.fins i:first-child{clip-path:polygon(100% 0,100% 100%,0 100%)} .fins i:last-child{clip-path:polygon(0 0,100% 100%,0 100%)}
+@keyframes pulse{50%{box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 25%,transparent)}}
+.tally{text-align:center;display:flex;flex-direction:column;gap:2px}
+.tally .v{font-family:var(--f-mono);font-size:24px;font-weight:600}
+@media (max-width:820px){
+  .stack{flex-direction:row-reverse;justify-content:center;gap:3px}
+  .nose{border-top:22px solid transparent;border-bottom:22px solid transparent;border-left:28px solid var(--ink);border-right:0}
+  .seg{width:56px;height:44px}
+  .seg .e{display:none}
+  .fins{display:none}
+  .stack-col{flex-direction:row;align-items:center;justify-content:space-between;flex-wrap:wrap}
+}
+
+/* launch */
+.launch{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:32px;align-items:start}
+@media (max-width:820px){.launch{grid-template-columns:minmax(0,1fr)}}
+.alt{font-family:var(--f-display);font-weight:900;font-size:clamp(52px,10vw,96px);line-height:.9;margin:0}
+.dest{font-family:var(--f-display);font-weight:800;font-size:clamp(26px,4vw,36px);text-transform:uppercase;color:var(--accent);margin:0;line-height:1}
+.summary{display:flex;flex-direction:column;gap:6px;margin:0;padding:0;list-style:none}
+.summary li{display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:10px;align-items:baseline;font-size:15px;border-bottom:1px solid var(--line);padding:8px 0}
+.summary .pt{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.share{background:var(--bg);border:1.5px solid var(--line);border-radius:4px;padding:12px;font-family:var(--f-mono);font-size:14px;white-space:pre-wrap;margin:0;overflow-wrap:anywhere}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.sky{position:relative;height:560px;border:2px solid var(--ink);border-radius:4px;overflow:hidden;background:linear-gradient(to top,var(--sky-low) 0%,var(--sky-mid) 35%,var(--sky-top) 70%)}
+.tick{position:absolute;left:0;right:0;border-top:1px dashed rgba(255,255,255,.35);font-family:var(--f-mono);font-size:11px;color:#E9F0FA;padding:2px 8px;display:flex;justify-content:space-between}
+.ground{position:absolute;left:0;right:0;bottom:0;height:14px;background:var(--ink)}
+.rocket{position:absolute;left:50%;width:30px;transform:translate(-50%,50%);transition:none}
+.rocket svg{display:block;width:30px;height:auto}
+.flame{transform-origin:50% 0;animation:flick .12s infinite alternate}
+@keyframes flick{to{transform:scaleY(.7)}}
+.note{font-size:13px;color:var(--muted);margin:0}
+@media (prefers-reduced-motion:reduce){.seg.current,.flame,.fuel b,.tankwrap.lit .tflame,.seg.pop{animation:none}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="bar">
+    <div class="brand">Lift<span>off</span></div>
+    <div class="meta" id="meta">Launch #001 · Prototype</div>
+  </header>
+  <main id="app"></main>
+</div>
+<div class="calc" id="calc" role="dialog" aria-label="Calculator" hidden>
+  <div class="calc-top"><span class="label" style="margin:0">Calculator</span><button class="calc-x" id="calcx" type="button" aria-label="Close calculator">✕</button></div>
+  <div class="calc-disp"><div class="calc-hist num" id="chist">&nbsp;</div><div class="calc-main num" id="cmain" aria-live="polite">0</div></div>
+  <div class="keys" id="keys">
+    <button type="button" class="k fn" data-k="C">C</button><button type="button" class="k fn" data-k="(">(</button><button type="button" class="k fn" data-k=")">)</button><button type="button" class="k op" data-k="÷">÷</button>
+    <button type="button" class="k" data-k="7">7</button><button type="button" class="k" data-k="8">8</button><button type="button" class="k" data-k="9">9</button><button type="button" class="k op" data-k="×">×</button>
+    <button type="button" class="k" data-k="4">4</button><button type="button" class="k" data-k="5">5</button><button type="button" class="k" data-k="6">6</button><button type="button" class="k op" data-k="−">−</button>
+    <button type="button" class="k" data-k="1">1</button><button type="button" class="k" data-k="2">2</button><button type="button" class="k" data-k="3">3</button><button type="button" class="k op" data-k="+">+</button>
+    <button type="button" class="k fn" data-k="⌫" aria-label="Backspace">⌫</button><button type="button" class="k" data-k="0">0</button><button type="button" class="k" data-k=".">.</button><button type="button" class="k eq" data-k="=">=</button>
+  </div>
+</div>
+
+<script>
+// ---- Question set: every input is a spec/definition constant or stated in the prompt. Answers are computed, never typed. ----
+const Q = [
+ {cat:'Everyday', unit:'min',
+  prompt:'Walking at a steady 5 km/h, how many minutes does it take to finish a marathon?',
+  roundNote:'Rounded to the nearest minute.', round:'round',
+  given:[['Walking speed','5 km/h']],
+  factors:[{k:'d',label:'Marathon distance',unit:'km',value:42.195,src:'World Athletics standard'}],
+  calc:f=>f.d/5*60,
+  work:f=>`${n(f.d)} km ÷ 5 km/h = ${n(f.d/5,3)} h × 60 = ${n(f.d/5*60,2)} min`},
+ {cat:'Sport', unit:'sheets',
+  prompt:'How many US Letter sheets, laid long edge to long edge, cover a football field from goal line to goal line?',
+  roundNote:'Partial sheet counts as a whole sheet (round up).', round:'ceil',
+  given:[],
+  factors:[{k:'yd',label:'Goal line to goal line',unit:'yd',value:100,src:'NFL rulebook'},
+           {k:'in',label:'Long edge of a Letter sheet',unit:'in',value:11,src:'ANSI Letter, 8.5 × 11 in'}],
+  calc:f=>f.yd*36/f.in,
+  work:f=>`${n(f.yd)} yd × 36 in/yd = ${n(f.yd*36)} in ÷ ${n(f.in)} in = ${n(f.yd*36/f.in,2)} sheets`},
+ {cat:'Sport', unit:'balls',
+  prompt:'How many golf balls fit in a single touching line along a 100 m sprint lane?',
+  roundNote:'Complete balls only (round down). Use the minimum legal diameter.', round:'floor',
+  given:[['Lane length','100 m']],
+  factors:[{k:'mm',label:'Golf ball diameter',unit:'mm',value:42.67,src:'R&A / USGA minimum, 1.68 in'}],
+  calc:f=>100000/f.mm,
+  work:f=>`100 m = 100,000 mm ÷ ${n(f.mm,2)} mm = ${n(100000/f.mm,2)} balls`},
+ {cat:'Everyday', unit:'cards',
+  prompt:'How many credit cards would you stack to reach the rim of a regulation basketball hoop?',
+  roundNote:'You need to reach the rim (round up).', round:'ceil',
+  given:[],
+  factors:[{k:'ft',label:'Rim height',unit:'ft',value:10,src:'NBA / FIBA regulation'},
+           {k:'mm',label:'Credit card thickness',unit:'mm',value:0.76,src:'ISO/IEC 7810 ID-1'}],
+  calc:f=>f.ft*304.8/f.mm,
+  work:f=>`${n(f.ft)} ft × 304.8 mm/ft = ${n(f.ft*304.8,1)} mm ÷ ${n(f.mm,2)} mm = ${n(f.ft*304.8/f.mm,2)} cards`},
+ {cat:'Science', unit:'laps',
+  prompt:'How many complete laps of Earth’s equator could a beam of light make in one minute?',
+  roundNote:'Complete laps only (round down).', round:'floor',
+  given:[['Time','60 seconds']],
+  factors:[{k:'c',label:'Speed of light',unit:'km/s',value:299792.458,src:'SI definition'},
+           {k:'eq',label:'Equator circumference',unit:'km',value:40075,src:'WGS 84'}],
+  calc:f=>f.c*60/f.eq,
+  work:f=>`${n(f.c,3)} km/s × 60 s = ${n(f.c*60)} km ÷ ${n(f.eq)} km = ${n(f.c*60/f.eq,2)} laps`},
+];
+const CROWD = [34,22,11,8,4]; // simulated % of players who locked in and hit
+
+const BANDS = {
+  lock:{name:'Locked in',rule:'±5%',pts:1000,lo:g=>g*.95,hi:g=>g*1.05},
+  solid:{name:'Solid',rule:'±20%',pts:500,lo:g=>g*.8,hi:g=>g*1.2},
+  rough:{name:'Rough',rule:'within 2×',pts:200,lo:g=>g/2,hi:g=>g*2},
+};
+const EXACT_BONUS = 250, MAX = 5*(1000+EXACT_BONUS);
+const MILESTONES = [[0.03,'Tree line'],[2,'Cloud deck'],[11,'Airliner altitude'],[100,'Kármán line'],[408,'ISS orbit'],[20200,'GPS orbit'],[35786,'Geostationary orbit'],[384400,'The Moon']];
+
+const ROUND = {round:Math.round,ceil:Math.ceil,floor:Math.floor};
+const canon = q => Object.fromEntries(q.factors.map(f=>[f.k,f.value]));
+Q.forEach(q=>q.answer = ROUND[q.round](+q.calc(canon(q)).toFixed(6)));
+
+function n(x,d){ if(d===undefined) d = Math.abs(x)<10?2:Math.abs(x)<1000?1:0;
+  return Number(x).toLocaleString('en-US',{maximumFractionDigits:d}); }
+function parseNum(s){
+  s=String(s).trim().toLowerCase().replace(/[,\s_]/g,''); if(!s) return NaN;
+  const m=s.match(/^(\d*\.?\d+)(k|m|b)?$/); if(!m) return NaN;
+  return parseFloat(m[1])*({k:1e3,m:1e6,b:1e9}[m[2]]||1);
+}
+const esc = s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+// ---- state ----
+let S;
+function fresh(){ return {i:0, phase:'ask', conf:'solid', results:[], tape:{}, pending:null, guessText:''}; }
+function start(data){ S = data && data.S ? {...fresh(), ...data.S} : fresh(); if(S.phase==='assume'&&!S.pending) S.phase='ask'; render(); }
+window.claude?.hot?.snapshot?.(()=>({S}));
+
+const app = document.getElementById('app');
+
+const PER = 1000+EXACT_BONUS;
+function stackHTML(hide){
+  const segs = Q.map((q,i)=>{
+    const r=S.results[i]; let cls='pending', e='', f=0;
+    if(r && i!==hide) { cls = r.hit?'fired':'misfire'; e = r.emoji; f = r.pts/PER*100; }
+    else if(i===S.i && S.phase!=='done') cls='current';
+    return `<div class="seg ${cls}" data-i="${i}" style="--f:${f}%" aria-label="Stage ${i+1}: ${cls}"><div class="sf"><i></i></div><span class="lbl">S${i+1}</span><span class="e">${e}</span></div>`;
+  }).reverse().join('');
+  const total = S.results.reduce((a,r,i)=>a+(i===hide?0:r.pts),0);
+  return `<aside class="stack-col" aria-label="Rocket stack">
+    <div class="stack"><div class="nose"></div>${segs}<div class="fins"><i></i><i></i></div></div>
+    <div class="tally"><p class="label">Thrust banked</p><div class="v num" id="tally">${n(total)}</div></div>
+  </aside>`;
+}
+
+function render(){
+  if(S.phase==='done') return renderLaunch();
+  const q=Q[S.i];
+  document.getElementById('meta').textContent = `Launch #001 · Stage ${S.i+1} of ${Q.length}`;
+  app.innerHTML = `<div class="grid"><section style="display:flex;flex-direction:column;gap:20px;min-width:0">
+    <div class="qhead">
+      <div class="qrow"><span class="stage-tag">Stage ${S.i+1}</span><span class="chip">${q.cat}</span></div>
+      <h1 class="q">${esc(q.prompt)}</h1>
+      <p class="round-note">${q.roundNote}</p>
+    </div>
+    ${S.phase==='ask'?askHTML(q):S.phase==='assume'?assumeHTML(q):revealHTML(q,S.results[S.i])}
+  </section>${stackHTML(S.phase==='reveal' && S.anim===S.i ? S.i : -1)}</div>`;
+  S.phase==='ask'?bindAsk(q):S.phase==='assume'?bindAssume():bindReveal();
+}
+
+function askHTML(q){
+  return `<div class="card">
+    <button class="ghost calcbtn" id="calcbtn" type="button" aria-controls="calc" aria-expanded="${!document.getElementById('calc').hidden}">▦ Calculator</button>
+    <div><p class="label">Your answer</p>
+      <div class="guess"><input id="guess" inputmode="decimal" autocomplete="off" placeholder="0" value="${esc(S.guessText)}" aria-label="Your answer"><span class="u">${q.unit}</span></div>
+      <p class="err" id="err"></p></div>
+    <div><p class="label" style="margin-bottom:8px">How sure are you?</p>
+      <div class="conf" role="group" aria-label="Confidence">
+      ${Object.entries(BANDS).map(([k,b])=>`<button type="button" class="cbtn" id="c-${k}" data-c="${k}" aria-pressed="${S.conf===k}">
+        <span class="t">${b.name}</span><span class="p">${b.rule} · ${b.pts} pts</span><span class="r" id="r-${k}"></span></button>`).join('')}
+      </div></div>
+    <button class="fire" id="fire" type="button" disabled>Fire stage ${S.i+1}</button>
+  </div>`;
+}
+
+function bindAsk(q){
+  const g=document.getElementById('guess'), fire=document.getElementById('fire'), err=document.getElementById('err');
+  const updRanges=()=>{
+    const v=parseNum(g.value); S.guessText=g.value;
+    for(const k in BANDS){ document.getElementById('r-'+k).textContent = v>0?`${n(BANDS[k].lo(v))} – ${n(BANDS[k].hi(v))}`:''; }
+    fire.disabled = !(v>0);
+    err.textContent = g.value.trim() && !(v>0) ? 'Enter a positive number, like 4200 or 4.2k.' : '';
+  };
+  document.getElementById('calcbtn').addEventListener('click',()=>toggleCalc());
+  g.addEventListener('input',updRanges);
+  g.addEventListener('keydown',e=>{ if(e.key==='Enter' && !fire.disabled) fire.click(); });
+  app.querySelectorAll('.cbtn').forEach(b=>b.addEventListener('click',()=>{
+    S.conf=b.dataset.c; app.querySelectorAll('.cbtn').forEach(x=>x.setAttribute('aria-pressed',x===b)); }));
+  fire.addEventListener('click',()=>submit(q,parseNum(g.value)));
+  updRanges();
+}
+
+// Safe arithmetic parser: + - * / ^ ( ), decimals, k/m/b suffixes. No eval.
+function evalExpr(src){
+  const s=String(src).replace(/\s+/g,'').replace(/×/g,'*').replace(/÷/g,'/').replace(/−/g,'-').replace(/,/g,''); let i=0;
+  const num=()=>{ const m=s.slice(i).match(/^(\d*\.?\d+(?:e[+-]?\d+)?)([kmb])?/i); if(!m) throw 0; i+=m[0].length;
+    return parseFloat(m[1])*({k:1e3,m:1e6,b:1e9}[(m[2]||'').toLowerCase()]||1); };
+  const atom=()=>{ if(s[i]==='('){ i++; const v=expr(); if(s[i++]!==')') throw 0; return v; } if(s[i]==='-'){ i++; return -atom(); } return num(); };
+  const pow=()=>{ const b=atom(); if(s[i]==='^'){ i++; return Math.pow(b,pow()); } return b; };
+  const term=()=>{ let v=pow(); while(s[i]==='*'||s[i]==='/'){ const o=s[i++], r=pow(); v=o==='*'?v*r:v/r; } return v; };
+  const expr=()=>{ let v=term(); while(s[i]==='+'||s[i]==='-'){ const o=s[i++], r=term(); v=o==='+'?v+r:v-r; } return v; };
+  const v=expr(); if(i!==s.length||!isFinite(v)) throw 0; return v;
+}
+
+function submit(q,g){
+  const b=BANDS[S.conf], lo=b.lo(g), hi=b.hi(g), a=q.answer;
+  const hit = a>=lo && a<=hi, exact = Math.round(g)===a;
+  const pts = hit ? b.pts + (exact?EXACT_BONUS:0) : 0;
+  const emoji = !hit?'🔴': exact?'🎯': S.conf==='lock'?'🟢': S.conf==='solid'?'🟡':'🟠';
+  S.pending={guess:g,conf:S.conf,lo,hi,hit,exact,pts,emoji,mine:{}};
+  S.phase='assume'; S.guessText=''; render();
+  document.getElementById('a-first')?.focus();
+}
+
+function assumeHTML(q){
+  const p=S.pending, b=BANDS[p.conf];
+  const rows=q.factors.map((f,j)=>`<div class="frow"><label for="a-${S.i}-${f.k}">${f.label}</label>
+     <div class="fin"><input id="${j===0?'a-first':'a-'+S.i+'-'+f.k}" data-k="${f.k}" inputmode="decimal" autocomplete="off" placeholder="skip"><span class="u">${f.unit}</span></div></div>`).join('');
+  return `<div class="card">
+    <div><p class="label">Guess locked</p>
+      <div class="locked num">${n(p.guess)} ${q.unit} <span>· ${b.name} · ${n(p.lo,0)}–${n(p.hi,0)}</span></div></div>
+    <p style="margin:0">Before the reveal: what numbers did you use? Fill in any you assumed and the debrief will show which one threw you off.</p>
+    <div class="sp-body" style="margin:0">${rows}</div>
+    <div class="row"><button class="fire" id="reveal" type="button">Reveal</button>
+      <button class="ghost" id="skip" type="button">Skip</button></div>
+  </div>`;
+}
+function bindAssume(){
+  const go=useMine=>{
+    if(useMine) app.querySelectorAll('.fin input').forEach(inp=>{ const v=parseNum(inp.value); if(v>0) S.pending.mine[inp.dataset.k]=v; });
+    S.results[S.i]=S.pending; S.pending=null; S.phase='reveal'; S.anim=S.i; render();
+    document.getElementById('verdict')?.focus();
+  };
+  app.querySelectorAll('.fin input').forEach(inp=>inp.addEventListener('keydown',e=>{ if(e.key==='Enter') go(true); }));
+  document.getElementById('reveal').addEventListener('click',()=>go(true));
+  document.getElementById('skip').addEventListener('click',()=>go(false));
+}
+
+function axisHTML(r,a){
+  const L=Math.log10, min=Math.min(r.lo,a)/1.25, max=Math.max(r.hi,a)*1.25;
+  const pos=v=>((L(v)-L(min))/(L(max)-L(min))*100).toFixed(2)+'%';
+  return `<div class="axis" aria-hidden="true"><div class="base"></div>
+    <div class="band ${r.hit?'ok':'bad'}" style="left:${pos(r.lo)};width:calc(${pos(r.hi)} - ${pos(r.lo)})"></div>
+    <div class="gs" style="left:${pos(r.guess)}">you ${n(r.guess,0)}</div>
+    <div class="mk" style="left:${pos(a)}"><span>answer ${n(a,0)}</span></div></div>`;
+}
+
+function revealHTML(q,r){
+  const b=BANDS[r.conf], a=q.answer;
+  const verdict = r.exact?'Dead on.':r.hit?'Stage fired.':'Misfire.';
+  const keys=Object.keys(r.mine);
+  let diff='';
+  if(keys.length){
+    const parts=q.factors.filter(f=>r.mine[f.k]).map(f=>{
+      const e=r.mine[f.k]/f.value-1, ok=Math.abs(e)<0.02;
+      return `${f.label}: you used <span class="num">${n(r.mine[f.k])} ${f.unit}</span> → <b class="${ok?'on':'off'}">${ok?'spot on':(Math.abs(e*100)<1?'<1':n(Math.abs(e*100),0))+'% '+(e>0?'high':'low')}</b>`;
+    });
+    diff=`<div class="diff">${parts.join('<br>')}</div>`;
+  }
+  const isLast=S.i===Q.length-1;
+  const anim=S.anim===S.i, frac=r.pts/PER*100;
+  const ticks=[['rough',200,'Rough'],['solid',500,'Solid'],['lock',1000,'Locked'],['exact',PER,'Exact']].map(([k,p,l])=>
+    `<div class="tk ${(k===r.conf&&!r.exact)||(k==='exact'&&r.exact)?'me':''}" style="bottom:${p/PER*100}%"><span>${l}</span></div>`).join('');
+  return `<div class="card">
+   <div class="rv-top">
+    <div class="tankwrap ${r.hit?'':'bad'} ${!anim&&r.hit?'lit':''}" id="tankwrap" aria-hidden="true">
+      <div class="tank-cap"></div>
+      <div class="tank-mid"><div class="tank-body"><div class="fuel" id="tfuel" style="height:${anim?0:frac}%"><b></b><b></b><b></b></div>
+        <div class="tank-read num" id="tread">${anim?0:Math.round(frac)}%</div></div>
+        <div class="ticks">${ticks}</div></div>
+      <div class="tank-noz"></div><div class="tflame"></div>
+      <div class="smoke"><i></i><i></i><i></i></div>
+    </div>
+    <div class="rv-main">
+    <h2 class="verdict ${r.hit?'ok':'bad'}" id="verdict" tabindex="-1">${verdict}</h2>
+    <div class="stats">
+      <div><p class="label">Your range</p><div class="v">${n(r.lo,0)}–${n(r.hi,0)}</div></div>
+      <div><p class="label">Answer</p><div class="v">${n(a,0)}</div></div>
+      <div><p class="label">Fuel</p><div class="v ${r.pts?'pts':'zero'}" id="ptsv">+${anim?0:n(r.pts)}</div></div>
+    </div></div>
+   </div>
+    ${axisHTML(r,a)}
+    <p class="crowd">You played <b>${b.name}</b> (${b.rule})${r.exact?`, and hit it exactly for a +${EXACT_BONUS} bonus`:''}. Simulated crowd: <b>${CROWD[S.i]}%</b> locked in and hit this one.</p>
+    <div class="work"><h3>Debrief</h3>${diff}
+      <ul class="facts">${q.factors.map(f=>`<li><span>${f.label}: <span class="num">${n(f.value,3)} ${f.unit}</span></span><span class="src">${f.src}</span></li>`).join('')}</ul>
+      <div class="wline num">${q.work(canon(q))}</div>
+      <p class="round-note">${q.roundNote} → <b>${n(a,0)} ${q.unit}</b></p>
+    </div>
+    <button class="next" id="next" type="button">${isLast?'Launch the rocket':'Next stage'}</button>
+  </div>`;
+}
+function tween(ms,fn,done){ const t0=performance.now(); (function f(t){ const p=Math.min(1,Math.max(0,(t-t0)/ms)); fn(p); p<1?requestAnimationFrame(f):done&&done(); })(t0); }
+const easeOut=p=>1-Math.pow(1-p,3);
+function animateReveal(){
+  const i=S.i, r=S.results[i]; if(S.anim!==i) return; S.anim=null;
+  const frac=r.pts/PER*100, wrap=document.getElementById('tankwrap'), fuel=document.getElementById('tfuel'),
+        read=document.getElementById('tread'), ptsEl=document.getElementById('ptsv');
+  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const total=S.results.reduce((a,x)=>a+x.pts,0);
+  const finishStack=()=>{
+    const seg=app.querySelector(`.seg[data-i="${i}"]`), tally=document.getElementById('tally'); if(!seg) return;
+    seg.className='seg '+(r.hit?'fired':'misfire')+(reduce?'':' pop');
+    seg.querySelector('.e').textContent=r.emoji;
+    requestAnimationFrame(()=>requestAnimationFrame(()=>seg.style.setProperty('--f',frac+'%')));
+    if(reduce) tally.textContent=n(total); else tween(700,p=>tally.textContent=n(Math.round(total-r.pts+r.pts*easeOut(p))));
+  };
+  const set=(h,pts)=>{ fuel.style.height=h+'%'; read.textContent=Math.round(h)+'%'; ptsEl.textContent='+'+n(Math.round(pts)); };
+  if(reduce){ set(frac,r.pts); if(r.hit) wrap.classList.add('lit'); finishStack(); return; }
+  if(r.hit){
+    tween(1300,p=>set(frac*easeOut(p),r.pts*easeOut(p)),()=>{ wrap.classList.add('lit'); setTimeout(finishStack,250); });
+  } else {
+    tween(550,p=>set(26*easeOut(p),0),()=>{ wrap.classList.add('shake','smoking');
+      tween(750,p=>set(26*(1-p),0),()=>setTimeout(finishStack,150)); });
+  }
+}
+function bindReveal(){ animateReveal(); document.getElementById('next').addEventListener('click',()=>{
+  if(S.i<Q.length-1){ S.i++; S.phase='ask'; S.conf='solid'; } else S.phase='done';
+  render(); window.scrollTo({top:0}); }); }
+
+// ---- launch ----
+const LOG_MIN=Math.log10(0.005), LOG_MAX=Math.log10(500000);
+function altitude(score){
+  if(score<=0) return 0.005;
+  const f=Math.pow(score/MAX,0.85), lo=Math.log10(0.02), hi=Math.log10(384400);
+  return Math.pow(10, lo+f*(hi-lo));
+}
+function destination(alt){ let d='Fizzled on the pad'; for(const [km,name] of MILESTONES) if(alt>=km*0.999) d=name; return d; }
+function fmtAlt(km){ return km<1? `${n(km*1000,0)} m` : `${n(km, km<100?1:0)} km`; }
+const yPct = km => ((Math.log10(Math.max(km,0.005))-LOG_MIN)/(LOG_MAX-LOG_MIN)*100);
+
+function renderLaunch(){
+  const total=S.results.reduce((a,r)=>a+r.pts,0), alt=altitude(total), dest=destination(alt);
+  const grid=S.results.map(r=>r.emoji).join('');
+  const share=`🚀 Liftoff #001 ${grid}\nReached: ${dest} (${fmtAlt(alt)})\nThrust ${n(total)} / ${n(MAX)}`;
+  document.getElementById('meta').textContent='Launch #001 · Flight report';
+  app.innerHTML=`<div class="launch">
+    <section style="display:flex;flex-direction:column;gap:20px;min-width:0">
+      <div><p class="label">Peak altitude</p><p class="alt num" id="altv">0 m</p><p class="dest" id="dest">Ignition…</p></div>
+      <ul class="summary">${S.results.map((r,i)=>`<li><span>${r.emoji}</span><span>${esc(Q[i].prompt)}</span><span class="pt">+${n(r.pts)}</span></li>`).join('')}</ul>
+      <div style="display:flex;flex-direction:column;gap:8px"><p class="label">Share</p><pre class="share" id="share">${esc(share)}</pre>
+        <div class="row"><button class="fire" id="copy" type="button" style="font-size:18px;padding:10px 22px">Copy result</button>
+        <button class="ghost" id="again" type="button">Fly it again</button><span class="note" id="copied" role="status"></span></div></div>
+      <p class="note">🎯 exact · 🟢 locked in · 🟡 solid · 🟠 rough · 🔴 misfire. Crowd stats are simulated in this prototype.</p>
+    </section>
+    <div class="sky" aria-label="Altitude track, log scale">
+      ${MILESTONES.map(([km,name])=>`<div class="tick" style="bottom:${yPct(km)}%"><span>${name}</span><span>${fmtAlt(km)}</span></div>`).join('')}
+      <div class="ground"></div>
+      <div class="rocket" id="rocket" style="bottom:2.5%">
+        <svg viewBox="0 0 30 64" aria-hidden="true"><path d="M15 0 C24 10 24 22 24 40 L6 40 C6 22 6 10 15 0Z" fill="#F4F6FA" stroke="#12213A" stroke-width="1.5"/>
+        <circle cx="15" cy="20" r="4" fill="#3B5B8C" stroke="#12213A" stroke-width="1.2"/>
+        <path d="M6 30 L0 44 L6 42Z M24 30 L30 44 L24 42Z" fill="#F2541B"/>
+        <g class="flame"><path d="M9 41 L15 62 L21 41Z" fill="#FFB020"/><path d="M12 41 L15 54 L18 41Z" fill="#FFF1C4"/></g></svg>
+      </div>
+    </div></div>`;
+  const rocket=document.getElementById('rocket'), altv=document.getElementById('altv'), destEl=document.getElementById('dest');
+  const target=yPct(alt), reduce=matchMedia('(prefers-reduced-motion: reduce)').matches, dur=reduce?0:3600, t0=performance.now();
+  const startLog=Math.log10(0.005), endLog=Math.log10(alt);
+  (function step(t){
+    const p=dur?Math.min(1,(t-t0)/dur):1, e=1-Math.pow(1-p,3);
+    const cur=Math.pow(10,startLog+(endLog-startLog)*e);
+    rocket.style.bottom=Math.max(2.5,target*e)+'%';
+    altv.textContent=fmtAlt(cur); destEl.textContent=p<1?'Climbing…':dest;
+    if(p<1) requestAnimationFrame(step);
+  })(t0);
+  document.getElementById('copy').addEventListener('click',()=>{
+    const msg=document.getElementById('copied');
+    navigator.clipboard.writeText(share).then(()=>msg.textContent='Copied.').catch(()=>{
+      const r=document.createRange(); r.selectNodeContents(document.getElementById('share'));
+      const s=getSelection(); s.removeAllRanges(); s.addRange(r); msg.textContent='Selected. Press Ctrl/Cmd+C to copy.'; });
+  });
+  document.getElementById('again').addEventListener('click',()=>{ S=fresh(); render(); window.scrollTo({top:0}); });
+}
+
+// ---- popup calculator (lives outside #app so it survives re-renders) ----
+const C={expr:'',done:false};
+const calcEl=document.getElementById('calc'), cmain=document.getElementById('cmain'), chist=document.getElementById('chist');
+function calcShow(){ cmain.textContent=C.expr||'0';
+  if(!C.done){ let v=null; try{ if(/[+×÷−]/.test(C.expr.slice(1))) v=evalExpr(C.expr); }catch{} chist.textContent = v===null?' ':'= '+n(v,6); } }
+function calcPress(k){
+  const isOp=/^[+×÷−]$/.test(k);
+  if(k==='C'){ C.expr=''; C.done=false; chist.textContent=' '; }
+  else if(k==='⌫'){ if(C.done){ C.expr=''; C.done=false; } else C.expr=C.expr.slice(0,-1); }
+  else if(k==='='){ try{ const v=evalExpr(C.expr); chist.textContent=C.expr+' ='; C.expr=String(+v.toPrecision(12)); C.done=true; cmain.textContent=C.expr; return; }catch{ chist.textContent='Check the expression'; return; } }
+  else { if(C.done && !isOp) C.expr=''; C.done=false;
+    if(isOp && /[+×÷−]$/.test(C.expr) && k!=='−') C.expr=C.expr.slice(0,-1);
+    if(k==='.'){ const last=C.expr.split(/[+×÷−()]/).pop(); if(last.includes('.')) return; if(!last) C.expr+='0'; }
+    if(C.expr.length<64) C.expr+=k; }
+  calcShow();
+}
+function toggleCalc(open){ const show = open ?? calcEl.hidden; calcEl.hidden=!show;
+  document.getElementById('calcbtn')?.setAttribute('aria-expanded',show); if(show) calcEl.querySelector('[data-k="="]').focus(); }
+document.getElementById('keys').addEventListener('click',e=>{ const b=e.target.closest('[data-k]'); if(b) calcPress(b.dataset.k); });
+document.getElementById('calcx').addEventListener('click',()=>toggleCalc(false));
+document.addEventListener('keydown',e=>{
+  if(calcEl.hidden || e.metaKey || e.ctrlKey || e.altKey) return;
+  if(e.target.tagName==='INPUT' || e.target.tagName==='TEXTAREA') return;
+  const map={'*':'×','x':'×','/':'÷','-':'−','+':'+','Enter':'=','=':'=','Backspace':'⌫','Escape':'esc','c':'C','C':'C','(':'(',')':')','.':'.'};
+  let k=/^[0-9]$/.test(e.key)?e.key:map[e.key]; if(!k) return;
+  e.preventDefault(); if(k==='esc') return toggleCalc(false); calcPress(k);
+});
+
+window.claude?.hot?.ready ? window.claude.hot.ready(start) : start(window.claude?.hot?.data ?? {});
+</script>
+</body>
+</html>
