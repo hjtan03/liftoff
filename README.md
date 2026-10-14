@@ -33,9 +33,12 @@ src/main.tsx               mounts the app
 src/App.tsx                the game phases and the calculator toggle
 src/app.css                the stylesheet
 src/animation.ts           frame tween and reduced-motion check
-src/game/                  the rules: questions, scoring, altitude, state
-src/calculator/            the pop-up calculator and its expression parser
+src/game/                  the rules: scoring, altitude, state, the crowd placeholder
+src/questions/             the question-set contract: schema, source, producer check
+src/expression/            the arithmetic evaluator shared by formulas and the calculator
+src/calculator/            the pop-up calculator
 src/components/            one component per screen piece
+public/questions/          the published question sets, one JSON document each
 e2e/                       Playwright play-through
 docs/                      roadmap, how questions work, archive
 .github/workflows/ci.yml   checks on every PR, Pages deploy from main
