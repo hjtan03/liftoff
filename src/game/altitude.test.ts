@@ -6,21 +6,30 @@ import {
   formatAltitude,
   LAUNCH_PAD_ALTITUDE_KM,
 } from "./altitude";
-import { MAX_TOTAL_POINTS } from "./scoring";
+import { maxTotalPoints } from "./scoring";
 
 describe("altitudeForScore", () => {
+  const twoStages = maxTotalPoints(2);
   it("stays on the pad for zero points", () => {
-    expect(altitudeForScore(0)).toBe(LAUNCH_PAD_ALTITUDE_KM);
+    expect(altitudeForScore(0, twoStages)).toBe(LAUNCH_PAD_ALTITUDE_KM);
   });
-  it("reaches the Moon for the maximum score", () => {
-    expect(altitudeForScore(MAX_TOTAL_POINTS)).toBeCloseTo(384400, 0);
+  it("reaches the Moon for the maximum score, whatever the set's size", () => {
+    expect(altitudeForScore(twoStages, twoStages)).toBeCloseTo(384400, 0);
+    expect(altitudeForScore(maxTotalPoints(5), maxTotalPoints(5))).toBeCloseTo(
+      384400,
+      0,
+    );
   });
   it("rises with score", () => {
-    expect(altitudeForScore(1000)).toBeLessThan(altitudeForScore(2000));
-    expect(altitudeForScore(2000)).toBeLessThan(altitudeForScore(6000));
+    expect(altitudeForScore(500, twoStages)).toBeLessThan(
+      altitudeForScore(1000, twoStages),
+    );
+    expect(altitudeForScore(1000, twoStages)).toBeLessThan(
+      altitudeForScore(2400, twoStages),
+    );
   });
   it("puts half the points past the Kármán line but short of the ISS", () => {
-    const altitude = altitudeForScore(MAX_TOTAL_POINTS / 2);
+    const altitude = altitudeForScore(twoStages / 2, twoStages);
     expect(altitude).toBeGreaterThan(100);
     expect(altitude).toBeLessThan(408);
   });

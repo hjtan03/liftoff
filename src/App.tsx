@@ -1,52 +1,47 @@
-import { useReducer, useState } from "react";
-import { Calculator } from "./calculator/Calculator";
-import { LaunchReport } from "./components/LaunchReport";
-import { StageScreen } from "./components/StageScreen";
-import { LAUNCH_NUMBER } from "./game/launch";
-import { QUESTIONS } from "./game/questions";
-import { gameReducer, INITIAL_GAME_STATE } from "./game/state";
+import { useEffect, useState } from "react";
+import { Game } from "./components/Game";
+import { Shell } from "./components/Shell";
+import { fetchQuestionSet, type LoadedQuestionSet } from "./questions/source";
+
+/** The game's one piece of configuration: where today's question set is served. */
+const QUESTION_SET_URL = `${import.meta.env.BASE_URL}questions/001.json`;
+
+type QuestionSetLoad =
+  | { status: "loading" }
+  | { status: "failed"; message: string }
+  | { status: "loaded"; questionSet: LoadedQuestionSet };
 
 export function App() {
-  const [game, dispatch] = useReducer(gameReducer, INITIAL_GAME_STATE);
-  const [isCalculatorOpen, setCalculatorOpen] = useState(false);
+  const [load, setLoad] = useState<QuestionSetLoad>({ status: "loading" });
 
-  const metaText =
-    game.phase === "done"
-      ? `Launch ${LAUNCH_NUMBER} · Flight report`
-      : `Launch ${LAUNCH_NUMBER} · Stage ${game.stageIndex + 1} of ${QUESTIONS.length}`;
+  useEffect(() => {
+    let isStale = false;
+    fetchQuestionSet(QUESTION_SET_URL)
+      .then((questionSet) => {
+        if (!isStale) setLoad({ status: "loaded", questionSet });
+      })
+      .catch((error: unknown) => {
+        const message = error instanceof Error ? error.message : String(error);
+        if (!isStale) setLoad({ status: "failed", message });
+      });
+    return () => {
+      isStale = true;
+    };
+  }, []);
 
-  return (
-    <>
-      <div className="wrap">
-        <header className="bar">
-          <div className="brand">
-            Lift<span>off</span>
-          </div>
-          <div className="meta">{metaText}</div>
-        </header>
-        <main>
-          {game.phase === "done" ? (
-            <LaunchReport
-              stageResults={game.stageResults}
-              onRestart={() => {
-                dispatch({ type: "game-restarted" });
-                window.scrollTo({ top: 0 });
-              }}
-            />
-          ) : (
-            <StageScreen
-              game={game}
-              dispatch={dispatch}
-              isCalculatorOpen={isCalculatorOpen}
-              onToggleCalculator={() => setCalculatorOpen((open) => !open)}
-            />
-          )}
-        </main>
-      </div>
-      <Calculator
-        isOpen={isCalculatorOpen}
-        onClose={() => setCalculatorOpen(false)}
-      />
-    </>
-  );
+  if (load.status === "loading") {
+    return (
+      <Shell metaText="Loading">
+        <p className="note">Loading the day’s questions…</p>
+      </Shell>
+    );
+  }
+  if (load.status === "failed") {
+    return (
+      <Shell metaText="Could not load">
+        <p className="err">{load.message}</p>
+      </Shell>
+    );
+  }
+  return <Game questionSet={load.questionSet} />;
 }
