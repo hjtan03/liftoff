@@ -3,7 +3,9 @@
 A daily estimation game: five questions, each answered by reasoning from
 sourced constants; a confidence band per answer; hits fuel a rocket whose
 altitude is the score. A Vite + React + TypeScript single-page app with no
-backend. Commands and layout are in README.md.
+backend. Commands and layout are in README.md. Direction is in
+docs/roadmap.md; documentation lands in docs/, and a superseded document
+goes to docs/archive/.
 
 ## Conventions
 

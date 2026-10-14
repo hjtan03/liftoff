@@ -56,6 +56,7 @@ src/game/                  the rules: questions, scoring, altitude, state
 src/calculator/            the pop-up calculator and its expression parser
 src/components/            one component per screen piece
 e2e/                       Playwright play-through
+docs/                      roadmap and archive
 .github/workflows/ci.yml   checks on every PR, Pages deploy from main
 ```
 
@@ -85,11 +86,4 @@ A working single-day prototype. Crowd stats are simulated.
 
 ## Roadmap
 
-- [ ] **Question pipeline.** `prompts.txt` → LLM proposes inputs + formula → code computes the answer from a curated constants table → weekly JSON file.
-- [ ] **Constants table.** 300–500 sourced constants with units and a "how well known" score.
-- [ ] **Duplicate check.** Structural signature (constants + formula) plus embedding similarity against past questions.
-- [ ] **Daily rotation.** Serve each day's 5 questions by date from the weekly JSON.
-- [ ] **Persistence.** Save progress and streaks in localStorage.
-- [ ] **Crowd stats.** Small backend to record guesses; show "only 9% locked in and hit this one" and a rarity bonus.
-- [ ] **Launch polish.** Rocket burns each stage's fuel in sequence on the way up.
-- [ ] **Name + domain.**
+Where Liftoff is going is in [docs/roadmap.md](docs/roadmap.md): outcomes, not plans, with nothing set in stone. The roadmap as Justin first wrote it is in [docs/archive/](docs/archive/).
