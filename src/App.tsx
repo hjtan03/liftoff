@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { Game } from "./components/Game";
 import { Shell } from "./components/Shell";
+import { computeLaunchNumber, formatQuestionSetId } from "./questions/schedule";
 import { fetchQuestionSet, type LoadedQuestionSet } from "./questions/source";
 
-/** The game's one piece of configuration: where today's question set is served. */
-const QUESTION_SET_URL = `${import.meta.env.BASE_URL}questions/001.json`;
+/** Where the question sets are served, one file per launch. */
+const QUESTION_SETS_URL = `${import.meta.env.BASE_URL}questions/`;
 
 type QuestionSetLoad =
   | { status: "loading" }
@@ -16,7 +17,7 @@ export function App() {
 
   useEffect(() => {
     let isStale = false;
-    fetchQuestionSet(QUESTION_SET_URL)
+    fetchQuestionSetForToday()
       .then((questionSet) => {
         if (!isStale) setLoad({ status: "loaded", questionSet });
       })
@@ -44,4 +45,10 @@ export function App() {
     );
   }
   return <Game questionSet={load.questionSet} />;
+}
+
+/** Fetches the set for the launch on the device's calendar date; a date before the first launch rejects like a failed fetch. */
+async function fetchQuestionSetForToday(): Promise<LoadedQuestionSet> {
+  const questionSetId = formatQuestionSetId(computeLaunchNumber(new Date()));
+  return fetchQuestionSet(`${QUESTION_SETS_URL}${questionSetId}.json`);
 }
