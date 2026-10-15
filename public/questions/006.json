@@ -1,0 +1,144 @@
+{
+  "id": "006",
+  "questions": [
+    {
+      "id": "weight-of-a-drum-of-water",
+      "category": "Everyday",
+      "prompt": "How many pounds does the water in a full 55-gallon drum weigh?",
+      "unit": "lb",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest pound.",
+      "factors": [
+        {
+          "key": "gal",
+          "label": "US gallon",
+          "unit": "L",
+          "value": 3.785,
+          "source": "NIST Handbook 44, 3.785411784 L"
+        },
+        {
+          "key": "kg",
+          "label": "Mass of one liter of water",
+          "unit": "kg",
+          "value": 1,
+          "source": "Near 4 °C; the kilogram’s original definition"
+        },
+        {
+          "key": "lb",
+          "label": "Pound",
+          "unit": "g",
+          "value": 453.592,
+          "source": "International pound, 1959"
+        }
+      ],
+      "formula": "55 * gal * kg * 1000 / lb"
+    },
+    {
+      "id": "megabytes-on-an-audio-cd",
+      "category": "Tech",
+      "prompt": "How many megabytes of raw stereo audio fill a full-length audio CD?",
+      "unit": "MB",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest megabyte, at 1,000,000 bytes each.",
+      "factors": [
+        {
+          "key": "hz",
+          "label": "CD sample rate",
+          "unit": "Hz",
+          "value": 44100,
+          "source": "IEC 60908 (Red Book)"
+        },
+        {
+          "key": "bits",
+          "label": "CD bits per sample",
+          "unit": "bits",
+          "value": 16,
+          "source": "IEC 60908 (Red Book)"
+        },
+        {
+          "key": "min",
+          "label": "CD playing time",
+          "unit": "min",
+          "value": 74,
+          "source": "IEC 60908 (Red Book)"
+        }
+      ],
+      "formula": "hz * bits / 8 * 2 * min * 60 / 1000000"
+    },
+    {
+      "id": "furlongs-in-a-marathon",
+      "category": "Sport",
+      "prompt": "How many furlongs long is a marathon?",
+      "unit": "furlongs",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest furlong.",
+      "factors": [
+        {
+          "key": "f",
+          "label": "Furlong",
+          "unit": "yd",
+          "value": 220,
+          "source": "Imperial and US customary definition"
+        },
+        {
+          "key": "d",
+          "label": "Marathon distance",
+          "unit": "km",
+          "value": 42.195,
+          "source": "World Athletics standard"
+        }
+      ],
+      "formula": "d * 1000000 / (f * 914.4)"
+    },
+    {
+      "id": "seconds-to-fall-from-the-top-of-everest",
+      "category": "Science",
+      "prompt": "With no air and gravity held constant, how many seconds would a stone dropped from the summit of Everest take to reach sea level?",
+      "unit": "s",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest second.",
+      "factors": [
+        {
+          "key": "h",
+          "label": "Height of Mount Everest",
+          "unit": "m",
+          "value": 8848.86,
+          "source": "China–Nepal survey, 2020"
+        },
+        {
+          "key": "g",
+          "label": "Standard gravity",
+          "unit": "m/s²",
+          "value": 9.807,
+          "source": "CGPM, 1901, 9.80665 m/s²"
+        }
+      ],
+      "formula": "(2 * h / g) ^ 0.5"
+    },
+    {
+      "id": "seconds-in-a-lunar-cycle",
+      "category": "Space",
+      "prompt": "How many seconds pass from one new moon to the next?",
+      "unit": "s",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest second.",
+      "factors": [
+        {
+          "key": "m",
+          "label": "New moon to new moon",
+          "unit": "days",
+          "value": 29.53,
+          "source": "NASA"
+        },
+        {
+          "key": "s",
+          "label": "Seconds in a day",
+          "unit": "s",
+          "value": 86400,
+          "source": "SI day, 24 × 60 × 60"
+        }
+      ],
+      "formula": "m * s"
+    }
+  ]
+}

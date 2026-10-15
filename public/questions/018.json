@@ -1,0 +1,123 @@
+{
+  "id": "018",
+  "questions": [
+    {
+      "id": "ounces-in-a-wine-bottle",
+      "category": "Everyday",
+      "prompt": "How many US fluid ounces does a standard wine bottle hold?",
+      "unit": "fl oz",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest ounce.",
+      "factors": [
+        {
+          "key": "ml",
+          "label": "Standard wine bottle",
+          "unit": "mL",
+          "value": 750,
+          "source": "EU and US standard fill"
+        },
+        {
+          "key": "oz",
+          "label": "US fluid ounce",
+          "unit": "mL",
+          "value": 29.574,
+          "source": "NIST Handbook 44"
+        }
+      ],
+      "formula": "ml / oz"
+    },
+    {
+      "id": "turns-of-an-lp-side",
+      "category": "Music",
+      "prompt": "How many times does an LP turn while playing a 22-minute side?",
+      "unit": "turns",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest turn.",
+      "factors": [
+        {
+          "key": "rpm",
+          "label": "LP turntable speed",
+          "unit": "rpm",
+          "value": 33.333,
+          "source": "RIAA standard, 33⅓ rpm"
+        }
+      ],
+      "formula": "rpm * 22"
+    },
+    {
+      "id": "cds-down-a-bowling-lane",
+      "category": "Sport",
+      "prompt": "How many CDs, edge to edge, reach from the foul line to the head pin?",
+      "unit": "CDs",
+      "rounding": "ceil",
+      "roundingNote": "Enough to reach the pin (round up).",
+      "factors": [
+        {
+          "key": "mm",
+          "label": "CD diameter",
+          "unit": "mm",
+          "value": 120,
+          "source": "IEC 60908 (Red Book)"
+        },
+        {
+          "key": "ft",
+          "label": "Foul line to head pin",
+          "unit": "ft",
+          "value": 60,
+          "source": "USBC lane specifications"
+        }
+      ],
+      "formula": "ft * 304.8 / mm"
+    },
+    {
+      "id": "hectares-in-a-square-mile",
+      "category": "Earth",
+      "prompt": "How many hectares are in a square mile?",
+      "unit": "ha",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest hectare.",
+      "factors": [
+        {
+          "key": "mi",
+          "label": "Mile",
+          "unit": "m",
+          "value": 1609.344,
+          "source": "International mile, 1959"
+        },
+        {
+          "key": "ha",
+          "label": "Hectare",
+          "unit": "m²",
+          "value": 10000,
+          "source": "SI-accepted unit"
+        }
+      ],
+      "formula": "mi ^ 2 / ha"
+    },
+    {
+      "id": "earths-across-jupiter",
+      "category": "Space",
+      "prompt": "How many Earths, side by side, span Jupiter’s equatorial diameter?",
+      "unit": "Earths",
+      "rounding": "floor",
+      "roundingNote": "Complete Earths only (round down).",
+      "factors": [
+        {
+          "key": "j",
+          "label": "Jupiter’s equatorial radius",
+          "unit": "km",
+          "value": 71492,
+          "source": "IAU nominal value"
+        },
+        {
+          "key": "r",
+          "label": "Earth’s mean radius",
+          "unit": "km",
+          "value": 6371,
+          "source": "IUGG mean radius"
+        }
+      ],
+      "formula": "j / r"
+    }
+  ]
+}

@@ -1,0 +1,109 @@
+{
+  "id": "017",
+  "questions": [
+    {
+      "id": "horsepower-in-kilowatts",
+      "category": "Everyday",
+      "prompt": "How many kilowatts is a 300-horsepower engine?",
+      "unit": "kW",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest kilowatt.",
+      "factors": [
+        {
+          "key": "hp",
+          "label": "Mechanical horsepower",
+          "unit": "W",
+          "value": 745.7,
+          "source": "550 ft·lbf/s"
+        }
+      ],
+      "formula": "300 * hp / 1000"
+    },
+    {
+      "id": "frequency-of-middle-c",
+      "category": "Music",
+      "prompt": "Tuned to concert pitch, how many hertz is middle C, nine semitones below concert A?",
+      "unit": "Hz",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest hertz.",
+      "factors": [
+        {
+          "key": "a",
+          "label": "Concert pitch A",
+          "unit": "Hz",
+          "value": 440,
+          "source": "ISO 16"
+        }
+      ],
+      "formula": "a / 2 ^ (9 / 12)"
+    },
+    {
+      "id": "table-tennis-tables-around-a-track",
+      "category": "Sport",
+      "prompt": "How many table tennis tables, end to end, would it take to go once around a standard running track?",
+      "unit": "tables",
+      "rounding": "ceil",
+      "roundingNote": "Enough to close the loop (round up).",
+      "factors": [
+        {
+          "key": "t",
+          "label": "Table tennis table length",
+          "unit": "m",
+          "value": 2.74,
+          "source": "ITTF Laws of Table Tennis"
+        },
+        {
+          "key": "m",
+          "label": "One lap of a standard track, lane 1",
+          "unit": "m",
+          "value": 400,
+          "source": "World Athletics rules"
+        }
+      ],
+      "formula": "m / t"
+    },
+    {
+      "id": "speed-of-the-ground-at-the-equator",
+      "category": "Earth",
+      "prompt": "How many km/h does a spot on the equator move as Earth turns once a day?",
+      "unit": "km/h",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest km/h.",
+      "factors": [
+        {
+          "key": "eq",
+          "label": "Equator circumference",
+          "unit": "km",
+          "value": 40075,
+          "source": "WGS 84"
+        }
+      ],
+      "formula": "eq / 24"
+    },
+    {
+      "id": "earths-across-the-sun",
+      "category": "Space",
+      "prompt": "How many Earths, side by side, span the Sun’s diameter?",
+      "unit": "Earths",
+      "rounding": "floor",
+      "roundingNote": "Complete Earths only (round down).",
+      "factors": [
+        {
+          "key": "sun",
+          "label": "Sun’s radius",
+          "unit": "km",
+          "value": 695700,
+          "source": "IAU 2015 nominal value"
+        },
+        {
+          "key": "earth",
+          "label": "Earth’s mean radius",
+          "unit": "km",
+          "value": 6371,
+          "source": "IUGG mean radius"
+        }
+      ],
+      "formula": "sun / earth"
+    }
+  ]
+}

@@ -1,0 +1,102 @@
+{
+  "id": "009",
+  "questions": [
+    {
+      "id": "gallons-in-a-cubic-meter",
+      "category": "Everyday",
+      "prompt": "How many US gallons fill one cubic meter?",
+      "unit": "gallons",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest gallon.",
+      "factors": [
+        {
+          "key": "gal",
+          "label": "US gallon",
+          "unit": "L",
+          "value": 3.785,
+          "source": "NIST Handbook 44, 3.785411784 L"
+        }
+      ],
+      "formula": "1000 / gal"
+    },
+    {
+      "id": "fiber-delay-over-1000-km",
+      "category": "Tech",
+      "prompt": "Light in optical fiber moves at two-thirds of its speed in a vacuum. How many microseconds does it take to cross 1,000 km of fiber?",
+      "unit": "µs",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest microsecond.",
+      "factors": [
+        {
+          "key": "c",
+          "label": "Speed of light",
+          "unit": "km/s",
+          "value": 299792.458,
+          "source": "SI definition"
+        }
+      ],
+      "formula": "1000 / (c * 2 / 3) * 1000000"
+    },
+    {
+      "id": "milliseconds-for-a-fastball",
+      "category": "Sport",
+      "prompt": "A 95 mph fastball travels from the pitching rubber to home plate. How many milliseconds does it take?",
+      "unit": "ms",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest millisecond.",
+      "factors": [
+        {
+          "key": "ft",
+          "label": "Pitching rubber to home plate",
+          "unit": "ft",
+          "value": 60.5,
+          "source": "MLB Official Baseball Rules, 60 ft 6 in"
+        }
+      ],
+      "formula": "ft * 304.8 / (95 * 1609.344 / 3600)"
+    },
+    {
+      "id": "liters-of-air-that-weigh-as-much-as-a-liter-of-water",
+      "category": "Science",
+      "prompt": "How many liters of sea-level air weigh as much as one liter of water?",
+      "unit": "L",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest liter.",
+      "factors": [
+        {
+          "key": "rho",
+          "label": "Sea-level air density",
+          "unit": "kg/m³",
+          "value": 1.225,
+          "source": "International Standard Atmosphere"
+        },
+        {
+          "key": "kg",
+          "label": "Mass of one liter of water",
+          "unit": "kg",
+          "value": 1,
+          "source": "Near 4 °C; the kilogram’s original definition"
+        }
+      ],
+      "formula": "kg * 1000 / rho"
+    },
+    {
+      "id": "escape-velocity-in-kilometers-per-hour",
+      "category": "Space",
+      "prompt": "How many km/h must a rocket reach to escape Earth’s gravity from the surface?",
+      "unit": "km/h",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest km/h.",
+      "factors": [
+        {
+          "key": "v",
+          "label": "Earth’s escape velocity",
+          "unit": "km/s",
+          "value": 11.186,
+          "source": "NASA Earth fact sheet"
+        }
+      ],
+      "formula": "v * 3600"
+    }
+  ]
+}

@@ -1,0 +1,130 @@
+{
+  "id": "007",
+  "questions": [
+    {
+      "id": "weight-of-a-ream-of-a4",
+      "category": "Everyday",
+      "prompt": "How many grams does a 500-sheet ream of 80 g/m² A4 paper weigh?",
+      "unit": "g",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest gram.",
+      "factors": [
+        {
+          "key": "l",
+          "label": "Long edge of an A4 sheet",
+          "unit": "mm",
+          "value": 297,
+          "source": "ISO 216"
+        },
+        {
+          "key": "s",
+          "label": "Short edge of an A4 sheet",
+          "unit": "mm",
+          "value": 210,
+          "source": "ISO 216"
+        }
+      ],
+      "formula": "500 * l * s / 1000000 * 80"
+    },
+    {
+      "id": "bytes-in-a-1080p-frame",
+      "category": "Tech",
+      "prompt": "At 3 bytes per pixel, how many bytes does one uncompressed 1080p frame take?",
+      "unit": "bytes",
+      "rounding": "round",
+      "roundingNote": "Exact count.",
+      "factors": [
+        {
+          "key": "w",
+          "label": "1080p frame width",
+          "unit": "pixels",
+          "value": 1920,
+          "source": "ITU-R BT.709"
+        },
+        {
+          "key": "h",
+          "label": "1080p frame height",
+          "unit": "pixels",
+          "value": 1080,
+          "source": "ITU-R BT.709"
+        }
+      ],
+      "formula": "w * h * 3"
+    },
+    {
+      "id": "football-fields-in-a-square-mile",
+      "category": "Sport",
+      "prompt": "How many football fields, end zones included, cover a square mile?",
+      "unit": "fields",
+      "rounding": "round",
+      "roundingNote": "Exact count.",
+      "factors": [
+        {
+          "key": "l",
+          "label": "Football field length, end zones included",
+          "unit": "ft",
+          "value": 360,
+          "source": "NFL rulebook"
+        },
+        {
+          "key": "w",
+          "label": "Football field width",
+          "unit": "ft",
+          "value": 160,
+          "source": "NFL rulebook"
+        },
+        {
+          "key": "mi",
+          "label": "Mile",
+          "unit": "ft",
+          "value": 5280,
+          "source": "US customary definition"
+        }
+      ],
+      "formula": "mi ^ 2 / (l * w)"
+    },
+    {
+      "id": "degrees-fahrenheit-below-zero-at-absolute-zero",
+      "category": "Science",
+      "prompt": "How many degrees below 0 °F is absolute zero?",
+      "unit": "°F",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest degree.",
+      "factors": [
+        {
+          "key": "k",
+          "label": "Absolute zero, below 0 °C",
+          "unit": "°C",
+          "value": 273.15,
+          "source": "SI kelvin definition"
+        }
+      ],
+      "formula": "k * 9 / 5 - 32"
+    },
+    {
+      "id": "astronomical-units-in-a-light-year",
+      "category": "Space",
+      "prompt": "How many astronomical units are in one light-year?",
+      "unit": "AU",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest AU.",
+      "factors": [
+        {
+          "key": "ly",
+          "label": "Light-year",
+          "unit": "km",
+          "value": 9460730472580.8,
+          "source": "IAU definition"
+        },
+        {
+          "key": "au",
+          "label": "Astronomical unit",
+          "unit": "km",
+          "value": 149597870.7,
+          "source": "IAU 2012 definition"
+        }
+      ],
+      "formula": "ly / au"
+    }
+  ]
+}

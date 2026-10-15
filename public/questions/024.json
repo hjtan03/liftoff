@@ -1,0 +1,102 @@
+{
+  "id": "024",
+  "questions": [
+    {
+      "id": "days-to-a-billion-seconds",
+      "category": "Calendar",
+      "prompt": "How many days does it take to live one billion seconds?",
+      "unit": "days",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest day.",
+      "factors": [
+        {
+          "key": "s",
+          "label": "Seconds in a day",
+          "unit": "s",
+          "value": 86400,
+          "source": "SI day, 24 × 60 × 60"
+        }
+      ],
+      "formula": "1000000000 / s"
+    },
+    {
+      "id": "steps-to-walk-a-mile",
+      "category": "Travel",
+      "prompt": "Taking 0.75 m steps, how many steps does it take to walk a mile?",
+      "unit": "steps",
+      "rounding": "ceil",
+      "roundingNote": "Enough to finish the mile (round up).",
+      "factors": [
+        {
+          "key": "mi",
+          "label": "Mile",
+          "unit": "m",
+          "value": 1609.344,
+          "source": "International mile, 1959"
+        }
+      ],
+      "formula": "mi / 0.75"
+    },
+    {
+      "id": "milliseconds-for-a-tennis-serve",
+      "category": "Sport",
+      "prompt": "A 200 km/h serve travels the full length of a tennis court. How many milliseconds does it take?",
+      "unit": "ms",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest millisecond.",
+      "factors": [
+        {
+          "key": "ft",
+          "label": "Tennis court length",
+          "unit": "ft",
+          "value": 78,
+          "source": "ITF Rules of Tennis"
+        }
+      ],
+      "formula": "ft * 304.8 / (200 / 3.6)"
+    },
+    {
+      "id": "years-until-an-eighth-of-carbon-14-is-left",
+      "category": "Science",
+      "prompt": "After how many years is only one-eighth of a sample’s carbon-14 left?",
+      "unit": "years",
+      "rounding": "round",
+      "roundingNote": "Exact count.",
+      "factors": [
+        {
+          "key": "t",
+          "label": "Carbon-14 half-life",
+          "unit": "years",
+          "value": 5730,
+          "source": "Cambridge half-life"
+        }
+      ],
+      "formula": "3 * t"
+    },
+    {
+      "id": "how-many-times-wider-the-sun-is-than-the-moon",
+      "category": "Space",
+      "prompt": "How many times wider than the Moon is the Sun?",
+      "unit": "times",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest whole number.",
+      "factors": [
+        {
+          "key": "sun",
+          "label": "Sun’s radius",
+          "unit": "km",
+          "value": 695700,
+          "source": "IAU 2015 nominal value"
+        },
+        {
+          "key": "moon",
+          "label": "Moon’s mean radius",
+          "unit": "km",
+          "value": 1737.4,
+          "source": "NASA Moon fact sheet"
+        }
+      ],
+      "formula": "sun / moon"
+    }
+  ]
+}

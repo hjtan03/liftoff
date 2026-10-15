@@ -1,0 +1,116 @@
+{
+  "id": "027",
+  "questions": [
+    {
+      "id": "minutes-in-a-common-year",
+      "category": "Calendar",
+      "prompt": "How many minutes are in a common year?",
+      "unit": "min",
+      "rounding": "round",
+      "roundingNote": "Exact count.",
+      "factors": [
+        {
+          "key": "d",
+          "label": "Days in a common year",
+          "unit": "days",
+          "value": 365,
+          "source": "Gregorian calendar"
+        }
+      ],
+      "formula": "d * 24 * 60"
+    },
+    {
+      "id": "kilometers-a-ship-sails-in-a-day",
+      "category": "Travel",
+      "prompt": "A ship holds 20 knots for a full day. How many kilometers does it cover?",
+      "unit": "km",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest kilometer.",
+      "factors": [
+        {
+          "key": "nm",
+          "label": "Nautical mile",
+          "unit": "m",
+          "value": 1852,
+          "source": "International definition, 1929"
+        }
+      ],
+      "formula": "20 * nm * 24 / 1000"
+    },
+    {
+      "id": "pucks-stacked-to-the-crossbar",
+      "category": "Sport",
+      "prompt": "How many hockey pucks, stacked flat, reach the crossbar of an NHL goal?",
+      "unit": "pucks",
+      "rounding": "round",
+      "roundingNote": "Exact count.",
+      "factors": [
+        {
+          "key": "in",
+          "label": "Puck thickness",
+          "unit": "in",
+          "value": 1,
+          "source": "NHL Official Rules"
+        },
+        {
+          "key": "ft",
+          "label": "Hockey goal height",
+          "unit": "ft",
+          "value": 4,
+          "source": "NHL Official Rules"
+        }
+      ],
+      "formula": "ft * 12 / in"
+    },
+    {
+      "id": "speed-after-falling-from-the-karman-line",
+      "category": "Science",
+      "prompt": "With no air and gravity held constant, how many m/s would an object dropped from the Kármán line be moving at sea level?",
+      "unit": "m/s",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest m/s.",
+      "factors": [
+        {
+          "key": "h",
+          "label": "Kármán line",
+          "unit": "km",
+          "value": 100,
+          "source": "FAI definition of space"
+        },
+        {
+          "key": "g",
+          "label": "Standard gravity",
+          "unit": "m/s²",
+          "value": 9.807,
+          "source": "CGPM, 1901, 9.80665 m/s²"
+        }
+      ],
+      "formula": "(2 * g * h * 1000) ^ 0.5"
+    },
+    {
+      "id": "milliseconds-to-run-a-marathon-at-escape-velocity",
+      "category": "Space",
+      "prompt": "Moving at Earth’s escape velocity, how many milliseconds would it take to cover a marathon?",
+      "unit": "ms",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest millisecond.",
+      "factors": [
+        {
+          "key": "d",
+          "label": "Marathon distance",
+          "unit": "km",
+          "value": 42.195,
+          "source": "World Athletics standard"
+        },
+        {
+          "key": "v",
+          "label": "Earth’s escape velocity",
+          "unit": "km/s",
+          "value": 11.186,
+          "source": "NASA Earth fact sheet"
+        }
+      ],
+      "formula": "d / v * 1000"
+    }
+  ]
+}

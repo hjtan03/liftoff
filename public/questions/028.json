@@ -1,0 +1,123 @@
+{
+  "id": "028",
+  "questions": [
+    {
+      "id": "pennies-in-a-mile",
+      "category": "Everyday",
+      "prompt": "How many pennies, laid edge to edge in a straight line, stretch one mile?",
+      "unit": "pennies",
+      "rounding": "ceil",
+      "roundingNote": "Enough to reach the full mile (round up).",
+      "factors": [
+        {
+          "key": "d",
+          "label": "Penny diameter",
+          "unit": "mm",
+          "value": 19.05,
+          "source": "US Mint specifications"
+        },
+        {
+          "key": "mi",
+          "label": "Mile",
+          "unit": "m",
+          "value": 1609.344,
+          "source": "International mile, 1959"
+        }
+      ],
+      "formula": "mi * 1000 / d"
+    },
+    {
+      "id": "kilojoules-in-100-g-of-fat",
+      "category": "Food",
+      "prompt": "How many kilojoules of energy are in 100 g of pure fat?",
+      "unit": "kJ",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest kilojoule.",
+      "factors": [
+        {
+          "key": "fat",
+          "label": "Energy in fat",
+          "unit": "kcal/g",
+          "value": 9,
+          "source": "Atwater general factors"
+        },
+        {
+          "key": "kcal",
+          "label": "Kilocalorie (food Calorie)",
+          "unit": "J",
+          "value": 4184,
+          "source": "Thermochemical; warms 1 kg of water by 1 °C"
+        }
+      ],
+      "formula": "100 * fat * kcal / 1000"
+    },
+    {
+      "id": "knots-of-a-900-kmh-airliner",
+      "category": "Travel",
+      "prompt": "How many knots is an airliner cruising at 900 km/h?",
+      "unit": "knots",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest knot.",
+      "factors": [
+        {
+          "key": "nm",
+          "label": "Nautical mile",
+          "unit": "m",
+          "value": 1852,
+          "source": "International definition, 1929"
+        }
+      ],
+      "formula": "900000 / nm"
+    },
+    {
+      "id": "gallons-in-an-olympic-pool",
+      "category": "Sport",
+      "prompt": "How many US gallons fill an Olympic pool to a depth of 2 m?",
+      "unit": "gallons",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest gallon.",
+      "factors": [
+        {
+          "key": "l",
+          "label": "Olympic pool length",
+          "unit": "m",
+          "value": 50,
+          "source": "World Aquatics competition rules"
+        },
+        {
+          "key": "w",
+          "label": "Olympic pool width",
+          "unit": "m",
+          "value": 25,
+          "source": "World Aquatics, 10 lanes × 2.5 m"
+        },
+        {
+          "key": "gal",
+          "label": "US gallon",
+          "unit": "L",
+          "value": 3.785,
+          "source": "NIST Handbook 44, 3.785411784 L"
+        }
+      ],
+      "formula": "l * w * 2 * 1000 / gal"
+    },
+    {
+      "id": "edge-of-a-tonne-of-gold",
+      "category": "Science",
+      "prompt": "A one-tonne cube of solid gold: how many centimeters long is each edge?",
+      "unit": "cm",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest centimeter.",
+      "factors": [
+        {
+          "key": "rho",
+          "label": "Density of gold",
+          "unit": "g/cm³",
+          "value": 19.32,
+          "source": "CRC Handbook of Chemistry and Physics"
+        }
+      ],
+      "formula": "(1000000 / rho) ^ (1 / 3)"
+    }
+  ]
+}

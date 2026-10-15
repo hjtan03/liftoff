@@ -1,0 +1,116 @@
+{
+  "id": "031",
+  "questions": [
+    {
+      "id": "dimes-stacked-to-a-meter",
+      "category": "Everyday",
+      "prompt": "How many dimes, stacked flat, make a column one meter tall?",
+      "unit": "dimes",
+      "rounding": "ceil",
+      "roundingNote": "Enough to reach a full meter (round up).",
+      "factors": [
+        {
+          "key": "mm",
+          "label": "Dime thickness",
+          "unit": "mm",
+          "value": 1.35,
+          "source": "US Mint specifications"
+        }
+      ],
+      "formula": "1000 / mm"
+    },
+    {
+      "id": "squares-of-every-size-on-a-chessboard",
+      "category": "Games",
+      "prompt": "Counting every square of every size, from single squares up to the whole board, how many squares are on a chessboard?",
+      "unit": "squares",
+      "rounding": "round",
+      "roundingNote": "Exact count.",
+      "factors": [
+        {
+          "key": "n",
+          "label": "Squares along one side of a chessboard",
+          "unit": "squares",
+          "value": 8,
+          "source": "FIDE Laws of Chess"
+        }
+      ],
+      "formula": "n * (n + 1) * (2 * n + 1) / 6"
+    },
+    {
+      "id": "sugar-cubes-for-a-2000-calorie-day",
+      "category": "Food",
+      "prompt": "How many 4 g sugar cubes add up to a 2,000-Calorie day of food?",
+      "unit": "cubes",
+      "rounding": "round",
+      "roundingNote": "Exact count.",
+      "factors": [
+        {
+          "key": "carb",
+          "label": "Energy in carbohydrate",
+          "unit": "kcal/g",
+          "value": 4,
+          "source": "Atwater general factors"
+        }
+      ],
+      "formula": "2000 / (4 * carb)"
+    },
+    {
+      "id": "golf-balls-across-a-basketball-rim",
+      "category": "Sport",
+      "prompt": "How many golf balls, side by side in a straight line, fit across the inside of a basketball rim?",
+      "unit": "balls",
+      "rounding": "floor",
+      "roundingNote": "Complete balls only (round down).",
+      "factors": [
+        {
+          "key": "mm",
+          "label": "Golf ball diameter",
+          "unit": "mm",
+          "value": 42.67,
+          "source": "R&A / USGA minimum, 1.68 in"
+        },
+        {
+          "key": "in",
+          "label": "Rim inside diameter",
+          "unit": "in",
+          "value": 18,
+          "source": "NBA rulebook"
+        }
+      ],
+      "formula": "in * 25.4 / mm"
+    },
+    {
+      "id": "kilowatt-hours-to-warm-an-olympic-pool",
+      "category": "Science",
+      "prompt": "How many kilowatt-hours does it take to warm an Olympic pool, filled to a depth of 2 m, by 1 °C?",
+      "unit": "kWh",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest kilowatt-hour.",
+      "factors": [
+        {
+          "key": "l",
+          "label": "Olympic pool length",
+          "unit": "m",
+          "value": 50,
+          "source": "World Aquatics competition rules"
+        },
+        {
+          "key": "w",
+          "label": "Olympic pool width",
+          "unit": "m",
+          "value": 25,
+          "source": "World Aquatics, 10 lanes × 2.5 m"
+        },
+        {
+          "key": "kcal",
+          "label": "Kilocalorie (food Calorie)",
+          "unit": "J",
+          "value": 4184,
+          "source": "Thermochemical; warms 1 kg of water by 1 °C"
+        }
+      ],
+      "formula": "l * w * 2 * 1000 * kcal / 3600000"
+    }
+  ]
+}
