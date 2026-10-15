@@ -2,9 +2,9 @@
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 
-// GitHub Pages serves this repository as a project site under /liftoff/.
+// Vercel serves the site from the domain root.
 export default defineConfig({
-  base: "/liftoff/",
+  base: "/",
   plugins: [react()],
   test: {
     include: ["src/**/*.test.ts"],

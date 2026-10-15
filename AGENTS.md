@@ -27,8 +27,9 @@ docs/archive/.
   and Prettier with default settings are both gates.
 - Playwright runs against the production build, so `npm run build` comes
   before `npm run test:e2e`.
-- Vite `base` is `/liftoff/` because GitHub Pages serves the repository as
-  a project site.
+- Vercel hosts the site from the domain root, so Vite `base` is `/`. Vercel
+  builds every pull request as a preview and deploys `main` to production;
+  CI only checks.
 
 ## What is simulated
 
