@@ -1,0 +1,116 @@
+{
+  "id": "019",
+  "questions": [
+    {
+      "id": "pennies-stacked-to-a-card-length",
+      "category": "Everyday",
+      "prompt": "How many pennies, stacked flat, make a column as tall as a credit card is long?",
+      "unit": "pennies",
+      "rounding": "ceil",
+      "roundingNote": "Enough to match it (round up).",
+      "factors": [
+        {
+          "key": "mm",
+          "label": "Penny thickness",
+          "unit": "mm",
+          "value": 1.52,
+          "source": "US Mint specifications"
+        },
+        {
+          "key": "card",
+          "label": "Long edge of a credit card",
+          "unit": "mm",
+          "value": 85.6,
+          "source": "ISO/IEC 7810 ID-1"
+        }
+      ],
+      "formula": "card / mm"
+    },
+    {
+      "id": "cds-for-a-day-of-music",
+      "category": "Music",
+      "prompt": "How many full-length audio CDs does it take to hold 24 hours of music?",
+      "unit": "CDs",
+      "rounding": "ceil",
+      "roundingNote": "Enough to hold it all (round up).",
+      "factors": [
+        {
+          "key": "min",
+          "label": "CD playing time",
+          "unit": "min",
+          "value": 74,
+          "source": "IEC 60908 (Red Book)"
+        }
+      ],
+      "formula": "24 * 60 / min"
+    },
+    {
+      "id": "credit-cards-down-a-tennis-court",
+      "category": "Sport",
+      "prompt": "How many credit cards, laid end to end along their long edges, run baseline to baseline on a tennis court?",
+      "unit": "cards",
+      "rounding": "ceil",
+      "roundingNote": "Enough to reach the far baseline (round up).",
+      "factors": [
+        {
+          "key": "mm",
+          "label": "Long edge of a credit card",
+          "unit": "mm",
+          "value": 85.6,
+          "source": "ISO/IEC 7810 ID-1"
+        },
+        {
+          "key": "ft",
+          "label": "Tennis court length",
+          "unit": "ft",
+          "value": 78,
+          "source": "ITF Rules of Tennis"
+        }
+      ],
+      "formula": "ft * 304.8 / mm"
+    },
+    {
+      "id": "kilometers-in-one-degree-of-latitude",
+      "category": "Earth",
+      "prompt": "How many kilometers north must you travel to move one degree of latitude?",
+      "unit": "km",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest kilometer.",
+      "factors": [
+        {
+          "key": "m",
+          "label": "Pole-to-pole circumference",
+          "unit": "km",
+          "value": 40007.86,
+          "source": "WGS 84"
+        }
+      ],
+      "formula": "m / 360"
+    },
+    {
+      "id": "moons-that-fit-inside-the-earth",
+      "category": "Space",
+      "prompt": "By volume, how many Moons would fit inside Earth?",
+      "unit": "Moons",
+      "rounding": "floor",
+      "roundingNote": "Complete Moons only (round down).",
+      "factors": [
+        {
+          "key": "earth",
+          "label": "Earth’s mean radius",
+          "unit": "km",
+          "value": 6371,
+          "source": "IUGG mean radius"
+        },
+        {
+          "key": "moon",
+          "label": "Moon’s mean radius",
+          "unit": "km",
+          "value": 1737.4,
+          "source": "NASA Moon fact sheet"
+        }
+      ],
+      "formula": "(earth / moon) ^ 3"
+    }
+  ]
+}

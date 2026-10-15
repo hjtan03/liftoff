@@ -1,0 +1,102 @@
+{
+  "id": "025",
+  "questions": [
+    {
+      "id": "days-in-an-olympiad",
+      "category": "Calendar",
+      "prompt": "An Olympiad is four years, one of them a leap year. How many days is that?",
+      "unit": "days",
+      "rounding": "round",
+      "roundingNote": "Exact count.",
+      "factors": [
+        {
+          "key": "d",
+          "label": "Days in a common year",
+          "unit": "days",
+          "value": 365,
+          "source": "Gregorian calendar"
+        }
+      ],
+      "formula": "4 * d + 1"
+    },
+    {
+      "id": "hours-to-drive-around-the-equator",
+      "category": "Travel",
+      "prompt": "Driving nonstop at 100 km/h, how many hours would it take to circle the equator?",
+      "unit": "hours",
+      "rounding": "ceil",
+      "roundingNote": "Enough to finish the loop (round up).",
+      "factors": [
+        {
+          "key": "eq",
+          "label": "Equator circumference",
+          "unit": "km",
+          "value": 40075,
+          "source": "WGS 84"
+        }
+      ],
+      "formula": "eq / 100"
+    },
+    {
+      "id": "meters-run-on-a-home-run",
+      "category": "Sport",
+      "prompt": "How many meters does a batter run on a home run trot around all four bases?",
+      "unit": "m",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest meter.",
+      "factors": [
+        {
+          "key": "ft",
+          "label": "Distance between bases",
+          "unit": "ft",
+          "value": 90,
+          "source": "MLB Official Baseball Rules"
+        }
+      ],
+      "formula": "4 * ft * 304.8 / 1000"
+    },
+    {
+      "id": "how-many-times-faster-light-is-than-sound",
+      "category": "Science",
+      "prompt": "How many times faster is light than sound in 20 °C air?",
+      "unit": "times",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest whole number.",
+      "factors": [
+        {
+          "key": "c",
+          "label": "Speed of light",
+          "unit": "km/s",
+          "value": 299792.458,
+          "source": "SI definition"
+        },
+        {
+          "key": "v",
+          "label": "Speed of sound in air at 20 °C",
+          "unit": "m/s",
+          "value": 343,
+          "source": "Dry air at 20 °C"
+        }
+      ],
+      "formula": "c * 1000 / v"
+    },
+    {
+      "id": "surface-area-of-the-moon",
+      "category": "Space",
+      "prompt": "Treating it as a sphere, how many square kilometers is the Moon’s surface?",
+      "unit": "km²",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest square kilometer.",
+      "factors": [
+        {
+          "key": "r",
+          "label": "Moon’s mean radius",
+          "unit": "km",
+          "value": 1737.4,
+          "source": "NASA Moon fact sheet"
+        }
+      ],
+      "formula": "4 * 3.14159265 * r ^ 2"
+    }
+  ]
+}

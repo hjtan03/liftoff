@@ -1,0 +1,130 @@
+{
+  "id": "023",
+  "questions": [
+    {
+      "id": "leap-days-in-400-years",
+      "category": "Calendar",
+      "prompt": "How many leap days does the Gregorian calendar add in a 400-year cycle?",
+      "unit": "days",
+      "rounding": "round",
+      "roundingNote": "Exact count.",
+      "factors": [
+        {
+          "key": "d",
+          "label": "Days in a 400-year Gregorian cycle",
+          "unit": "days",
+          "value": 146097,
+          "source": "Gregorian calendar rules"
+        },
+        {
+          "key": "y",
+          "label": "Days in a common year",
+          "unit": "days",
+          "value": 365,
+          "source": "Gregorian calendar"
+        }
+      ],
+      "formula": "d - 400 * y"
+    },
+    {
+      "id": "minutes-for-a-1000-km-trip-at-70-mph",
+      "category": "Travel",
+      "prompt": "How many minutes does a 1,000 km road trip take at a steady 70 mph?",
+      "unit": "min",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest minute.",
+      "factors": [
+        {
+          "key": "mi",
+          "label": "Mile",
+          "unit": "m",
+          "value": 1609.344,
+          "source": "International mile, 1959"
+        }
+      ],
+      "formula": "1000000 / (70 * mi) * 60"
+    },
+    {
+      "id": "basketball-courts-in-a-hectare",
+      "category": "Sport",
+      "prompt": "By area, how many complete NBA courts fit in a hectare?",
+      "unit": "courts",
+      "rounding": "floor",
+      "roundingNote": "Complete courts only (round down).",
+      "factors": [
+        {
+          "key": "l",
+          "label": "NBA court length",
+          "unit": "ft",
+          "value": 94,
+          "source": "NBA rulebook"
+        },
+        {
+          "key": "w",
+          "label": "NBA court width",
+          "unit": "ft",
+          "value": 50,
+          "source": "NBA rulebook"
+        },
+        {
+          "key": "ha",
+          "label": "Hectare",
+          "unit": "m²",
+          "value": 10000,
+          "source": "SI-accepted unit"
+        }
+      ],
+      "formula": "ha / (l * w * 304.8 ^ 2 / 1000000)"
+    },
+    {
+      "id": "moles-in-a-liter-of-water",
+      "category": "Science",
+      "prompt": "How many moles of water molecules are in one liter of water?",
+      "unit": "mol",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest mole.",
+      "factors": [
+        {
+          "key": "kg",
+          "label": "Mass of one liter of water",
+          "unit": "kg",
+          "value": 1,
+          "source": "Near 4 °C; the kilogram’s original definition"
+        },
+        {
+          "key": "m",
+          "label": "Molar mass of water",
+          "unit": "g/mol",
+          "value": 18.015,
+          "source": "IUPAC atomic weights"
+        }
+      ],
+      "formula": "kg * 1000 / m"
+    },
+    {
+      "id": "marathons-to-the-moon",
+      "category": "Space",
+      "prompt": "How many marathons, run end to end, would cover the average distance to the Moon?",
+      "unit": "marathons",
+      "rounding": "ceil",
+      "roundingNote": "Enough to arrive (round up).",
+      "factors": [
+        {
+          "key": "d",
+          "label": "Average Earth–Moon distance",
+          "unit": "km",
+          "value": 384400,
+          "source": "NASA"
+        },
+        {
+          "key": "m",
+          "label": "Marathon distance",
+          "unit": "km",
+          "value": 42.195,
+          "source": "World Athletics standard"
+        }
+      ],
+      "formula": "d / m"
+    }
+  ]
+}

@@ -1,0 +1,109 @@
+{
+  "id": "008",
+  "questions": [
+    {
+      "id": "weight-of-100-dollars-in-dimes",
+      "category": "Everyday",
+      "prompt": "How many grams does $100 in dimes weigh?",
+      "unit": "g",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest gram.",
+      "factors": [
+        {
+          "key": "g",
+          "label": "Dime mass",
+          "unit": "g",
+          "value": 2.268,
+          "source": "US Mint specifications"
+        }
+      ],
+      "formula": "1000 * g"
+    },
+    {
+      "id": "days-until-a-32-bit-clock-overflows",
+      "category": "Tech",
+      "prompt": "A signed 32-bit counter of seconds overflows after 2,147,483,647 seconds. How many full days does it last?",
+      "unit": "days",
+      "rounding": "floor",
+      "roundingNote": "Complete days only (round down).",
+      "factors": [
+        {
+          "key": "s",
+          "label": "Seconds in a day",
+          "unit": "s",
+          "value": 86400,
+          "source": "SI day, 24 × 60 × 60"
+        }
+      ],
+      "formula": "2147483647 / s"
+    },
+    {
+      "id": "diagonal-of-a-tennis-court",
+      "category": "Sport",
+      "prompt": "How many feet is it corner to corner across a doubles tennis court?",
+      "unit": "ft",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest foot.",
+      "factors": [
+        {
+          "key": "l",
+          "label": "Tennis court length",
+          "unit": "ft",
+          "value": 78,
+          "source": "ITF Rules of Tennis"
+        },
+        {
+          "key": "w",
+          "label": "Doubles court width",
+          "unit": "ft",
+          "value": 36,
+          "source": "ITF Rules of Tennis"
+        }
+      ],
+      "formula": "(l ^ 2 + w ^ 2) ^ 0.5"
+    },
+    {
+      "id": "distance-to-a-storm",
+      "category": "Science",
+      "prompt": "Thunder arrives 10 seconds after the lightning flash. How many meters away did the lightning strike?",
+      "unit": "m",
+      "rounding": "round",
+      "roundingNote": "Exact count.",
+      "factors": [
+        {
+          "key": "v",
+          "label": "Speed of sound in air at 20 °C",
+          "unit": "m/s",
+          "value": 343,
+          "source": "Dry air at 20 °C"
+        }
+      ],
+      "formula": "v * 10"
+    },
+    {
+      "id": "turns-of-earth-against-the-stars-in-a-year",
+      "category": "Space",
+      "prompt": "Measured against the stars, how many complete turns does Earth make in a year?",
+      "unit": "turns",
+      "rounding": "floor",
+      "roundingNote": "Complete turns only (round down).",
+      "factors": [
+        {
+          "key": "y",
+          "label": "Average year",
+          "unit": "days",
+          "value": 365.25,
+          "source": "Julian year, IAU"
+        },
+        {
+          "key": "s",
+          "label": "Sidereal day",
+          "unit": "s",
+          "value": 86164.09,
+          "source": "IERS"
+        }
+      ],
+      "formula": "y * 86400 / s"
+    }
+  ]
+}

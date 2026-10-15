@@ -1,0 +1,123 @@
+{
+  "id": "005",
+  "questions": [
+    {
+      "id": "pallets-along-a-football-field",
+      "category": "Everyday",
+      "prompt": "How many EUR pallets, end to end along their long sides, span a football field from goal line to goal line?",
+      "unit": "pallets",
+      "rounding": "ceil",
+      "roundingNote": "Enough to span the field (round up).",
+      "factors": [
+        {
+          "key": "mm",
+          "label": "EUR pallet length",
+          "unit": "mm",
+          "value": 1200,
+          "source": "ISO 6780"
+        },
+        {
+          "key": "yd",
+          "label": "Goal line to goal line",
+          "unit": "yd",
+          "value": 100,
+          "source": "NFL rulebook"
+        }
+      ],
+      "formula": "yd * 914.4 / mm"
+    },
+    {
+      "id": "ipv4-addresses",
+      "category": "Tech",
+      "prompt": "How many distinct IPv4 addresses are there?",
+      "unit": "addresses",
+      "rounding": "round",
+      "roundingNote": "Exact count.",
+      "factors": [
+        {
+          "key": "bits",
+          "label": "IPv4 address length",
+          "unit": "bits",
+          "value": 32,
+          "source": "RFC 791"
+        }
+      ],
+      "formula": "2 ^ bits"
+    },
+    {
+      "id": "laps-of-a-track-in-a-marathon",
+      "category": "Sport",
+      "prompt": "How many complete laps of a standard running track fit in a marathon?",
+      "unit": "laps",
+      "rounding": "floor",
+      "roundingNote": "Complete laps only (round down).",
+      "factors": [
+        {
+          "key": "m",
+          "label": "One lap of a standard track, lane 1",
+          "unit": "m",
+          "value": 400,
+          "source": "World Athletics rules"
+        },
+        {
+          "key": "d",
+          "label": "Marathon distance",
+          "unit": "km",
+          "value": 42.195,
+          "source": "World Athletics standard"
+        }
+      ],
+      "formula": "d * 1000 / m"
+    },
+    {
+      "id": "meters-a-kilowatt-hour-lifts-a-car",
+      "category": "Science",
+      "prompt": "With no losses, how many meters high could one kilowatt-hour lift a 1,000 kg car?",
+      "unit": "m",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest meter.",
+      "factors": [
+        {
+          "key": "e",
+          "label": "Kilowatt-hour",
+          "unit": "J",
+          "value": 3600000,
+          "source": "SI definition"
+        },
+        {
+          "key": "g",
+          "label": "Standard gravity",
+          "unit": "m/s²",
+          "value": 9.807,
+          "source": "CGPM, 1901, 9.80665 m/s²"
+        }
+      ],
+      "formula": "e / (1000 * g)"
+    },
+    {
+      "id": "earths-between-earth-and-the-moon",
+      "category": "Space",
+      "prompt": "How many Earths, side by side, fit in the average distance from Earth’s center to the Moon’s center?",
+      "unit": "Earths",
+      "rounding": "floor",
+      "roundingNote": "Complete Earths only (round down).",
+      "factors": [
+        {
+          "key": "d",
+          "label": "Average Earth–Moon distance",
+          "unit": "km",
+          "value": 384400,
+          "source": "NASA"
+        },
+        {
+          "key": "r",
+          "label": "Earth’s mean radius",
+          "unit": "km",
+          "value": 6371,
+          "source": "IUGG mean radius"
+        }
+      ],
+      "formula": "d / (2 * r)"
+    }
+  ]
+}
