@@ -17,32 +17,63 @@ Reached: Kármán line (104 km)
 
 ## Run it
 
-No build step. Open `index.html` in a browser, or serve the folder:
+Needs Node 24 or newer.
 
 ```bash
-python3 -m http.server 8000
+npm install
+npm run dev
 ```
+
+Vite serves the game at `http://localhost:5173/liftoff/`. The `/liftoff/` path matches where GitHub Pages hosts it.
+
+## Check it
+
+```bash
+npm run lint          # ESLint
+npm run format:check  # Prettier; `npm run format` rewrites
+npm test              # Vitest: the game logic
+npm run build         # type-check with tsc, then bundle to dist/
+npm run test:e2e      # Playwright: plays the built game in Chromium (build first)
+```
+
+CI runs every one of these on each pull request.
 
 ## Deploy
 
-**GitHub Pages:** Settings → Pages → Deploy from a branch → `main` / root.
-**Cloudflare Pages:** connect this repo, no build command, output directory `/`.
+A push to `main` builds the site and publishes `dist/` to GitHub Pages from `.github/workflows/ci.yml`. The repository's Pages source has to be **GitHub Actions** (Settings → Pages → Build and deployment → Source).
 
-For a custom domain, add it in the host's settings (GitHub Pages also needs a `CNAME` file containing the domain).
+For Cloudflare Pages instead: connect the repo, build command `npm run build`, output directory `dist`. For a custom domain on either host, set `base` in `vite.config.ts` to `/` (GitHub Pages also needs a `CNAME` file containing the domain).
+
+## Layout
+
+```
+index.html                 page shell: metadata and fonts
+src/main.tsx               mounts the app
+src/App.tsx                the game phases and the calculator toggle
+src/app.css                the stylesheet
+src/animation.ts           frame tween and reduced-motion check
+src/game/                  the rules: questions, scoring, altitude, state
+src/calculator/            the pop-up calculator and its expression parser
+src/components/            one component per screen piece
+e2e/                       Playwright play-through
+.github/workflows/ci.yml   checks on every PR, Pages deploy from main
+```
+
+Unit tests sit beside the module they test, as `*.test.ts`.
 
 ## How questions work
 
-Answers are never typed in by hand. Each question stores its constants and a formula, and the answer is computed from them:
+Answers are never typed in by hand. Each question in `src/game/questions.ts` stores its factors and a formula, and the answer is computed from them:
 
-```js
+```ts
 {
   prompt: "How many credit cards would you stack to reach the rim of a regulation basketball hoop?",
-  round: "ceil",
+  rounding: "ceil",
   factors: [
-    { k: "ft", label: "Rim height", unit: "ft", value: 10, src: "NBA / FIBA regulation" },
-    { k: "mm", label: "Credit card thickness", unit: "mm", value: 0.76, src: "ISO/IEC 7810 ID-1" }
+    { key: "ft", label: "Rim height", unit: "ft", value: 10, source: "NBA / FIBA regulation" },
+    { key: "mm", label: "Credit card thickness", unit: "mm", value: 0.76, source: "ISO/IEC 7810 ID-1" },
   ],
-  calc: f => f.ft * 304.8 / f.mm
+  compute: (f) => (f.ft * 304.8) / f.mm,
 }
 ```
 
@@ -50,7 +81,7 @@ Rule for every question: each input is either a canonical, sourced constant or s
 
 ## Status
 
-This is a working single-day prototype. Crowd stats are simulated.
+A working single-day prototype. Crowd stats are simulated.
 
 ## Roadmap
 
