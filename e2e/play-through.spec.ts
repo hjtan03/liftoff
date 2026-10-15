@@ -1,7 +1,12 @@
 import { expect, test } from "@playwright/test";
+import { FIRST_LAUNCH_DATE } from "../src/questions/schedule.ts";
 
 // The five answers follow from the questions' own constants; see public/questions/001.json.
 const EXACT_ANSWERS = ["506", "328", "2343", "4011", "448"];
+
+test.beforeEach(async ({ page }) => {
+  await page.clock.setFixedTime(new Date(`${FIRST_LAUNCH_DATE}T12:00:00`));
+});
 
 test("five exact locked-in answers reach the Moon with a full share string", async ({
   page,
