@@ -1,5 +1,4 @@
 import { formatNumber } from "./numbers";
-import { MAX_TOTAL_POINTS } from "./scoring";
 
 export const LAUNCH_PAD_ALTITUDE_KM = 0.005;
 export const MOON_ALTITUDE_KM = 384400;
@@ -27,10 +26,10 @@ export const MILESTONES: readonly Milestone[] = [
 
 const FIZZLED_DESTINATION = "Fizzled on the pad";
 
-/** Maps total points onto a log-scale altitude from the pad to the Moon. */
-export function altitudeForScore(score: number): number {
+/** Maps a score out of maxPoints onto a log-scale altitude from the pad to the Moon. */
+export function altitudeForScore(score: number, maxPoints: number): number {
   if (score <= 0) return LAUNCH_PAD_ALTITUDE_KM;
-  const progress = Math.pow(score / MAX_TOTAL_POINTS, SCORE_CURVE_EXPONENT);
+  const progress = Math.pow(score / maxPoints, SCORE_CURVE_EXPONENT);
   const lowLog = Math.log10(LOWEST_FLIGHT_ALTITUDE_KM);
   const highLog = Math.log10(MOON_ALTITUDE_KM);
   return Math.pow(10, lowLog + progress * (highLog - lowLog));

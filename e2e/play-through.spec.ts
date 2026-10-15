@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-// The five answers follow from the questions' own constants; see src/game/questions.ts.
+// The five answers follow from the questions' own constants; see public/questions/001.json.
 const EXACT_ANSWERS = ["506", "328", "2343", "4011", "448"];
 
 test("five exact locked-in answers reach the Moon with a full share string", async ({
@@ -50,4 +50,15 @@ test("the fire button waits for a positive number", async ({ page }) => {
   await expect(fire).toBeDisabled();
   await page.getByLabel("Your answer").fill("4.2k");
   await expect(fire).toBeEnabled();
+});
+
+test("a question set the server cannot return shows the error instead of a game", async ({
+  page,
+}) => {
+  await page.route("**/questions/001.json", (route) =>
+    route.fulfill({ status: 503 }),
+  );
+  await page.goto("./");
+  await expect(page.locator(".err")).toContainText("HTTP 503");
+  await expect(page.getByLabel("Your answer")).toHaveCount(0);
 });

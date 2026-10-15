@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { formatNumber, parseNumberInput } from "../game/numbers";
-import type { FactorValues, Question } from "../game/questions";
+import type { FactorValues } from "../questions/factors";
+import type { Question } from "../questions/schema";
 import { CONFIDENCE_BANDS, type ScoredGuess } from "../game/scoring";
 
 type Props = {

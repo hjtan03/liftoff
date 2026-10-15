@@ -1,5 +1,5 @@
 import type { Dispatch } from "react";
-import { QUESTIONS } from "../game/questions";
+import { simulatedCrowdLockedInHitPercent } from "../game/crowd";
 import type { GameAction, GameState } from "../game/state";
 import { AskStage } from "./AskStage";
 import { AssumptionsForm } from "./AssumptionsForm";
@@ -19,7 +19,7 @@ export function StageScreen({
   isCalculatorOpen,
   onToggleCalculator,
 }: Props) {
-  const question = QUESTIONS[game.stageIndex];
+  const question = game.questions[game.stageIndex];
   const stageNumber = game.stageIndex + 1;
   const stageResult = game.stageResults[game.stageIndex];
 
@@ -70,7 +70,10 @@ export function StageScreen({
             key={game.stageIndex}
             question={question}
             result={stageResult}
-            isLastStage={game.stageIndex === QUESTIONS.length - 1}
+            crowdLockedInHitPercent={simulatedCrowdLockedInHitPercent(
+              game.stageIndex,
+            )}
+            isLastStage={game.stageIndex === game.questions.length - 1}
             isAnimating={game.animatingStageIndex === game.stageIndex}
             onAnimationFinished={() =>
               dispatch({ type: "reveal-animation-finished" })
@@ -83,6 +86,7 @@ export function StageScreen({
         )}
       </section>
       <RocketStack
+        stageCount={game.questions.length}
         stageResults={game.stageResults}
         stageIndex={game.stageIndex}
         phase={game.phase}
