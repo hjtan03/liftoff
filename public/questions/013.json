@@ -1,0 +1,123 @@
+{
+  "id": "013",
+  "questions": [
+    {
+      "id": "a4-sheets-to-cover-a-hectare",
+      "category": "Everyday",
+      "prompt": "How many A4 sheets would it take to cover a hectare?",
+      "unit": "sheets",
+      "rounding": "ceil",
+      "roundingNote": "Partial sheet counts as a whole sheet (round up).",
+      "factors": [
+        {
+          "key": "l",
+          "label": "Long edge of an A4 sheet",
+          "unit": "mm",
+          "value": 297,
+          "source": "ISO 216"
+        },
+        {
+          "key": "s",
+          "label": "Short edge of an A4 sheet",
+          "unit": "mm",
+          "value": 210,
+          "source": "ISO 216"
+        },
+        {
+          "key": "ha",
+          "label": "Hectare",
+          "unit": "m²",
+          "value": 10000,
+          "source": "SI-accepted unit"
+        }
+      ],
+      "formula": "ha * 1000000 / (l * s)"
+    },
+    {
+      "id": "liters-a-heart-pumps-in-a-day",
+      "category": "Body",
+      "prompt": "A heart pumping 70 mL per beat at 70 beats per minute moves how many liters of blood in a day?",
+      "unit": "L",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest liter.",
+      "factors": [
+        {
+          "key": "s",
+          "label": "Seconds in a day",
+          "unit": "s",
+          "value": 86400,
+          "source": "SI day, 24 × 60 × 60"
+        }
+      ],
+      "formula": "0.07 * 70 / 60 * s"
+    },
+    {
+      "id": "area-of-an-nhl-rink",
+      "category": "Sport",
+      "prompt": "Ignoring the rounded corners, how many square meters is an NHL rink?",
+      "unit": "m²",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest square meter.",
+      "factors": [
+        {
+          "key": "l",
+          "label": "NHL rink length",
+          "unit": "ft",
+          "value": 200,
+          "source": "NHL Official Rules"
+        },
+        {
+          "key": "w",
+          "label": "NHL rink width",
+          "unit": "ft",
+          "value": 85,
+          "source": "NHL Official Rules"
+        }
+      ],
+      "formula": "l * w * 304.8 ^ 2 / 1000000"
+    },
+    {
+      "id": "earths-surface-per-person",
+      "category": "Earth",
+      "prompt": "Shared equally among 8 billion people, how many square meters of Earth’s surface would each person get?",
+      "unit": "m²",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest square meter.",
+      "factors": [
+        {
+          "key": "r",
+          "label": "Earth’s mean radius",
+          "unit": "km",
+          "value": 6371,
+          "source": "IUGG mean radius"
+        }
+      ],
+      "formula": "4 * 3.14159265 * r ^ 2 * 1000000 / 8000000000"
+    },
+    {
+      "id": "light-seconds-in-a-light-year",
+      "category": "Space",
+      "prompt": "How many light-seconds are in one light-year?",
+      "unit": "light-seconds",
+      "rounding": "round",
+      "roundingNote": "Exact count.",
+      "factors": [
+        {
+          "key": "y",
+          "label": "Average year",
+          "unit": "days",
+          "value": 365.25,
+          "source": "Julian year, IAU"
+        },
+        {
+          "key": "s",
+          "label": "Seconds in a day",
+          "unit": "s",
+          "value": 86400,
+          "source": "SI day, 24 × 60 × 60"
+        }
+      ],
+      "formula": "y * s"
+    }
+  ]
+}

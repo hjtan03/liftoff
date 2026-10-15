@@ -1,0 +1,130 @@
+{
+  "id": "029",
+  "questions": [
+    {
+      "id": "aa-batteries-along-a-marathon",
+      "category": "Everyday",
+      "prompt": "How many AA batteries, placed end to end, span a marathon course?",
+      "unit": "batteries",
+      "rounding": "ceil",
+      "roundingNote": "Enough to cover the whole course (round up).",
+      "factors": [
+        {
+          "key": "mm",
+          "label": "AA battery length",
+          "unit": "mm",
+          "value": 50.5,
+          "source": "IEC 60086, size R6"
+        },
+        {
+          "key": "d",
+          "label": "Marathon distance",
+          "unit": "km",
+          "value": 42.195,
+          "source": "World Athletics standard"
+        }
+      ],
+      "formula": "d * 1000000 / mm"
+    },
+    {
+      "id": "rice-on-the-thirty-second-square",
+      "category": "Games",
+      "prompt": "One grain of rice goes on a chessboard’s first square, and each square after holds double the one before. How many grains sit on the last square of the board’s first half?",
+      "unit": "grains",
+      "rounding": "round",
+      "roundingNote": "Exact count.",
+      "factors": [
+        {
+          "key": "sq",
+          "label": "Squares on a chessboard",
+          "unit": "squares",
+          "value": 64,
+          "source": "FIDE Laws of Chess"
+        }
+      ],
+      "formula": "2 ^ (sq / 2 - 1)"
+    },
+    {
+      "id": "calories-in-a-liter-of-olive-oil",
+      "category": "Food",
+      "prompt": "A liter of olive oil weighs about 920 g, all of it fat. How many food Calories does it hold?",
+      "unit": "kcal",
+      "rounding": "round",
+      "roundingNote": "Exact count.",
+      "factors": [
+        {
+          "key": "fat",
+          "label": "Energy in fat",
+          "unit": "kcal/g",
+          "value": 9,
+          "source": "Atwater general factors"
+        }
+      ],
+      "formula": "920 * fat"
+    },
+    {
+      "id": "credit-cards-to-cover-a-soccer-goal",
+      "category": "Sport",
+      "prompt": "How many credit cards, laid flat, would cover the opening of a soccer goal?",
+      "unit": "cards",
+      "rounding": "ceil",
+      "roundingNote": "Partial card counts as a whole card (round up).",
+      "factors": [
+        {
+          "key": "w",
+          "label": "Soccer goal width",
+          "unit": "m",
+          "value": 7.32,
+          "source": "IFAB Laws of the Game, 8 yd"
+        },
+        {
+          "key": "h",
+          "label": "Soccer goal height",
+          "unit": "m",
+          "value": 2.44,
+          "source": "IFAB Laws of the Game, 8 ft"
+        },
+        {
+          "key": "cl",
+          "label": "Long edge of a credit card",
+          "unit": "mm",
+          "value": 85.6,
+          "source": "ISO/IEC 7810 ID-1"
+        },
+        {
+          "key": "cs",
+          "label": "Short edge of a credit card",
+          "unit": "mm",
+          "value": 53.98,
+          "source": "ISO/IEC 7810 ID-1"
+        }
+      ],
+      "formula": "w * h * 1000000 / (cl * cs)"
+    },
+    {
+      "id": "milliseconds-for-sound-to-cross-a-football-field",
+      "category": "Science",
+      "prompt": "In 20 °C air, how many milliseconds does a shout take to travel the full length of a football field, end zones included?",
+      "unit": "ms",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest millisecond.",
+      "factors": [
+        {
+          "key": "ft",
+          "label": "Football field length, end zones included",
+          "unit": "ft",
+          "value": 360,
+          "source": "NFL rulebook"
+        },
+        {
+          "key": "v",
+          "label": "Speed of sound in air at 20 °C",
+          "unit": "m/s",
+          "value": 343,
+          "source": "Dry air at 20 °C"
+        }
+      ],
+      "formula": "ft * 304.8 / v"
+    }
+  ]
+}
