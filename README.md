@@ -1,21 +1,12 @@
 # Liftoff
 
-A daily estimation game. Five math questions a day, one rocket.
+A daily estimation game: five questions, one rocket.
 
-Every question can be worked out from well-known constants (a marathon is 42.195 km, a credit card is 0.76 mm thick), so it rewards reasoning, not trivia. For each question you:
+## About
 
-1. Work out an answer (a pop-up calculator is built in).
-2. Pick a confidence level: **Locked in** (±5%), **Solid** (±20%) or **Rough** (within 2×).
-3. Fire the stage. If the answer lands inside your range, that rocket stage fills with fuel; if not, it misfires.
+Every question is answered by reasoning from well-known, sourced constants, not trivia. The player works out a number, picks a confidence band, and fires a rocket stage; after five stages the rocket launches, and its altitude is the score. Liftoff is a Vite + React + TypeScript single-page app with no backend. Where it is going is in [docs/roadmap.md](docs/roadmap.md).
 
-After five stages the rocket launches, and its altitude is your score. The share string looks like this:
-
-```
-🚀 Liftoff #001 🎯🔴🟢🟡🟠
-Reached: Kármán line (104 km)
-```
-
-## Run it
+## Getting started
 
 Needs Node 24 or newer.
 
@@ -26,7 +17,7 @@ npm run dev
 
 Vite serves the game at `http://localhost:5173/liftoff/`. The `/liftoff/` path matches where GitHub Pages hosts it.
 
-## Check it
+## Development
 
 ```bash
 npm run lint          # ESLint
@@ -35,16 +26,6 @@ npm test              # Vitest: the game logic
 npm run build         # type-check with tsc, then bundle to dist/
 npm run test:e2e      # Playwright: plays the built game in Chromium (build first)
 ```
-
-CI runs every one of these on each pull request.
-
-## Deploy
-
-A push to `main` builds the site and publishes `dist/` to GitHub Pages from `.github/workflows/ci.yml`. The repository's Pages source has to be **GitHub Actions** (Settings → Pages → Build and deployment → Source).
-
-For Cloudflare Pages instead: connect the repo, build command `npm run build`, output directory `dist`. For a custom domain on either host, set `base` in `vite.config.ts` to `/` (GitHub Pages also needs a `CNAME` file containing the domain).
-
-## Layout
 
 ```
 index.html                 page shell: metadata and fonts
@@ -56,40 +37,18 @@ src/game/                  the rules: questions, scoring, altitude, state
 src/calculator/            the pop-up calculator and its expression parser
 src/components/            one component per screen piece
 e2e/                       Playwright play-through
+docs/                      roadmap, how questions work, archive
 .github/workflows/ci.yml   checks on every PR, Pages deploy from main
 ```
 
 Unit tests sit beside the module they test, as `*.test.ts`.
 
-## How questions work
+## Deployment
 
-Answers are never typed in by hand. Each question in `src/game/questions.ts` stores its factors and a formula, and the answer is computed from them:
+A push to `main` builds the site and publishes `dist/` to GitHub Pages from `.github/workflows/ci.yml`. The repository's Pages source has to be **GitHub Actions** (Settings → Pages → Build and deployment → Source).
 
-```ts
-{
-  prompt: "How many credit cards would you stack to reach the rim of a regulation basketball hoop?",
-  rounding: "ceil",
-  factors: [
-    { key: "ft", label: "Rim height", unit: "ft", value: 10, source: "NBA / FIBA regulation" },
-    { key: "mm", label: "Credit card thickness", unit: "mm", value: 0.76, source: "ISO/IEC 7810 ID-1" },
-  ],
-  compute: (f) => (f.ft * 304.8) / f.mm,
-}
-```
+For Cloudflare Pages instead: connect the repo, build command `npm run build`, output directory `dist`. For a custom domain on either host, set `base` in `vite.config.ts` to `/` (GitHub Pages also needs a `CNAME` file containing the domain).
 
-Rule for every question: each input is either a canonical, sourced constant or stated in the prompt. No pure-trivia numbers.
+## Contributing
 
-## Status
-
-A working single-day prototype. Crowd stats are simulated.
-
-## Roadmap
-
-- [ ] **Question pipeline.** `prompts.txt` → LLM proposes inputs + formula → code computes the answer from a curated constants table → weekly JSON file.
-- [ ] **Constants table.** 300–500 sourced constants with units and a "how well known" score.
-- [ ] **Duplicate check.** Structural signature (constants + formula) plus embedding similarity against past questions.
-- [ ] **Daily rotation.** Serve each day's 5 questions by date from the weekly JSON.
-- [ ] **Persistence.** Save progress and streaks in localStorage.
-- [ ] **Crowd stats.** Small backend to record guesses; show "only 9% locked in and hit this one" and a rarity bonus.
-- [ ] **Launch polish.** Rocket burns each stage's fuel in sequence on the way up.
-- [ ] **Name + domain.**
+Branch from `main` and open a pull request. CI runs the formatter, the linter, the unit tests, the build, and the end-to-end play-through, and all of them have to pass. A new question follows [docs/questions.md](docs/questions.md).
