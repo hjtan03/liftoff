@@ -1,5 +1,5 @@
 import { formatNumber } from "../game/numbers";
-import { evaluateExpression } from "./evaluate";
+import { evaluateExpression } from "../expression/evaluate";
 
 export type CalculatorState =
   | { status: "editing"; expression: string }
@@ -17,6 +17,8 @@ const TRAILING_OPERATOR = /[+×÷−]$/;
 const OPERATOR_PAST_FIRST_CHARACTER = /[+×÷−]/;
 const NUMBER_BOUNDARY = /[+×÷−()]/;
 const PREVIEW_DECIMALS = 6;
+/** The keypad has no way to type a name, so it evaluates with no variables. */
+const NO_VARIABLES = {};
 
 export function calculatorDisplayText(state: CalculatorState): string {
   return state.expression || "0";
@@ -27,7 +29,7 @@ export function calculatorHistoryText(state: CalculatorState): string {
   if (state.status === "error") return "Check the expression";
   if (!OPERATOR_PAST_FIRST_CHARACTER.test(state.expression.slice(1))) return "";
   try {
-    return `= ${formatNumber(evaluateExpression(state.expression), PREVIEW_DECIMALS)}`;
+    return `= ${formatNumber(evaluateExpression(state.expression, NO_VARIABLES), PREVIEW_DECIMALS)}`;
   } catch {
     return "";
   }
@@ -61,7 +63,7 @@ export function pressCalculatorKey(
 
 function evaluate(state: CalculatorState): CalculatorState {
   try {
-    const value = evaluateExpression(state.expression);
+    const value = evaluateExpression(state.expression, NO_VARIABLES);
     const expression = String(Number(value.toPrecision(12)));
     return {
       status: "result",

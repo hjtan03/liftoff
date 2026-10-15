@@ -1,5 +1,3 @@
-import { QUESTIONS } from "./questions";
-
 export type BandKey = "lock" | "solid" | "rough";
 
 export type ConfidenceBand = {
@@ -40,7 +38,10 @@ export const BAND_KEYS: readonly BandKey[] = ["lock", "solid", "rough"];
 export const EXACT_ANSWER_BONUS_POINTS = 250;
 export const MAX_POINTS_PER_STAGE =
   CONFIDENCE_BANDS.lock.points + EXACT_ANSWER_BONUS_POINTS;
-export const MAX_TOTAL_POINTS = QUESTIONS.length * MAX_POINTS_PER_STAGE;
+
+export function maxTotalPoints(questionCount: number): number {
+  return questionCount * MAX_POINTS_PER_STAGE;
+}
 
 const HIT_EMOJI: Record<BandKey, string> = {
   lock: "🟢",

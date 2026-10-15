@@ -1,5 +1,5 @@
 import { formatNumber, parseNumberInput } from "../game/numbers";
-import type { Question } from "../game/questions";
+import type { Question } from "../questions/schema";
 import { BAND_KEYS, type BandKey, CONFIDENCE_BANDS } from "../game/scoring";
 
 type Props = {
