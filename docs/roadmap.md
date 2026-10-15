@@ -7,7 +7,7 @@ including the first sketches, live in [the archive](archive/) and in pull
 requests, not here. To change the roadmap, change this file in a pull
 request and put the why in the commit.
 
-Today the game plays one fixed day. Nothing below is started.
+Nothing below is started.
 
 ## Question supply
 
@@ -23,10 +23,6 @@ reasoning gets you there.
 ## No repeats
 
 No question repeats or nearly repeats an earlier one.
-
-## A puzzle a day
-
-A new set of five every day, and the launch number follows the day.
 
 ## A run that keeps
 
