@@ -10,14 +10,14 @@ The game is a Vite + React + TypeScript app (see README). Questions are JSON doc
 
 ## What exists today
 
-| Piece | State |
-|---|---|
-| Game UI (stages, calculator, fuel tanks, launch, share string) | Done, React components in `src/components/` |
-| Questions | One static set, `public/questions/001.json`, validated by `src/questions/schema.ts` |
-| Scoring | Client-side, `src/game/scoring.ts`, rules below |
-| Crowd stats | Simulated, `src/game/crowd.ts` |
-| Persistence and streaks | None |
-| Question pipeline | Designed, not built (see Phase 3) |
+| Piece                                                          | State                                                                               |
+| -------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| Game UI (stages, calculator, fuel tanks, launch, share string) | Done, React components in `src/components/`                                         |
+| Questions                                                      | One static set, `public/questions/001.json`, validated by `src/questions/schema.ts` |
+| Scoring                                                        | Client-side, `src/game/scoring.ts`, rules below                                     |
+| Crowd stats                                                    | Simulated, `src/game/crowd.ts`                                                      |
+| Persistence and streaks                                        | None                                                                                |
+| Question pipeline                                              | Designed, not built (see Phase 3)                                                   |
 
 ## Recommended stack
 
@@ -46,8 +46,20 @@ Each question stores its constants and a formula, and the answer is derived from
   "rounding": "ceil",
   "roundingNote": "You need to reach the rim (round up).",
   "factors": [
-    { "key": "ft", "label": "Rim height", "unit": "ft", "value": 10, "source": "NBA / FIBA regulation" },
-    { "key": "mm", "label": "Credit card thickness", "unit": "mm", "value": 0.76, "source": "ISO/IEC 7810 ID-1" }
+    {
+      "key": "ft",
+      "label": "Rim height",
+      "unit": "ft",
+      "value": 10,
+      "source": "NBA / FIBA regulation"
+    },
+    {
+      "key": "mm",
+      "label": "Credit card thickness",
+      "unit": "mm",
+      "value": 0.76,
+      "source": "ISO/IEC 7810 ID-1"
+    }
   ],
   "formula": "ft * 304.8 / mm"
 }
@@ -64,11 +76,11 @@ Each question stores its constants and a formula, and the answer is derived from
 
 The player submits `guess` (a positive number) and `conf`. The range is computed around the **guess**:
 
-| conf | Name | Range | Points if `lo ≤ answer ≤ hi` |
-|---|---|---|---|
-| `lock` | Locked in | `guess × 0.95` – `guess × 1.05` | 1000 |
-| `solid` | Solid | `guess × 0.8` – `guess × 1.2` | 500 |
-| `rough` | Rough | `guess / 2` – `guess × 2` | 200 |
+| conf    | Name      | Range                           | Points if `lo ≤ answer ≤ hi` |
+| ------- | --------- | ------------------------------- | ---------------------------- |
+| `lock`  | Locked in | `guess × 0.95` – `guess × 1.05` | 1000                         |
+| `solid` | Solid     | `guess × 0.8` – `guess × 1.2`   | 500                          |
+| `rough` | Rough     | `guess / 2` – `guess × 2`       | 200                          |
 
 - **Exact bonus:** +250 if `Math.round(guess) === answer` and the stage hit.
 - A miss scores 0.
@@ -110,11 +122,18 @@ All bodies are JSON. The player is identified by an anonymous `playerId`, a UUID
       "prompt": "Walking at a steady 5 km/h, how many minutes does it take to finish a marathon?",
       "unit": "min",
       "roundingNote": "Rounded to the nearest minute.",
-      "factorLabels": [{ "key": "d", "label": "Marathon distance", "unit": "km" }]
+      "factorLabels": [
+        { "key": "d", "label": "Marathon distance", "unit": "km" }
+      ]
     }
   ],
   "progress": [
-    { "stage": 1, "guess": 506, "conf": "lock", "result": { "...": "same shape as POST response" } }
+    {
+      "stage": 1,
+      "guess": 506,
+      "conf": "lock",
+      "result": { "...": "same shape as POST response" }
+    }
   ]
 }
 ```
@@ -151,7 +170,13 @@ Response:
   "exact": true,
   "points": 1250,
   "factors": [
-    { "key": "d", "label": "Marathon distance", "unit": "km", "value": 42.195, "source": "World Athletics standard" }
+    {
+      "key": "d",
+      "label": "Marathon distance",
+      "unit": "km",
+      "value": 42.195,
+      "source": "World Athletics standard"
+    }
   ],
   "workings": "42.195 ÷ 5 × 60 = 506.34",
   "crowd": {
@@ -173,7 +198,12 @@ Response:
 ### `GET /api/me`
 
 ```json
-{ "currentStreak": 4, "maxStreak": 9, "played": 23, "history": [{ "puzzle": "007", "points": 4100 }] }
+{
+  "currentStreak": 4,
+  "maxStreak": 9,
+  "played": 23,
+  "history": [{ "puzzle": "007", "points": 4100 }]
+}
 ```
 
 A streak counts consecutive puzzle numbers in which the player submitted all 5 stages.
