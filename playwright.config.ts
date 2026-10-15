@@ -1,7 +1,7 @@
 import { defineConfig, devices } from "@playwright/test";
 
 const PREVIEW_PORT = 4173;
-const PREVIEW_URL = `http://localhost:${PREVIEW_PORT}/liftoff/`;
+const PREVIEW_URL = `http://localhost:${PREVIEW_PORT}/`;
 
 // Runs against the production build: `npm run build` first, then `npm run test:e2e`.
 export default defineConfig({
