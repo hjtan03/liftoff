@@ -15,7 +15,7 @@ npm install
 npm run dev
 ```
 
-Vite serves the game at `http://localhost:5173/liftoff/`. The `/liftoff/` path matches where GitHub Pages hosts it.
+Vite serves the game at `http://localhost:5173/`.
 
 ## Development
 
@@ -41,16 +41,14 @@ src/components/            one component per screen piece
 public/questions/          the published question sets, one JSON document each
 e2e/                       Playwright play-through
 docs/                      roadmap, how questions work, archive
-.github/workflows/ci.yml   checks on every PR, Pages deploy from main
+.github/workflows/ci.yml   checks on every PR and on main
 ```
 
 Unit tests sit beside the module they test, as `*.test.ts`.
 
 ## Deployment
 
-A push to `main` builds the site and publishes `dist/` to GitHub Pages from `.github/workflows/ci.yml`. The repository's Pages source has to be **GitHub Actions** (Settings → Pages → Build and deployment → Source).
-
-For Cloudflare Pages instead: connect the repo, build command `npm run build`, output directory `dist`. For a custom domain on either host, set `base` in `vite.config.ts` to `/` (GitHub Pages also needs a `CNAME` file containing the domain).
+Vercel deploys the site through its GitHub integration: every pull request gets a preview URL, and a push to `main` deploys to production. The project uses Vercel's Vite preset (build command `npm run build`, output directory `dist`). CI in `.github/workflows/ci.yml` only checks; it does not deploy.
 
 ## Contributing
 
