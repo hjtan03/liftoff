@@ -34,5 +34,4 @@ docs/archive/.
 ## What is simulated
 
 Crowd stats are a placeholder in `src/game/crowd.ts` until the real crowd
-exists. The question set URL in `src/App.tsx` names the one fixed day until
-daily rotation exists.
+exists.
