@@ -34,7 +34,7 @@ src/App.tsx                the game phases and the calculator toggle
 src/app.css                the stylesheet
 src/animation.ts           frame tween and reduced-motion check
 src/game/                  the rules: scoring, altitude, state, the crowd placeholder
-src/questions/             the question-set contract: schema, source, producer check
+src/questions/             the question-set contract: schema, schedule, source, producer check
 src/expression/            the arithmetic evaluator shared by formulas and the calculator
 src/calculator/            the pop-up calculator
 src/components/            one component per screen piece
