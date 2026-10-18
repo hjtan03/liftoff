@@ -1,0 +1,123 @@
+{
+  "id": "004",
+  "questions": [
+    {
+      "id": "letter-sheets-in-a-mile",
+      "category": "Everyday",
+      "prompt": "How many US Letter sheets, laid lengthwise end to end, make a line one mile long?",
+      "unit": "sheets",
+      "rounding": "ceil",
+      "roundingNote": "Enough to reach the full mile (round up).",
+      "factors": [
+        {
+          "key": "in",
+          "label": "Long edge of a Letter sheet",
+          "unit": "in",
+          "value": 11,
+          "source": "ANSI Letter, 8.5 × 11 in"
+        },
+        {
+          "key": "mi",
+          "label": "Mile",
+          "unit": "ft",
+          "value": 5280,
+          "source": "US customary definition"
+        }
+      ],
+      "formula": "mi * 12 / in"
+    },
+    {
+      "id": "pocket-pairs-in-holdem",
+      "category": "Games",
+      "prompt": "Ignoring order, how many two-card hands from a standard deck are a pair of the same rank?",
+      "unit": "hands",
+      "rounding": "round",
+      "roundingNote": "Exact count.",
+      "factors": [
+        {
+          "key": "r",
+          "label": "Ranks in a standard deck",
+          "unit": "ranks",
+          "value": 13,
+          "source": "Standard 52-card deck"
+        },
+        {
+          "key": "s",
+          "label": "Suits in a standard deck",
+          "unit": "suits",
+          "value": 4,
+          "source": "Standard 52-card deck"
+        }
+      ],
+      "formula": "r * s * (s - 1) / 2"
+    },
+    {
+      "id": "table-tennis-balls-down-a-cricket-pitch",
+      "category": "Sport",
+      "prompt": "How many table tennis balls in a touching line span a cricket pitch from wicket to wicket?",
+      "unit": "balls",
+      "rounding": "floor",
+      "roundingNote": "Complete balls only (round down).",
+      "factors": [
+        {
+          "key": "mm",
+          "label": "Table tennis ball diameter",
+          "unit": "mm",
+          "value": 40,
+          "source": "ITTF Laws of Table Tennis"
+        },
+        {
+          "key": "yd",
+          "label": "Wicket to wicket",
+          "unit": "yd",
+          "value": 22,
+          "source": "MCC Laws of Cricket"
+        }
+      ],
+      "formula": "yd * 914.4 / mm"
+    },
+    {
+      "id": "percent-of-carbon-14-left-after-10000-years",
+      "category": "Science",
+      "prompt": "What percentage of a sample’s carbon-14 remains after 10,000 years?",
+      "unit": "%",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest percent.",
+      "factors": [
+        {
+          "key": "t",
+          "label": "Carbon-14 half-life",
+          "unit": "years",
+          "value": 5730,
+          "source": "Cambridge half-life"
+        }
+      ],
+      "formula": "100 / 2 ^ (10000 / t)"
+    },
+    {
+      "id": "suns-between-the-sun-and-earth",
+      "category": "Space",
+      "prompt": "How many Suns, side by side, would bridge the distance from the Sun to Earth?",
+      "unit": "Suns",
+      "rounding": "floor",
+      "roundingNote": "Complete Suns only (round down).",
+      "factors": [
+        {
+          "key": "au",
+          "label": "Astronomical unit",
+          "unit": "km",
+          "value": 149597870.7,
+          "source": "IAU 2012 definition"
+        },
+        {
+          "key": "r",
+          "label": "Sun’s radius",
+          "unit": "km",
+          "value": 695700,
+          "source": "IAU 2015 nominal value"
+        }
+      ],
+      "formula": "au / (2 * r)"
+    }
+  ]
+}

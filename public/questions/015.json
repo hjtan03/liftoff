@@ -1,0 +1,130 @@
+{
+  "id": "015",
+  "questions": [
+    {
+      "id": "cds-stacked-to-the-top-of-everest",
+      "category": "Everyday",
+      "prompt": "How many CDs, stacked flat, would reach the summit of Mount Everest from sea level?",
+      "unit": "CDs",
+      "rounding": "ceil",
+      "roundingNote": "Enough to reach the summit (round up).",
+      "factors": [
+        {
+          "key": "mm",
+          "label": "CD thickness",
+          "unit": "mm",
+          "value": 1.2,
+          "source": "IEC 60908 (Red Book)"
+        },
+        {
+          "key": "h",
+          "label": "Height of Mount Everest",
+          "unit": "m",
+          "value": 8848.86,
+          "source": "China–Nepal survey, 2020"
+        }
+      ],
+      "formula": "h * 1000 / mm"
+    },
+    {
+      "id": "watts-of-a-2000-calorie-day",
+      "category": "Body",
+      "prompt": "A 2,000-Calorie day of food, spread evenly over 24 hours, is how many watts of power?",
+      "unit": "W",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest watt.",
+      "factors": [
+        {
+          "key": "kcal",
+          "label": "Kilocalorie (food Calorie)",
+          "unit": "J",
+          "value": 4184,
+          "source": "Thermochemical; warms 1 kg of water by 1 °C"
+        },
+        {
+          "key": "s",
+          "label": "Seconds in a day",
+          "unit": "s",
+          "value": 86400,
+          "source": "SI day, 24 × 60 × 60"
+        }
+      ],
+      "formula": "2000 * kcal / s"
+    },
+    {
+      "id": "joules-to-raise-a-shot-put",
+      "category": "Sport",
+      "prompt": "How many joules does it take to lift a men’s shot put 2 m off the ground?",
+      "unit": "J",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest joule.",
+      "factors": [
+        {
+          "key": "kg",
+          "label": "Men’s shot put mass",
+          "unit": "kg",
+          "value": 7.26,
+          "source": "World Athletics rules"
+        },
+        {
+          "key": "g",
+          "label": "Standard gravity",
+          "unit": "m/s²",
+          "value": 9.807,
+          "source": "CGPM, 1901, 9.80665 m/s²"
+        }
+      ],
+      "formula": "kg * g * 2"
+    },
+    {
+      "id": "seconds-for-the-equator-to-carry-you-a-marathon",
+      "category": "Earth",
+      "prompt": "Standing on the equator, how many seconds does Earth’s spin take to carry you a marathon’s distance?",
+      "unit": "s",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest second.",
+      "factors": [
+        {
+          "key": "d",
+          "label": "Marathon distance",
+          "unit": "km",
+          "value": 42.195,
+          "source": "World Athletics standard"
+        },
+        {
+          "key": "eq",
+          "label": "Equator circumference",
+          "unit": "km",
+          "value": 40075,
+          "source": "WGS 84"
+        }
+      ],
+      "formula": "d / (eq / 24) * 3600"
+    },
+    {
+      "id": "earths-that-fit-inside-the-sun",
+      "category": "Space",
+      "prompt": "By volume, how many Earths would fit inside the Sun?",
+      "unit": "Earths",
+      "rounding": "floor",
+      "roundingNote": "Complete Earths only (round down).",
+      "factors": [
+        {
+          "key": "sun",
+          "label": "Sun’s radius",
+          "unit": "km",
+          "value": 695700,
+          "source": "IAU 2015 nominal value"
+        },
+        {
+          "key": "earth",
+          "label": "Earth’s mean radius",
+          "unit": "km",
+          "value": 6371,
+          "source": "IUGG mean radius"
+        }
+      ],
+      "formula": "(sun / earth) ^ 3"
+    }
+  ]
+}

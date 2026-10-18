@@ -1,0 +1,116 @@
+{
+  "id": "016",
+  "questions": [
+    {
+      "id": "shipping-containers-in-a-mile",
+      "category": "Everyday",
+      "prompt": "How many 20 ft shipping containers, parked end to end, line up along a mile?",
+      "unit": "containers",
+      "rounding": "round",
+      "roundingNote": "Exact count.",
+      "factors": [
+        {
+          "key": "l",
+          "label": "Shipping container length",
+          "unit": "ft",
+          "value": 20,
+          "source": "ISO 668, 20 ft container"
+        },
+        {
+          "key": "mi",
+          "label": "Mile",
+          "unit": "ft",
+          "value": 5280,
+          "source": "US customary definition"
+        }
+      ],
+      "formula": "mi / l"
+    },
+    {
+      "id": "teeth-on-an-nfl-roster",
+      "category": "Body",
+      "prompt": "If all 53 players on an NFL roster have full adult sets of teeth, how many teeth is that?",
+      "unit": "teeth",
+      "rounding": "round",
+      "roundingNote": "Exact count.",
+      "factors": [
+        {
+          "key": "t",
+          "label": "Teeth in a full adult set",
+          "unit": "teeth",
+          "value": 32,
+          "source": "Permanent human dentition"
+        }
+      ],
+      "formula": "53 * t"
+    },
+    {
+      "id": "throw-line-to-the-bullseye",
+      "category": "Sport",
+      "prompt": "How many centimeters is it in a straight line from the floor at the throw line to the bullseye?",
+      "unit": "cm",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest centimeter.",
+      "factors": [
+        {
+          "key": "h",
+          "label": "Bullseye height above the floor",
+          "unit": "m",
+          "value": 1.73,
+          "source": "WDF rules, 5 ft 8 in"
+        },
+        {
+          "key": "d",
+          "label": "Throw line to the board face",
+          "unit": "m",
+          "value": 2.37,
+          "source": "WDF rules, 7 ft 9¼ in"
+        }
+      ],
+      "formula": "(h ^ 2 + d ^ 2) ^ 0.5 * 100"
+    },
+    {
+      "id": "height-of-the-karman-line-in-feet",
+      "category": "Earth",
+      "prompt": "How many feet above sea level is the Kármán line?",
+      "unit": "ft",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest foot.",
+      "factors": [
+        {
+          "key": "k",
+          "label": "Kármán line",
+          "unit": "km",
+          "value": 100,
+          "source": "FAI definition of space"
+        }
+      ],
+      "formula": "k * 1000000 / 304.8"
+    },
+    {
+      "id": "milliseconds-for-moonlight-to-reach-earth",
+      "category": "Space",
+      "prompt": "How many milliseconds does light take to travel from the Moon to Earth?",
+      "unit": "ms",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest millisecond.",
+      "factors": [
+        {
+          "key": "d",
+          "label": "Average Earth–Moon distance",
+          "unit": "km",
+          "value": 384400,
+          "source": "NASA"
+        },
+        {
+          "key": "c",
+          "label": "Speed of light",
+          "unit": "km/s",
+          "value": 299792.458,
+          "source": "SI definition"
+        }
+      ],
+      "formula": "d / c * 1000"
+    }
+  ]
+}

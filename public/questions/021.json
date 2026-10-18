@@ -1,0 +1,116 @@
+{
+  "id": "021",
+  "questions": [
+    {
+      "id": "length-of-a-roll-of-quarters",
+      "category": "Everyday",
+      "prompt": "A $10 roll holds 40 quarters stacked flat. How many millimeters long is the stack?",
+      "unit": "mm",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest millimeter.",
+      "factors": [
+        {
+          "key": "mm",
+          "label": "Quarter thickness",
+          "unit": "mm",
+          "value": 1.75,
+          "source": "US Mint specifications"
+        }
+      ],
+      "formula": "40 * mm"
+    },
+    {
+      "id": "wavelength-of-concert-a",
+      "category": "Music",
+      "prompt": "How many centimeters long is one sound wave of concert A in 20 °C air?",
+      "unit": "cm",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest centimeter.",
+      "factors": [
+        {
+          "key": "v",
+          "label": "Speed of sound in air at 20 °C",
+          "unit": "m/s",
+          "value": 343,
+          "source": "Dry air at 20 °C"
+        },
+        {
+          "key": "a",
+          "label": "Concert pitch A",
+          "unit": "Hz",
+          "value": 440,
+          "source": "ISO 16"
+        }
+      ],
+      "formula": "v / a * 100"
+    },
+    {
+      "id": "days-to-walk-to-the-moon",
+      "category": "Travel",
+      "prompt": "Walking at a steady 5 km/h without stopping, how many days would it take to cover the average distance to the Moon?",
+      "unit": "days",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest day.",
+      "factors": [
+        {
+          "key": "d",
+          "label": "Average Earth–Moon distance",
+          "unit": "km",
+          "value": 384400,
+          "source": "NASA"
+        }
+      ],
+      "formula": "d / 5 / 24"
+    },
+    {
+      "id": "bowling-lanes-in-a-mile",
+      "category": "Sport",
+      "prompt": "How many bowling lanes, foul line to head pin, laid end to end make a mile?",
+      "unit": "lanes",
+      "rounding": "round",
+      "roundingNote": "Exact count.",
+      "factors": [
+        {
+          "key": "ft",
+          "label": "Foul line to head pin",
+          "unit": "ft",
+          "value": 60,
+          "source": "USBC lane specifications"
+        },
+        {
+          "key": "mi",
+          "label": "Mile",
+          "unit": "ft",
+          "value": 5280,
+          "source": "US customary definition"
+        }
+      ],
+      "formula": "mi / ft"
+    },
+    {
+      "id": "earths-speed-around-the-sun",
+      "category": "Space",
+      "prompt": "Treating Earth’s orbit as a circle, how many km/h does Earth travel around the Sun?",
+      "unit": "km/h",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest km/h.",
+      "factors": [
+        {
+          "key": "au",
+          "label": "Astronomical unit",
+          "unit": "km",
+          "value": 149597870.7,
+          "source": "IAU 2012 definition"
+        },
+        {
+          "key": "y",
+          "label": "Average year",
+          "unit": "days",
+          "value": 365.25,
+          "source": "Julian year, IAU"
+        }
+      ],
+      "formula": "2 * 3.14159265 * au / (y * 24)"
+    }
+  ]
+}

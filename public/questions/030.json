@@ -1,0 +1,109 @@
+{
+  "id": "030",
+  "questions": [
+    {
+      "id": "dollars-of-quarters-in-a-kilogram",
+      "category": "Everyday",
+      "prompt": "How many dollars’ worth of quarters weigh one kilogram?",
+      "unit": "dollars",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest dollar.",
+      "factors": [
+        {
+          "key": "g",
+          "label": "Quarter mass",
+          "unit": "g",
+          "value": 5.67,
+          "source": "US Mint specifications"
+        }
+      ],
+      "formula": "1000 / g * 0.25"
+    },
+    {
+      "id": "five-card-poker-hands",
+      "category": "Games",
+      "prompt": "Ignoring the order they arrive in, how many different five-card hands can be dealt from a standard deck?",
+      "unit": "hands",
+      "rounding": "round",
+      "roundingNote": "Exact count.",
+      "factors": [
+        {
+          "key": "n",
+          "label": "Cards in a standard deck",
+          "unit": "cards",
+          "value": 52,
+          "source": "Standard 52-card deck"
+        }
+      ],
+      "formula": "n * (n - 1) * (n - 2) * (n - 3) * (n - 4) / 120"
+    },
+    {
+      "id": "sugar-to-match-100-g-of-fat",
+      "category": "Food",
+      "prompt": "How many grams of pure sugar hold as much energy as 100 g of pure fat?",
+      "unit": "g",
+      "rounding": "round",
+      "roundingNote": "Exact count.",
+      "factors": [
+        {
+          "key": "fat",
+          "label": "Energy in fat",
+          "unit": "kcal/g",
+          "value": 9,
+          "source": "Atwater general factors"
+        },
+        {
+          "key": "carb",
+          "label": "Energy in carbohydrate",
+          "unit": "kcal/g",
+          "value": 4,
+          "source": "Atwater general factors"
+        }
+      ],
+      "formula": "100 * fat / carb"
+    },
+    {
+      "id": "pennies-stacked-to-the-volleyball-net",
+      "category": "Sport",
+      "prompt": "How many pennies, stacked flat, reach the top of a men’s volleyball net?",
+      "unit": "pennies",
+      "rounding": "ceil",
+      "roundingNote": "Enough to reach it (round up).",
+      "factors": [
+        {
+          "key": "mm",
+          "label": "Penny thickness",
+          "unit": "mm",
+          "value": 1.52,
+          "source": "US Mint specifications"
+        },
+        {
+          "key": "h",
+          "label": "Men’s volleyball net height",
+          "unit": "m",
+          "value": 2.43,
+          "source": "FIVB Official Volleyball Rules"
+        }
+      ],
+      "formula": "h * 1000 / mm"
+    },
+    {
+      "id": "seconds-a-100-w-bulb-runs-on-one-calorie",
+      "category": "Science",
+      "prompt": "How many seconds could a 100 W bulb run on the energy in one food Calorie?",
+      "unit": "s",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest second.",
+      "factors": [
+        {
+          "key": "kcal",
+          "label": "Kilocalorie (food Calorie)",
+          "unit": "J",
+          "value": 4184,
+          "source": "Thermochemical; warms 1 kg of water by 1 °C"
+        }
+      ],
+      "formula": "kcal / 100"
+    }
+  ]
+}

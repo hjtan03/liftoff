@@ -1,0 +1,123 @@
+{
+  "id": "020",
+  "questions": [
+    {
+      "id": "grams-in-a-400-ounce-gold-bar",
+      "category": "Everyday",
+      "prompt": "How many grams of gold are in a 400 troy ounce bar?",
+      "unit": "g",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest gram.",
+      "factors": [
+        {
+          "key": "oz",
+          "label": "Troy ounce",
+          "unit": "g",
+          "value": 31.103,
+          "source": "International troy ounce"
+        }
+      ],
+      "formula": "400 * oz"
+    },
+    {
+      "id": "frequency-of-the-top-piano-key",
+      "category": "Music",
+      "prompt": "The top key of a piano is C, 39 semitones above concert A. How many hertz is it?",
+      "unit": "Hz",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest hertz.",
+      "factors": [
+        {
+          "key": "a",
+          "label": "Concert pitch A",
+          "unit": "Hz",
+          "value": 440,
+          "source": "ISO 16"
+        }
+      ],
+      "formula": "a * 2 ^ (39 / 12)"
+    },
+    {
+      "id": "quarters-around-a-basketball-court",
+      "category": "Sport",
+      "prompt": "How many quarters, laid edge to edge, run once around the boundary of an NBA court?",
+      "unit": "quarters",
+      "rounding": "ceil",
+      "roundingNote": "Enough to close the loop (round up).",
+      "factors": [
+        {
+          "key": "d",
+          "label": "Quarter diameter",
+          "unit": "mm",
+          "value": 24.26,
+          "source": "US Mint specifications"
+        },
+        {
+          "key": "l",
+          "label": "NBA court length",
+          "unit": "ft",
+          "value": 94,
+          "source": "NBA rulebook"
+        },
+        {
+          "key": "w",
+          "label": "NBA court width",
+          "unit": "ft",
+          "value": 50,
+          "source": "NBA rulebook"
+        }
+      ],
+      "formula": "2 * (l + w) * 304.8 / d"
+    },
+    {
+      "id": "nautical-miles-from-the-equator-to-the-north-pole",
+      "category": "Earth",
+      "prompt": "How many nautical miles is it from the equator to the North Pole?",
+      "unit": "nmi",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest nautical mile.",
+      "factors": [
+        {
+          "key": "m",
+          "label": "Pole-to-pole circumference",
+          "unit": "km",
+          "value": 40007.86,
+          "source": "WGS 84"
+        },
+        {
+          "key": "nm",
+          "label": "Nautical mile",
+          "unit": "m",
+          "value": 1852,
+          "source": "International definition, 1929"
+        }
+      ],
+      "formula": "m / 4 * 1000 / nm"
+    },
+    {
+      "id": "full-moons-in-a-century",
+      "category": "Space",
+      "prompt": "How many complete lunar cycles fit in a century?",
+      "unit": "cycles",
+      "rounding": "floor",
+      "roundingNote": "Complete cycles only (round down).",
+      "factors": [
+        {
+          "key": "y",
+          "label": "Average year",
+          "unit": "days",
+          "value": 365.25,
+          "source": "Julian year, IAU"
+        },
+        {
+          "key": "m",
+          "label": "New moon to new moon",
+          "unit": "days",
+          "value": 29.53,
+          "source": "NASA"
+        }
+      ],
+      "formula": "100 * y / m"
+    }
+  ]
+}
