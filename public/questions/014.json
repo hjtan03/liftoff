@@ -1,0 +1,123 @@
+{
+  "id": "014",
+  "questions": [
+    {
+      "id": "letter-sheets-to-cover-an-acre",
+      "category": "Everyday",
+      "prompt": "How many US Letter sheets would it take to cover an acre?",
+      "unit": "sheets",
+      "rounding": "ceil",
+      "roundingNote": "Partial sheet counts as a whole sheet (round up).",
+      "factors": [
+        {
+          "key": "l",
+          "label": "Long edge of a Letter sheet",
+          "unit": "in",
+          "value": 11,
+          "source": "ANSI Letter, 8.5 × 11 in"
+        },
+        {
+          "key": "s",
+          "label": "Short edge of a Letter sheet",
+          "unit": "in",
+          "value": 8.5,
+          "source": "ANSI Letter, 8.5 × 11 in"
+        },
+        {
+          "key": "ac",
+          "label": "Acre",
+          "unit": "ft²",
+          "value": 43560,
+          "source": "International acre"
+        }
+      ],
+      "formula": "ac * 144 / (l * s)"
+    },
+    {
+      "id": "bones-on-a-soccer-pitch",
+      "category": "Body",
+      "prompt": "How many bones are in the 22 players on the pitch at a soccer kickoff?",
+      "unit": "bones",
+      "rounding": "round",
+      "roundingNote": "Exact count.",
+      "factors": [
+        {
+          "key": "b",
+          "label": "Bones in an adult human",
+          "unit": "bones",
+          "value": 206,
+          "source": "Gray’s Anatomy"
+        }
+      ],
+      "formula": "22 * b"
+    },
+    {
+      "id": "quarters-stacked-to-the-crossbar",
+      "category": "Sport",
+      "prompt": "How many quarters, stacked flat, reach the crossbar of a soccer goal?",
+      "unit": "quarters",
+      "rounding": "ceil",
+      "roundingNote": "Enough to reach it (round up).",
+      "factors": [
+        {
+          "key": "mm",
+          "label": "Quarter thickness",
+          "unit": "mm",
+          "value": 1.75,
+          "source": "US Mint specifications"
+        },
+        {
+          "key": "h",
+          "label": "Soccer goal height",
+          "unit": "m",
+          "value": 2.44,
+          "source": "IFAB Laws of the Game, 8 ft"
+        }
+      ],
+      "formula": "h * 1000 / mm"
+    },
+    {
+      "id": "distance-to-the-horizon-from-everest",
+      "category": "Earth",
+      "prompt": "Ignoring refraction, how many kilometers away is the horizon from the summit of Everest?",
+      "unit": "km",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest kilometer.",
+      "factors": [
+        {
+          "key": "r",
+          "label": "Earth’s mean radius",
+          "unit": "km",
+          "value": 6371,
+          "source": "IUGG mean radius"
+        },
+        {
+          "key": "h",
+          "label": "Height of Mount Everest",
+          "unit": "m",
+          "value": 8848.86,
+          "source": "China–Nepal survey, 2020"
+        }
+      ],
+      "formula": "(2 * r * h / 1000) ^ 0.5"
+    },
+    {
+      "id": "milliseconds-for-a-hammer-to-fall-on-the-moon",
+      "category": "Space",
+      "prompt": "An astronaut drops a hammer from 1.5 m above the Moon’s surface. How many milliseconds until it lands?",
+      "unit": "ms",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest millisecond.",
+      "factors": [
+        {
+          "key": "gm",
+          "label": "Moon surface gravity",
+          "unit": "m/s²",
+          "value": 1.62,
+          "source": "NASA Moon fact sheet"
+        }
+      ],
+      "formula": "(2 * 1.5 / gm) ^ 0.5 * 1000"
+    }
+  ]
+}

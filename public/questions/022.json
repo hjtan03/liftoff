@@ -1,0 +1,130 @@
+{
+  "id": "022",
+  "questions": [
+    {
+      "id": "microseconds-in-one-cycle-of-concert-a",
+      "category": "Music",
+      "prompt": "How many microseconds does one vibration of concert A last?",
+      "unit": "µs",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest microsecond.",
+      "factors": [
+        {
+          "key": "a",
+          "label": "Concert pitch A",
+          "unit": "Hz",
+          "value": 440,
+          "source": "ISO 16"
+        }
+      ],
+      "formula": "1000000 / a"
+    },
+    {
+      "id": "years-to-drive-a-light-year",
+      "category": "Travel",
+      "prompt": "Driving nonstop at 100 km/h, how many years would it take to cover one light-year?",
+      "unit": "years",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest year.",
+      "factors": [
+        {
+          "key": "ly",
+          "label": "Light-year",
+          "unit": "km",
+          "value": 9460730472580.8,
+          "source": "IAU definition"
+        },
+        {
+          "key": "y",
+          "label": "Average year",
+          "unit": "days",
+          "value": 365.25,
+          "source": "Julian year, IAU"
+        }
+      ],
+      "formula": "ly / 100 / 24 / y"
+    },
+    {
+      "id": "tennis-courts-in-an-acre",
+      "category": "Sport",
+      "prompt": "By area, how many complete doubles tennis courts fit in an acre?",
+      "unit": "courts",
+      "rounding": "floor",
+      "roundingNote": "Complete courts only (round down).",
+      "factors": [
+        {
+          "key": "l",
+          "label": "Tennis court length",
+          "unit": "ft",
+          "value": 78,
+          "source": "ITF Rules of Tennis"
+        },
+        {
+          "key": "w",
+          "label": "Doubles court width",
+          "unit": "ft",
+          "value": 36,
+          "source": "ITF Rules of Tennis"
+        },
+        {
+          "key": "ac",
+          "label": "Acre",
+          "unit": "ft²",
+          "value": 43560,
+          "source": "International acre"
+        }
+      ],
+      "formula": "ac / (l * w)"
+    },
+    {
+      "id": "kilograms-of-air-on-a-square-meter",
+      "category": "Science",
+      "prompt": "How many kilograms of air press down on one square meter at sea level?",
+      "unit": "kg",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest kilogram.",
+      "factors": [
+        {
+          "key": "p",
+          "label": "Standard atmosphere",
+          "unit": "Pa",
+          "value": 101325,
+          "source": "CGPM, 1954"
+        },
+        {
+          "key": "g",
+          "label": "Standard gravity",
+          "unit": "m/s²",
+          "value": 9.807,
+          "source": "CGPM, 1901, 9.80665 m/s²"
+        }
+      ],
+      "formula": "p / g"
+    },
+    {
+      "id": "moons-orbital-speed",
+      "category": "Space",
+      "prompt": "Treating its orbit as a circle, how many km/h does the Moon travel around Earth?",
+      "unit": "km/h",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest km/h.",
+      "factors": [
+        {
+          "key": "d",
+          "label": "Average Earth–Moon distance",
+          "unit": "km",
+          "value": 384400,
+          "source": "NASA"
+        },
+        {
+          "key": "m",
+          "label": "Moon’s orbit, measured against the stars",
+          "unit": "days",
+          "value": 27.32,
+          "source": "NASA"
+        }
+      ],
+      "formula": "2 * 3.14159265 * d / (m * 24)"
+    }
+  ]
+}

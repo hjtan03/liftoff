@@ -1,0 +1,123 @@
+{
+  "id": "012",
+  "questions": [
+    {
+      "id": "pennies-to-match-a-bowling-ball",
+      "category": "Everyday",
+      "prompt": "How many pennies weigh as much as a 16 lb bowling ball?",
+      "unit": "pennies",
+      "rounding": "ceil",
+      "roundingNote": "Enough to match it (round up).",
+      "factors": [
+        {
+          "key": "g",
+          "label": "Penny mass",
+          "unit": "g",
+          "value": 2.5,
+          "source": "US Mint specifications"
+        },
+        {
+          "key": "lb",
+          "label": "Pound",
+          "unit": "g",
+          "value": 453.592,
+          "source": "International pound, 1959"
+        }
+      ],
+      "formula": "16 * lb / g"
+    },
+    {
+      "id": "hours-asleep-in-eighty-years",
+      "category": "Body",
+      "prompt": "Sleeping 8 hours every night, how many hours does a person sleep in 80 years?",
+      "unit": "hours",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest hour.",
+      "factors": [
+        {
+          "key": "y",
+          "label": "Average year",
+          "unit": "days",
+          "value": 365.25,
+          "source": "Julian year, IAU"
+        }
+      ],
+      "formula": "8 * y * 80"
+    },
+    {
+      "id": "golf-balls-to-match-a-shot-put",
+      "category": "Sport",
+      "prompt": "How many golf balls weigh at least as much as a men’s shot put?",
+      "unit": "balls",
+      "rounding": "ceil",
+      "roundingNote": "Enough to match it (round up).",
+      "factors": [
+        {
+          "key": "g",
+          "label": "Golf ball mass",
+          "unit": "g",
+          "value": 45.93,
+          "source": "R&A / USGA maximum"
+        },
+        {
+          "key": "kg",
+          "label": "Men’s shot put mass",
+          "unit": "kg",
+          "value": 7.26,
+          "source": "World Athletics rules"
+        }
+      ],
+      "formula": "kg * 1000 / g"
+    },
+    {
+      "id": "nautical-miles-around-the-equator",
+      "category": "Earth",
+      "prompt": "How many nautical miles is it around the equator?",
+      "unit": "nmi",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest nautical mile.",
+      "factors": [
+        {
+          "key": "eq",
+          "label": "Equator circumference",
+          "unit": "km",
+          "value": 40075,
+          "source": "WGS 84"
+        },
+        {
+          "key": "nm",
+          "label": "Nautical mile",
+          "unit": "m",
+          "value": 1852,
+          "source": "International definition, 1929"
+        }
+      ],
+      "formula": "eq * 1000 / nm"
+    },
+    {
+      "id": "how-many-times-farther-the-sun-is-than-the-moon",
+      "category": "Space",
+      "prompt": "On average, how many times farther from Earth is the Sun than the Moon?",
+      "unit": "times",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest whole number.",
+      "factors": [
+        {
+          "key": "au",
+          "label": "Astronomical unit",
+          "unit": "km",
+          "value": 149597870.7,
+          "source": "IAU 2012 definition"
+        },
+        {
+          "key": "d",
+          "label": "Average Earth–Moon distance",
+          "unit": "km",
+          "value": 384400,
+          "source": "NASA"
+        }
+      ],
+      "formula": "au / d"
+    }
+  ]
+}

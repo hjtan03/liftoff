@@ -1,0 +1,123 @@
+{
+  "id": "002",
+  "questions": [
+    {
+      "id": "diagonal-of-an-a4-sheet",
+      "category": "Everyday",
+      "prompt": "How many millimeters is it from one corner of an A4 sheet to the opposite corner?",
+      "unit": "mm",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest millimeter.",
+      "factors": [
+        {
+          "key": "l",
+          "label": "Long edge of an A4 sheet",
+          "unit": "mm",
+          "value": 297,
+          "source": "ISO 216"
+        },
+        {
+          "key": "s",
+          "label": "Short edge of an A4 sheet",
+          "unit": "mm",
+          "value": 210,
+          "source": "ISO 216"
+        }
+      ],
+      "formula": "(l ^ 2 + s ^ 2) ^ 0.5"
+    },
+    {
+      "id": "texas-holdem-starting-hands",
+      "category": "Games",
+      "prompt": "Ignoring the order they arrive in, how many different two-card hands can be dealt from a standard deck?",
+      "unit": "hands",
+      "rounding": "round",
+      "roundingNote": "Exact count.",
+      "factors": [
+        {
+          "key": "n",
+          "label": "Cards in a standard deck",
+          "unit": "cards",
+          "value": 52,
+          "source": "Standard 52-card deck"
+        }
+      ],
+      "formula": "n * (n - 1) / 2"
+    },
+    {
+      "id": "pucks-across-a-hockey-rink",
+      "category": "Sport",
+      "prompt": "How many hockey pucks, lying flat edge to edge, span an NHL rink from end to end?",
+      "unit": "pucks",
+      "rounding": "round",
+      "roundingNote": "Exact count.",
+      "factors": [
+        {
+          "key": "in",
+          "label": "Puck diameter",
+          "unit": "in",
+          "value": 3,
+          "source": "NHL Official Rules"
+        },
+        {
+          "key": "ft",
+          "label": "NHL rink length",
+          "unit": "ft",
+          "value": 200,
+          "source": "NHL Official Rules"
+        }
+      ],
+      "formula": "ft * 12 / in"
+    },
+    {
+      "id": "area-of-a-badminton-court",
+      "category": "Sport",
+      "prompt": "How many square meters is a badminton doubles court?",
+      "unit": "m²",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest square meter.",
+      "factors": [
+        {
+          "key": "l",
+          "label": "Badminton court length",
+          "unit": "m",
+          "value": 13.4,
+          "source": "BWF Laws of Badminton"
+        },
+        {
+          "key": "w",
+          "label": "Badminton doubles court width",
+          "unit": "m",
+          "value": 6.1,
+          "source": "BWF Laws of Badminton"
+        }
+      ],
+      "formula": "l * w"
+    },
+    {
+      "id": "troy-ounces-in-a-liter-of-gold",
+      "category": "Science",
+      "prompt": "How many troy ounces of gold fill a one-liter box?",
+      "unit": "troy oz",
+      "rounding": "floor",
+      "roundingNote": "Whole ounces only (round down).",
+      "factors": [
+        {
+          "key": "rho",
+          "label": "Density of gold",
+          "unit": "g/cm³",
+          "value": 19.32,
+          "source": "CRC Handbook of Chemistry and Physics"
+        },
+        {
+          "key": "oz",
+          "label": "Troy ounce",
+          "unit": "g",
+          "value": 31.103,
+          "source": "International troy ounce"
+        }
+      ],
+      "formula": "1000 * rho / oz"
+    }
+  ]
+}

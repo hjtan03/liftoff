@@ -1,0 +1,102 @@
+{
+  "id": "011",
+  "questions": [
+    {
+      "id": "height-of-a-million-dollar-bills",
+      "category": "Everyday",
+      "prompt": "How many meters tall is a stack of one million $1 bills?",
+      "unit": "m",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest meter.",
+      "factors": [
+        {
+          "key": "mm",
+          "label": "Dollar bill thickness",
+          "unit": "mm",
+          "value": 0.109,
+          "source": "Bureau of Engraving and Printing, 0.0043 in"
+        }
+      ],
+      "formula": "1000000 * mm / 1000"
+    },
+    {
+      "id": "heartbeats-in-a-year",
+      "category": "Body",
+      "prompt": "At a steady 70 beats per minute, how many times does a heart beat in a common year?",
+      "unit": "beats",
+      "rounding": "round",
+      "roundingNote": "Exact count.",
+      "factors": [
+        {
+          "key": "d",
+          "label": "Days in a common year",
+          "unit": "days",
+          "value": 365,
+          "source": "Gregorian calendar"
+        }
+      ],
+      "formula": "70 * 60 * 24 * d"
+    },
+    {
+      "id": "milliseconds-for-a-cricket-delivery",
+      "category": "Sport",
+      "prompt": "A 140 km/h delivery travels the length of the pitch. How many milliseconds does it take?",
+      "unit": "ms",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest millisecond.",
+      "factors": [
+        {
+          "key": "yd",
+          "label": "Wicket to wicket",
+          "unit": "yd",
+          "value": 22,
+          "source": "MCC Laws of Cricket"
+        }
+      ],
+      "formula": "yd * 914.4 / (140 / 3.6)"
+    },
+    {
+      "id": "kinetic-energy-of-a-shot-put",
+      "category": "Science",
+      "prompt": "How many joules of kinetic energy does a men’s shot put carry as it leaves the hand at 14 m/s?",
+      "unit": "J",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest joule.",
+      "factors": [
+        {
+          "key": "kg",
+          "label": "Men’s shot put mass",
+          "unit": "kg",
+          "value": 7.26,
+          "source": "World Athletics rules"
+        }
+      ],
+      "formula": "0.5 * kg * 14 ^ 2"
+    },
+    {
+      "id": "everests-to-the-edge-of-space",
+      "category": "Space",
+      "prompt": "How many Mount Everests, stacked from sea level, would reach the Kármán line?",
+      "unit": "Everests",
+      "rounding": "ceil",
+      "roundingNote": "Enough to reach it (round up).",
+      "factors": [
+        {
+          "key": "k",
+          "label": "Kármán line",
+          "unit": "km",
+          "value": 100,
+          "source": "FAI definition of space"
+        },
+        {
+          "key": "h",
+          "label": "Height of Mount Everest",
+          "unit": "m",
+          "value": 8848.86,
+          "source": "China–Nepal survey, 2020"
+        }
+      ],
+      "formula": "k * 1000 / h"
+    }
+  ]
+}

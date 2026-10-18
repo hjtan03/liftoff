@@ -1,0 +1,123 @@
+{
+  "id": "010",
+  "questions": [
+    {
+      "id": "dollar-bills-around-the-equator",
+      "category": "Everyday",
+      "prompt": "How many dollar bills, laid end to end, would wrap once around the equator?",
+      "unit": "bills",
+      "rounding": "ceil",
+      "roundingNote": "Enough to close the loop (round up).",
+      "factors": [
+        {
+          "key": "in",
+          "label": "Dollar bill length",
+          "unit": "in",
+          "value": 6.14,
+          "source": "Bureau of Engraving and Printing"
+        },
+        {
+          "key": "eq",
+          "label": "Equator circumference",
+          "unit": "km",
+          "value": 40075,
+          "source": "WGS 84"
+        }
+      ],
+      "formula": "eq * 1000000 / (in * 25.4)"
+    },
+    {
+      "id": "pixels-on-a-4k-screen",
+      "category": "Tech",
+      "prompt": "How many pixels does a 4K UHD screen light up?",
+      "unit": "pixels",
+      "rounding": "round",
+      "roundingNote": "Exact count.",
+      "factors": [
+        {
+          "key": "w",
+          "label": "4K UHD width",
+          "unit": "pixels",
+          "value": 3840,
+          "source": "ITU-R BT.2020"
+        },
+        {
+          "key": "h",
+          "label": "4K UHD height",
+          "unit": "pixels",
+          "value": 2160,
+          "source": "ITU-R BT.2020"
+        }
+      ],
+      "formula": "w * h"
+    },
+    {
+      "id": "milliseconds-for-a-penalty-kick",
+      "category": "Sport",
+      "prompt": "A penalty kick leaves the spot at 100 km/h. How many milliseconds until it crosses the goal line?",
+      "unit": "ms",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest millisecond.",
+      "factors": [
+        {
+          "key": "m",
+          "label": "Penalty mark to goal line",
+          "unit": "m",
+          "value": 11,
+          "source": "IFAB Laws of the Game"
+        }
+      ],
+      "formula": "m * 1000 / (100 / 3.6)"
+    },
+    {
+      "id": "laps-of-a-track-light-makes-in-a-second",
+      "category": "Science",
+      "prompt": "How many complete laps of a standard running track could light make in one second?",
+      "unit": "laps",
+      "rounding": "floor",
+      "roundingNote": "Complete laps only (round down).",
+      "factors": [
+        {
+          "key": "c",
+          "label": "Speed of light",
+          "unit": "km/s",
+          "value": 299792.458,
+          "source": "SI definition"
+        },
+        {
+          "key": "m",
+          "label": "One lap of a standard track, lane 1",
+          "unit": "m",
+          "value": 400,
+          "source": "World Athletics rules"
+        }
+      ],
+      "formula": "c * 1000 / m"
+    },
+    {
+      "id": "jump-height-on-the-moon",
+      "category": "Space",
+      "prompt": "Someone who jumps 50 cm high on Earth jumps with the same push on the Moon. How many centimeters high do they go?",
+      "unit": "cm",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest centimeter.",
+      "factors": [
+        {
+          "key": "g",
+          "label": "Standard gravity",
+          "unit": "m/s²",
+          "value": 9.807,
+          "source": "CGPM, 1901, 9.80665 m/s²"
+        },
+        {
+          "key": "gm",
+          "label": "Moon surface gravity",
+          "unit": "m/s²",
+          "value": 1.62,
+          "source": "NASA Moon fact sheet"
+        }
+      ],
+      "formula": "50 * g / gm"
+    }
+  ]
+}
