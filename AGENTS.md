@@ -31,6 +31,11 @@ docs/archive/.
   builds every pull request as a preview and deploys `main` to production;
   CI only checks.
 
+- The API lives in `api/` (Vercel functions) over pure handlers in
+  `src/api/`; docs/backend.md has the contract. Every relative import
+  reachable from `api/` names its `.js` file, because the functions run as
+  plain Node ES modules; `tsconfig.api.json` enforces it in the build.
+
 ## What is simulated
 
 Crowd stats are a placeholder in `src/game/crowd.ts` until the real crowd

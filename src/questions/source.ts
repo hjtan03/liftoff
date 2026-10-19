@@ -1,7 +1,7 @@
-import { evaluateExpression } from "../expression/evaluate";
-import { formatNumber } from "../game/numbers";
-import { canonicalFactorValues } from "./factors";
-import type { Question, QuestionSet, RoundingRule } from "./schema";
+import { evaluateExpression } from "../expression/evaluate.js";
+import { formatNumber } from "../game/numbers.js";
+import { canonicalFactorValues } from "./factors.js";
+import type { Question, QuestionSet, RoundingRule } from "./schema.js";
 
 export type LoadedQuestion = Question & { answer: number };
 export type LoadedQuestionSet = { id: string; questions: LoadedQuestion[] };
