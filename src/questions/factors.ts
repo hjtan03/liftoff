@@ -1,4 +1,4 @@
-import type { Factor } from "./schema";
+import type { Factor } from "./schema.js";
 
 export type FactorValues = Record<string, number>;
 
