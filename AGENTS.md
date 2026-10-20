@@ -36,7 +36,11 @@ docs/archive/.
   reachable from `api/` names its `.js` file, because the functions run as
   plain Node ES modules; `api/tsconfig.json` enforces it in the build.
 
-## What is simulated
+## The crowd
 
-Crowd stats are a placeholder in `src/game/crowd.ts` until the real crowd
-exists.
+Each revealed stage is posted to `/api/guess` through `src/api/client.ts`,
+and the reveal shows the crowd the server returns. Every client call
+degrades to "no crowd line" rather than an error, because the game scores
+itself and must play without the server. `npm run dev` and the Playwright
+preview do not run the API; the play-through stubs `/api/guess` where it
+checks the crowd line.

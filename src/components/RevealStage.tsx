@@ -1,5 +1,6 @@
 import { Fragment, useEffect, useEffectEvent, useRef, useState } from "react";
 import { easeOutCubic, prefersReducedMotion, tween } from "../animation";
+import type { CrowdState } from "../api/client";
 import { formatNumber } from "../game/numbers";
 
 import {
@@ -54,7 +55,7 @@ function startingTankAnimation(
 type Props = {
   question: LoadedQuestion;
   result: StageResult;
-  crowdLockedInHitPercent: number;
+  crowd: CrowdState;
   isLastStage: boolean;
   isAnimating: boolean;
   onAnimationFinished: () => void;
@@ -64,7 +65,7 @@ type Props = {
 export function RevealStage({
   question,
   result,
-  crowdLockedInHitPercent,
+  crowd,
   isLastStage,
   isAnimating,
   onAnimationFinished,
@@ -231,8 +232,7 @@ export function RevealStage({
         {result.exact
           ? `, and hit it exactly for a +${EXACT_ANSWER_BONUS_POINTS} bonus`
           : ""}
-        . Simulated crowd: <b>{crowdLockedInHitPercent}%</b> locked in and hit
-        this one.
+        .<CrowdLine crowd={crowd} />
       </p>
       <div className="work">
         <h3>Debrief</h3>
@@ -284,5 +284,29 @@ export function RevealStage({
         {isLastStage ? "Launch the rocket" : "Next stage"}
       </button>
     </div>
+  );
+}
+
+const formatShare = (share: number) => `${Math.round(share * 100)}%`;
+
+/** The crowd sentence after the band line; nothing at all when the server could not answer. */
+function CrowdLine({ crowd }: { crowd: CrowdState }) {
+  if (crowd.status === "unavailable") return null;
+  if (crowd.status === "loading") return <> Checking the crowd…</>;
+  const { players, lockHitShare, percentile } = crowd.crowd;
+  if (players <= 1) return <> You’re the first to fly this stage today.</>;
+  return (
+    <>
+      {" "}
+      <b>{formatShare(lockHitShare)}</b> of {formatNumber(players)} players
+      locked in and hit this one
+      {percentile === null ? (
+        "."
+      ) : (
+        <>
+          , and you were closer than <b>{formatShare(percentile)}</b> of them.
+        </>
+      )}
+    </>
   );
 }

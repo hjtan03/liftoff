@@ -155,7 +155,7 @@ Running the functions locally needs the Vercel CLI: `npx vercel link`, `npx verc
 
 ## Who builds what
 
-- **Game side:** launch rotation, resume and local streaks, question checks, and calling `POST /api/guess` and `GET /api/crowd` (types in `src/api/contract.ts`) in place of `src/game/crowd.ts`.
+- **Game side:** launch rotation, resume and local streaks, question checks. The game records each revealed stage through `src/api/client.ts` and shows the crowd it returns; `GET /api/crowd` is for restoring a finished run once resume exists.
 - **Server side:** the Supabase project, the migrations, the `api/` functions and their handlers, and the Vercel configuration.
 
 ## Open questions
