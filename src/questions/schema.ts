@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { evaluateExpression } from "../expression/evaluate";
-import { canonicalFactorValues } from "./factors";
+import { evaluateExpression } from "../expression/evaluate.js";
+import { canonicalFactorValues } from "./factors.js";
 
 /**
  * The contract between whoever produces a question set and the game. A

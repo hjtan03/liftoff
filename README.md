@@ -39,6 +39,9 @@ src/expression/            the arithmetic evaluator shared by formulas and the c
 src/calculator/            the pop-up calculator
 src/components/            one component per screen piece
 public/questions/          the published question sets, one JSON document each
+src/api/                   the API contract and its rules as pure functions
+api/                       Vercel functions: POST /api/guess, GET /api/crowd
+supabase/migrations/       the database schema
 e2e/                       Playwright play-through
 docs/                      roadmap, how questions work, archive
 .github/workflows/ci.yml   checks on every PR and on main
