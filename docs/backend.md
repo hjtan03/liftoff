@@ -139,10 +139,24 @@ Row Level Security is on with no policies, and the public roles have no grants o
 
 New schema changes are new files in `supabase/migrations/`, reviewed in a pull request and then run in the Supabase SQL Editor.
 
+## Code layout
+
+| Path                           | What it is                                                                              |
+| ------------------------------ | --------------------------------------------------------------------------------------- |
+| `src/api/contract.ts`          | Request and response types. The game imports these when it calls the API.               |
+| `src/api/handlers.ts`          | The API's rules as pure functions (validation, launch window, scoring), unit-tested.    |
+| `api/guess.ts`, `api/crowd.ts` | The Vercel functions: thin adapters from a `Request` to the handlers.                   |
+| `api/_lib/`                    | The Supabase store and the question-set loader. Files starting with `_` are not routes. |
+| `vercel.json`                  | Bundles `public/questions/` with the functions so they can read the sets.               |
+
+**Imports on the API's path need a `.js` extension.** Vercel runs the functions as plain Node ES modules, which do not resolve `./file` to `./file.ts`; an extensionless relative import works in Vite and in tests and then crashes in production. `api/tsconfig.json` type-checks everything reachable from `api/` with Node's rules, so `npm run build` fails on a missing extension before it can ship. Write `import { x } from "./file.js"` in any module the API imports.
+
+Running the functions locally needs the Vercel CLI: `npx vercel link`, `npx vercel env pull`, then `npx vercel dev`. Otherwise test on the preview deployment Vercel builds for every pull request.
+
 ## Who builds what
 
-- **Game side:** launch rotation, resume and local streaks, question checks, and later calling `POST /api/guess` and `GET /api/crowd` in place of `src/game/crowd.ts`.
-- **Server side:** the Supabase project, the migrations, the `api/` functions, and the Vercel configuration (including bundling `public/questions/` with the functions).
+- **Game side:** launch rotation, resume and local streaks, question checks, and calling `POST /api/guess` and `GET /api/crowd` (types in `src/api/contract.ts`) in place of `src/game/crowd.ts`.
+- **Server side:** the Supabase project, the migrations, the `api/` functions and their handlers, and the Vercel configuration.
 
 ## Open questions
 
