@@ -1,6 +1,7 @@
 import type { Dispatch } from "react";
-import { simulatedCrowdLockedInHitPercent } from "../game/crowd";
+import type { CrowdState } from "../api/client";
 import type { GameAction, GameState } from "../game/state";
+import type { FactorValues } from "../questions/factors";
 import { AskStage } from "./AskStage";
 import { AssumptionsForm } from "./AssumptionsForm";
 import { RevealStage } from "./RevealStage";
@@ -9,6 +10,9 @@ import { RocketStack } from "./RocketStack";
 type Props = {
   game: GameState;
   dispatch: Dispatch<GameAction>;
+  /** What the server said about this stage's crowd. */
+  crowd: CrowdState;
+  onAssumptionsSubmitted: (assumedFactorValues: FactorValues) => void;
   isCalculatorOpen: boolean;
   onToggleCalculator: () => void;
 };
@@ -16,6 +20,8 @@ type Props = {
 export function StageScreen({
   game,
   dispatch,
+  crowd,
+  onAssumptionsSubmitted,
   isCalculatorOpen,
   onToggleCalculator,
 }: Props) {
@@ -60,9 +66,7 @@ export function StageScreen({
           <AssumptionsForm
             question={question}
             pendingResult={game.pendingResult}
-            onSubmit={(assumedFactorValues) =>
-              dispatch({ type: "assumptions-submitted", assumedFactorValues })
-            }
+            onSubmit={onAssumptionsSubmitted}
           />
         )}
         {game.phase === "reveal" && stageResult && (
@@ -70,9 +74,7 @@ export function StageScreen({
             key={game.stageIndex}
             question={question}
             result={stageResult}
-            crowdLockedInHitPercent={simulatedCrowdLockedInHitPercent(
-              game.stageIndex,
-            )}
+            crowd={crowd}
             isLastStage={game.stageIndex === game.questions.length - 1}
             isAnimating={game.animatingStageIndex === game.stageIndex}
             onAnimationFinished={() =>

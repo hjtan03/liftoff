@@ -67,3 +67,46 @@ test("a question set the server cannot return shows the error instead of a game"
   await expect(page.locator(".err")).toContainText("HTTP 503");
   await expect(page.getByLabel("Your answer")).toHaveCount(0);
 });
+
+test("a revealed stage is recorded and shows the crowd the server returns", async ({
+  page,
+}) => {
+  const recorded: unknown[] = [];
+  await page.route("**/api/guess", async (route) => {
+    recorded.push(route.request().postDataJSON());
+    await route.fulfill({
+      json: {
+        hit: true,
+        exact: true,
+        points: 1250,
+        crowd: {
+          players: 40,
+          hitRate: { lock: 0.5, solid: 0.8, rough: 1 },
+          lockHitShare: 0.25,
+          percentile: 0.9,
+        },
+      },
+    });
+  });
+  await page.goto("./");
+  await page.getByLabel("Your answer").fill(EXACT_ANSWERS[0]);
+  await page.getByRole("button", { name: "Locked in" }).click();
+  await page.getByRole("button", { name: "Fire stage 1" }).click();
+  await page.getByRole("button", { name: "Reveal" }).click();
+  await expect(page.locator(".crowd")).toContainText(
+    "25% of 40 players locked in and hit this one, and you were closer than 90% of them.",
+  );
+  expect(recorded).toEqual([{ launch: 1, stage: 1, guess: 506, band: "lock" }]);
+});
+
+test("without the server the reveal still plays, with no crowd line", async ({
+  page,
+}) => {
+  await page.route("**/api/guess", (route) => route.fulfill({ status: 500 }));
+  await page.goto("./");
+  await page.getByLabel("Your answer").fill(EXACT_ANSWERS[0]);
+  await page.getByRole("button", { name: "Fire stage 1" }).click();
+  await page.getByRole("button", { name: "Skip" }).click();
+  await expect(page.locator(".crowd")).not.toContainText("players");
+  await expect(page.locator(".crowd")).not.toContainText("Checking");
+});
