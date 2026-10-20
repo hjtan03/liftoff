@@ -149,7 +149,7 @@ New schema changes are new files in `supabase/migrations/`, reviewed in a pull r
 | `api/_lib/`                    | The Supabase store and the question-set loader. Files starting with `_` are not routes. |
 | `vercel.json`                  | Bundles `public/questions/` with the functions so they can read the sets.               |
 
-**Imports on the API's path need a `.js` extension.** Vercel runs the functions as plain Node ES modules, which do not resolve `./file` to `./file.ts`; an extensionless relative import works in Vite and in tests and then crashes in production. `tsconfig.api.json` type-checks everything reachable from `api/` with Node's rules, so `npm run build` fails on a missing extension before it can ship. Write `import { x } from "./file.js"` in any module the API imports.
+**Imports on the API's path need a `.js` extension.** Vercel runs the functions as plain Node ES modules, which do not resolve `./file` to `./file.ts`; an extensionless relative import works in Vite and in tests and then crashes in production. `api/tsconfig.json` type-checks everything reachable from `api/` with Node's rules, so `npm run build` fails on a missing extension before it can ship. Write `import { x } from "./file.js"` in any module the API imports.
 
 Running the functions locally needs the Vercel CLI: `npx vercel link`, `npx vercel env pull`, then `npx vercel dev`. Otherwise test on the preview deployment Vercel builds for every pull request.
 
