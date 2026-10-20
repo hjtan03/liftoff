@@ -34,7 +34,7 @@ docs/archive/.
 - The API lives in `api/` (Vercel functions) over pure handlers in
   `src/api/`; docs/backend.md has the contract. Every relative import
   reachable from `api/` names its `.js` file, because the functions run as
-  plain Node ES modules; `tsconfig.api.json` enforces it in the build.
+  plain Node ES modules; `api/tsconfig.json` enforces it in the build.
 
 ## What is simulated
 
