@@ -1,0 +1,116 @@
+{
+  "id": "039",
+  "questions": [
+    {
+      "id": "rain-on-an-acre",
+      "category": "Earth",
+      "prompt": "How many US gallons of water fall on an acre in one inch of rain?",
+      "unit": "gallons",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest gallon.",
+      "factors": [
+        {
+          "key": "acre",
+          "label": "Acre",
+          "unit": "ft²",
+          "value": 43560,
+          "source": "US customary units"
+        },
+        {
+          "key": "ft",
+          "label": "Foot",
+          "unit": "m",
+          "value": 0.3048,
+          "source": "International foot, 1959"
+        },
+        {
+          "key": "gal",
+          "label": "US gallon",
+          "unit": "L",
+          "value": 3.785411784,
+          "source": "US customary units (231 in³)"
+        }
+      ],
+      "formula": "acre / 12 * (ft * 10) ^ 3 / gal"
+    },
+    {
+      "id": "moores-law-over-20-years",
+      "category": "Tech",
+      "prompt": "If chips double their transistor count every two years, how many times more transistors does a chip hold after 20 years?",
+      "unit": "times",
+      "rounding": "round",
+      "roundingNote": "Exact count.",
+      "factors": [
+        {
+          "key": "p",
+          "label": "Doubling period",
+          "unit": "years",
+          "value": 2,
+          "source": "Moore’s law, 1975 revision"
+        }
+      ],
+      "formula": "2 ^ (20 / p)"
+    },
+    {
+      "id": "games-in-an-nfl-season",
+      "category": "Sport",
+      "prompt": "Each of the NFL’s 32 teams plays 17 regular-season games. How many games are played in all?",
+      "unit": "games",
+      "rounding": "round",
+      "roundingNote": "Exact count.",
+      "factors": [
+        {
+          "key": "t",
+          "label": "NFL teams",
+          "unit": "teams",
+          "value": 32,
+          "source": "NFL"
+        },
+        {
+          "key": "gp",
+          "label": "Games per team",
+          "unit": "games",
+          "value": 17,
+          "source": "NFL, since 2021"
+        }
+      ],
+      "formula": "t * gp / 2"
+    },
+    {
+      "id": "kinetic-energy-of-a-car",
+      "category": "Science",
+      "prompt": "How many kilojoules of kinetic energy does a 1,500 kg car carry at 100 km/h?",
+      "unit": "kJ",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest kilojoule.",
+      "factors": [
+        {
+          "key": "kmh",
+          "label": "km/h in one m/s",
+          "unit": "km/h",
+          "value": 3.6,
+          "source": "3,600 s per hour ÷ 1,000 m per km"
+        }
+      ],
+      "formula": "0.5 * 1500 * (100 / kmh) ^ 2 / 1000"
+    },
+    {
+      "id": "how-much-shorter-a-turn-of-earth-is",
+      "category": "Space",
+      "prompt": "Earth turns 366.2422 times against the stars in a 365.2422-day year. How many seconds shorter than 24 hours is one turn?",
+      "unit": "seconds",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest second.",
+      "factors": [
+        {
+          "key": "y",
+          "label": "Days in a tropical year",
+          "unit": "days",
+          "value": 365.2422,
+          "source": "IERS"
+        }
+      ],
+      "formula": "86400 / (y + 1)"
+    }
+  ]
+}

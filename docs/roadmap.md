@@ -7,11 +7,12 @@ including the first sketches, live in [the archive](archive/) and in pull
 requests, not here. To change the roadmap, change this file in a pull
 request and put the why in the commit.
 
-Where things stand at launch (Saturday, October 24, 2026): a month of
-question sets is published and passed a review for trivia and copied
-questions; a reload keeps the run and streaks count; the crowd number is
-real; the name is Liftoff for now. Still open: more sets past launch #031, a
-bonus for hits the crowd missed, the domain, and the stage-by-stage burn.
+Where things stand at launch (Saturday, October 24, 2026): question sets are
+published through launch #069 (December 31) and passed a review for trivia
+and copied questions; launches roll over at midnight Eastern; a reload keeps
+the run and streaks count; the crowd number is real; the name is Liftoff for
+now. Still open: sets for 2027, a bonus for hits the crowd missed, the
+domain, and the stage-by-stage burn.
 
 ## Question supply
 

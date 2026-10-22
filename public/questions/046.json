@@ -1,0 +1,123 @@
+{
+  "id": "046",
+  "questions": [
+    {
+      "id": "calories-of-alcohol-in-a-bottle-of-wine",
+      "category": "Food",
+      "prompt": "A 750 mL bottle of wine is 13.5% alcohol by volume. How many food Calories does its alcohol carry?",
+      "unit": "kcal",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest Calorie.",
+      "factors": [
+        {
+          "key": "abv",
+          "label": "Alcohol by volume",
+          "unit": "",
+          "value": 0.135,
+          "source": "Given in the question"
+        },
+        {
+          "key": "rho",
+          "label": "Density of ethanol",
+          "unit": "g/mL",
+          "value": 0.789,
+          "source": "CRC Handbook, 20 °C"
+        },
+        {
+          "key": "alc",
+          "label": "Energy in alcohol",
+          "unit": "kcal/g",
+          "value": 7,
+          "source": "Atwater general factors"
+        }
+      ],
+      "formula": "750 * abv * rho * alc"
+    },
+    {
+      "id": "unix-time-at-the-millennium",
+      "category": "Tech",
+      "prompt": "Unix time counts seconds from the start of 1970. How many seconds had passed by the start of 2000, with 7 leap years in between?",
+      "unit": "seconds",
+      "rounding": "round",
+      "roundingNote": "Exact count.",
+      "factors": [
+        {
+          "key": "leap",
+          "label": "Leap years from 1970 to 1999",
+          "unit": "years",
+          "value": 7,
+          "source": "Given in the question"
+        }
+      ],
+      "formula": "(30 * 365 + leap) * 86400"
+    },
+    {
+      "id": "marathon-at-bolts-100-m-pace",
+      "category": "Sport",
+      "prompt": "Running a whole marathon at Usain Bolt’s 100 m world-record pace of 9.58 s, how many minutes would it take?",
+      "unit": "minutes",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest minute.",
+      "factors": [
+        {
+          "key": "km",
+          "label": "Marathon distance",
+          "unit": "km",
+          "value": 42.195,
+          "source": "World Athletics"
+        },
+        {
+          "key": "t",
+          "label": "100 m world record",
+          "unit": "s",
+          "value": 9.58,
+          "source": "World Athletics, Berlin 2009"
+        }
+      ],
+      "formula": "km * 1000 / 100 * t / 60"
+    },
+    {
+      "id": "wavelength-of-the-lowest-audible-note",
+      "category": "Music",
+      "prompt": "People hear pitches down to about 20 Hz. How many meters long is one sound wave at 20 Hz in 20 °C air?",
+      "unit": "m",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest meter.",
+      "factors": [
+        {
+          "key": "v",
+          "label": "Speed of sound in 20 °C air",
+          "unit": "m/s",
+          "value": 343,
+          "source": "Dry air at 20 °C"
+        }
+      ],
+      "formula": "v / 20"
+    },
+    {
+      "id": "apollo-11s-average-speed",
+      "category": "Space",
+      "prompt": "Apollo 11 took about 76 hours to reach the Moon. Over the Moon’s average distance, what average speed is that in km/h?",
+      "unit": "km/h",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest km/h.",
+      "factors": [
+        {
+          "key": "d",
+          "label": "Average Earth–Moon distance",
+          "unit": "km",
+          "value": 384400,
+          "source": "NASA Moon Fact Sheet"
+        },
+        {
+          "key": "t",
+          "label": "Trip time",
+          "unit": "h",
+          "value": 76,
+          "source": "Given in the question"
+        }
+      ],
+      "formula": "d / t"
+    }
+  ]
+}

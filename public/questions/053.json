@@ -1,0 +1,116 @@
+{
+  "id": "053",
+  "questions": [
+    {
+      "id": "a4-sheets-in-a-square-meter",
+      "category": "Everyday",
+      "prompt": "How many whole A4 sheets fit, by area, into one square meter of paper?",
+      "unit": "sheets",
+      "rounding": "floor",
+      "roundingNote": "Whole sheets only (round down).",
+      "factors": [
+        {
+          "key": "aw",
+          "label": "A4 width",
+          "unit": "mm",
+          "value": 210,
+          "source": "ISO 216"
+        },
+        {
+          "key": "ah",
+          "label": "A4 height",
+          "unit": "mm",
+          "value": 297,
+          "source": "ISO 216"
+        }
+      ],
+      "formula": "1000000 / (aw * ah)"
+    },
+    {
+      "id": "weight-of-all-the-rice-on-a-chessboard",
+      "category": "Games",
+      "prompt": "One grain of rice goes on a chessboard’s first square and each square after holds double. At 0.02 g a grain, how many billion tonnes of rice is the whole board?",
+      "unit": "billion tonnes",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest billion tonnes.",
+      "factors": [
+        {
+          "key": "n",
+          "label": "Squares on a chessboard",
+          "unit": "squares",
+          "value": 64,
+          "source": "FIDE Laws of Chess"
+        },
+        {
+          "key": "m",
+          "label": "Mass of one grain",
+          "unit": "g",
+          "value": 0.02,
+          "source": "Given in the question"
+        }
+      ],
+      "formula": "(2 ^ n - 1) * m / 1000000 / 1000000000"
+    },
+    {
+      "id": "strides-in-a-marathon",
+      "category": "Sport",
+      "prompt": "A runner’s stride covers 1.2 m. How many strides does a marathon take?",
+      "unit": "strides",
+      "rounding": "ceil",
+      "roundingNote": "Enough to finish (round up).",
+      "factors": [
+        {
+          "key": "km",
+          "label": "Marathon distance",
+          "unit": "km",
+          "value": 42.195,
+          "source": "World Athletics"
+        },
+        {
+          "key": "s",
+          "label": "Stride length",
+          "unit": "m",
+          "value": 1.2,
+          "source": "Given in the question"
+        }
+      ],
+      "formula": "km * 1000 / s"
+    },
+    {
+      "id": "liters-a-kilowatt-hour-warms",
+      "category": "Science",
+      "prompt": "How many liters of water can one kilowatt-hour warm by 50 °C?",
+      "unit": "L",
+      "rounding": "floor",
+      "roundingNote": "Whole liters only (round down).",
+      "factors": [
+        {
+          "key": "cw",
+          "label": "Specific heat of water",
+          "unit": "J/(g·°C)",
+          "value": 4.184,
+          "source": "Thermochemical calorie"
+        }
+      ],
+      "formula": "3600000 / (cw * 1000 * 50)"
+    },
+    {
+      "id": "neptunes-year-from-keplers-law",
+      "category": "Space",
+      "prompt": "Kepler’s third law says a planet’s year, in Earth years, is its distance from the Sun in AU raised to the power 1.5. How many years is Neptune’s?",
+      "unit": "years",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest year.",
+      "factors": [
+        {
+          "key": "a",
+          "label": "Neptune’s average distance from the Sun",
+          "unit": "AU",
+          "value": 30.07,
+          "source": "NASA Neptune Fact Sheet"
+        }
+      ],
+      "formula": "a ^ 1.5"
+    }
+  ]
+}

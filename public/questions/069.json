@@ -1,0 +1,116 @@
+{
+  "id": "069",
+  "questions": [
+    {
+      "id": "minutes-in-a-year",
+      "category": "Calendar",
+      "prompt": "How many minutes are in a common year?",
+      "unit": "minutes",
+      "rounding": "round",
+      "roundingNote": "Exact count.",
+      "factors": [
+        {
+          "key": "d",
+          "label": "Days in a common year",
+          "unit": "days",
+          "value": 365,
+          "source": "Gregorian calendar"
+        }
+      ],
+      "formula": "d * 24 * 60"
+    },
+    {
+      "id": "three-resolutions-from-ten",
+      "category": "Games",
+      "prompt": "Picking 3 New Year’s resolutions from a list of 10, in no order, how many different picks are there?",
+      "unit": "picks",
+      "rounding": "round",
+      "roundingNote": "Exact count.",
+      "factors": [
+        {
+          "key": "n",
+          "label": "Resolutions on the list",
+          "unit": "resolutions",
+          "value": 10,
+          "source": "Given in the question"
+        }
+      ],
+      "formula": "n * (n - 1) * (n - 2) / 6"
+    },
+    {
+      "id": "marathons-in-a-year-of-5-km-runs",
+      "category": "Sport",
+      "prompt": "Running 5 km every day of a common year, how many complete marathons’ worth of distance do you cover?",
+      "unit": "marathons",
+      "rounding": "floor",
+      "roundingNote": "Complete marathons only (round down).",
+      "factors": [
+        {
+          "key": "km",
+          "label": "Marathon distance",
+          "unit": "km",
+          "value": 42.195,
+          "source": "World Athletics"
+        }
+      ],
+      "formula": "5 * 365 / km"
+    },
+    {
+      "id": "calories-in-a-flute-of-champagne",
+      "category": "Food",
+      "prompt": "A 150 mL flute of champagne is 12% alcohol by volume. How many food Calories does its alcohol carry?",
+      "unit": "kcal",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest Calorie.",
+      "factors": [
+        {
+          "key": "abv",
+          "label": "Alcohol by volume",
+          "unit": "",
+          "value": 0.12,
+          "source": "Given in the question"
+        },
+        {
+          "key": "rho",
+          "label": "Density of ethanol",
+          "unit": "g/mL",
+          "value": 0.789,
+          "source": "CRC Handbook, 20 °C"
+        },
+        {
+          "key": "alc",
+          "label": "Energy in alcohol",
+          "unit": "kcal/g",
+          "value": 7,
+          "source": "Atwater general factors"
+        }
+      ],
+      "formula": "150 * abv * rho * alc"
+    },
+    {
+      "id": "km-earth-travels-in-a-day",
+      "category": "Space",
+      "prompt": "Treating Earth’s orbit as a circle, how many thousand km does Earth travel around the Sun from one midnight to the next?",
+      "unit": "thousand km",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest thousand km.",
+      "factors": [
+        {
+          "key": "au",
+          "label": "Astronomical unit",
+          "unit": "km",
+          "value": 149597870.7,
+          "source": "IAU 2012 Resolution B2"
+        },
+        {
+          "key": "y",
+          "label": "Days in a year",
+          "unit": "days",
+          "value": 365.25,
+          "source": "Julian year"
+        }
+      ],
+      "formula": "2 * 3.14159265 * au / y / 1000"
+    }
+  ]
+}

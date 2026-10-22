@@ -1,0 +1,123 @@
+{
+  "id": "042",
+  "questions": [
+    {
+      "id": "paper-folded-42-times",
+      "category": "Everyday",
+      "prompt": "A 0.1 mm sheet of paper is folded in half 42 times. How many kilometers thick is the folded stack?",
+      "unit": "km",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest kilometer.",
+      "factors": [
+        {
+          "key": "t",
+          "label": "Paper thickness",
+          "unit": "mm",
+          "value": 0.1,
+          "source": "Given in the question"
+        }
+      ],
+      "formula": "t * 2 ^ 42 / 1000000"
+    },
+    {
+      "id": "orders-to-fill-a-tic-tac-toe-board",
+      "category": "Games",
+      "prompt": "Ignoring wins, in how many different orders can the nine squares of a tic-tac-toe board be filled?",
+      "unit": "orders",
+      "rounding": "round",
+      "roundingNote": "Exact count.",
+      "factors": [
+        {
+          "key": "n",
+          "label": "Squares on the board",
+          "unit": "squares",
+          "value": 9,
+          "source": "3 × 3 grid"
+        }
+      ],
+      "formula": "n * (n - 1) * (n - 2) * (n - 3) * (n - 4) * (n - 5) * (n - 6) * (n - 7) * (n - 8)"
+    },
+    {
+      "id": "speed-of-the-marathon-record",
+      "category": "Sport",
+      "prompt": "The men’s marathon world record, set in Chicago in 2023, is 2:00:35. What average speed is that in km/h?",
+      "unit": "km/h",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest km/h.",
+      "factors": [
+        {
+          "key": "km",
+          "label": "Marathon distance",
+          "unit": "km",
+          "value": 42.195,
+          "source": "World Athletics"
+        },
+        {
+          "key": "t",
+          "label": "World record",
+          "unit": "s",
+          "value": 7235,
+          "source": "World Athletics, Kelvin Kiptum, Chicago 2023"
+        }
+      ],
+      "formula": "km / (t / 3600)"
+    },
+    {
+      "id": "calories-to-pedal-an-hour",
+      "category": "Body",
+      "prompt": "Pedaling at 100 W for an hour, with muscles 25% efficient, how many food Calories do you burn?",
+      "unit": "kcal",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest Calorie.",
+      "factors": [
+        {
+          "key": "eff",
+          "label": "Muscle efficiency",
+          "unit": "",
+          "value": 0.25,
+          "source": "Given in the question"
+        },
+        {
+          "key": "kcal",
+          "label": "Kilocalorie (food Calorie)",
+          "unit": "J",
+          "value": 4184,
+          "source": "Thermochemical; warms 1 kg of water by 1 °C"
+        }
+      ],
+      "formula": "100 * 3600 / eff / kcal"
+    },
+    {
+      "id": "voyager-to-proxima-centauri",
+      "category": "Space",
+      "prompt": "Voyager 1 moves at 17 km/s. At that speed, how many years would it take to cover the 4.24 light-years to Proxima Centauri?",
+      "unit": "years",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest year.",
+      "factors": [
+        {
+          "key": "dist",
+          "label": "Distance to Proxima Centauri",
+          "unit": "light-years",
+          "value": 4.24,
+          "source": "Given in the question"
+        },
+        {
+          "key": "ly",
+          "label": "Light-year",
+          "unit": "km",
+          "value": 9460730472580.8,
+          "source": "IAU: light’s travel in a Julian year"
+        },
+        {
+          "key": "yr",
+          "label": "Julian year",
+          "unit": "s",
+          "value": 31557600,
+          "source": "IAU: 365.25 days of 86,400 s"
+        }
+      ],
+      "formula": "dist * ly / 17 / yr"
+    }
+  ]
+}

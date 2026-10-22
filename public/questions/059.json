@@ -1,0 +1,116 @@
+{
+  "id": "059",
+  "questions": [
+    {
+      "id": "doughnuts-to-fuel-a-marathon",
+      "category": "Food",
+      "prompt": "Running burns about 1 food Calorie per kilogram per kilometer. How many 250-Calorie doughnuts would refuel a 70 kg runner after a marathon?",
+      "unit": "doughnuts",
+      "rounding": "ceil",
+      "roundingNote": "Enough to cover it (round up).",
+      "factors": [
+        {
+          "key": "km",
+          "label": "Marathon distance",
+          "unit": "km",
+          "value": 42.195,
+          "source": "World Athletics"
+        },
+        {
+          "key": "d",
+          "label": "Calories in a doughnut",
+          "unit": "kcal",
+          "value": 250,
+          "source": "Given in the question"
+        }
+      ],
+      "formula": "1 * 70 * km / d"
+    },
+    {
+      "id": "arrangements-of-liftoff",
+      "category": "Games",
+      "prompt": "How many different ways can you arrange the letters of LIFTOFF, its two F’s counting as the same?",
+      "unit": "arrangements",
+      "rounding": "round",
+      "roundingNote": "Exact count.",
+      "factors": [
+        {
+          "key": "n",
+          "label": "Letters in LIFTOFF",
+          "unit": "letters",
+          "value": 7,
+          "source": "Given in the question"
+        }
+      ],
+      "formula": "n * (n - 1) * (n - 2) * (n - 3) * (n - 4) * (n - 5) / 2"
+    },
+    {
+      "id": "minutes-in-an-nba-season",
+      "category": "Sport",
+      "prompt": "An NBA game has four 12-minute quarters. How many minutes of regulation play does a team have across an 82-game season?",
+      "unit": "minutes",
+      "rounding": "round",
+      "roundingNote": "Exact count.",
+      "factors": [
+        {
+          "key": "q",
+          "label": "Quarter length",
+          "unit": "min",
+          "value": 12,
+          "source": "NBA Official Rules"
+        },
+        {
+          "key": "gp",
+          "label": "Games per team",
+          "unit": "games",
+          "value": 82,
+          "source": "NBA"
+        }
+      ],
+      "formula": "4 * q * gp"
+    },
+    {
+      "id": "chicago-to-the-north-pole",
+      "category": "Earth",
+      "prompt": "Chicago sits at 41.88° north. How many km is it due north to the North Pole?",
+      "unit": "km",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest kilometer.",
+      "factors": [
+        {
+          "key": "lat",
+          "label": "Chicago’s latitude",
+          "unit": "°N",
+          "value": 41.88,
+          "source": "Given in the question"
+        },
+        {
+          "key": "mer",
+          "label": "Earth’s pole-to-pole circumference",
+          "unit": "km",
+          "value": 40007.86,
+          "source": "WGS 84 ellipsoid"
+        }
+      ],
+      "formula": "(90 - lat) * mer / 360"
+    },
+    {
+      "id": "seconds-for-the-iss-to-cross-the-us",
+      "category": "Space",
+      "prompt": "The ISS flies at 7.66 km/s. How many seconds does it take to cross 4,500 km of the United States?",
+      "unit": "seconds",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest second.",
+      "factors": [
+        {
+          "key": "v",
+          "label": "ISS speed",
+          "unit": "km/s",
+          "value": 7.66,
+          "source": "Given in the question"
+        }
+      ],
+      "formula": "4500 / v"
+    }
+  ]
+}

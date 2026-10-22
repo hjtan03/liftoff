@@ -1,0 +1,116 @@
+{
+  "id": "055",
+  "questions": [
+    {
+      "id": "area-of-a-pizza-slice",
+      "category": "Food",
+      "prompt": "A 14-inch pizza is cut into 8 equal slices. How many square inches is each slice?",
+      "unit": "in²",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest square inch.",
+      "factors": [
+        {
+          "key": "dia",
+          "label": "Pizza diameter",
+          "unit": "in",
+          "value": 14,
+          "source": "Given in the question"
+        }
+      ],
+      "formula": "3.14159265 * (dia / 2) ^ 2 / 8"
+    },
+    {
+      "id": "values-in-16-bits",
+      "category": "Tech",
+      "prompt": "How many different values can 16 bits store?",
+      "unit": "values",
+      "rounding": "round",
+      "roundingNote": "Exact count.",
+      "factors": [
+        {
+          "key": "b",
+          "label": "Bits",
+          "unit": "bits",
+          "value": 16,
+          "source": "Given in the question"
+        }
+      ],
+      "formula": "2 ^ b"
+    },
+    {
+      "id": "spins-of-a-curveball",
+      "category": "Sport",
+      "prompt": "A curveball spins at 2,500 rpm during its 0.45-second trip to the plate. How many full turns does it make?",
+      "unit": "turns",
+      "rounding": "floor",
+      "roundingNote": "Complete turns only (round down).",
+      "factors": [
+        {
+          "key": "rpm",
+          "label": "Spin rate",
+          "unit": "rpm",
+          "value": 2500,
+          "source": "Given in the question"
+        },
+        {
+          "key": "t",
+          "label": "Flight time",
+          "unit": "s",
+          "value": 0.45,
+          "source": "Given in the question"
+        }
+      ],
+      "formula": "rpm / 60 * t"
+    },
+    {
+      "id": "liters-in-a-mole-of-gas",
+      "category": "Science",
+      "prompt": "By the ideal gas law, how many liters does one mole of gas fill at 0 °C and standard pressure?",
+      "unit": "L",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest liter.",
+      "factors": [
+        {
+          "key": "R",
+          "label": "Gas constant",
+          "unit": "J/(mol·K)",
+          "value": 8.314,
+          "source": "CODATA 2018"
+        },
+        {
+          "key": "T",
+          "label": "0 °C",
+          "unit": "K",
+          "value": 273.15,
+          "source": "SI kelvin"
+        },
+        {
+          "key": "p",
+          "label": "Standard sea-level air pressure",
+          "unit": "Pa",
+          "value": 101325,
+          "source": "Standard atmosphere (ISO 2533)"
+        }
+      ],
+      "formula": "R * T / p * 1000"
+    },
+    {
+      "id": "sunrises-in-a-day-in-orbit",
+      "category": "Space",
+      "prompt": "Astronauts circling Earth every 92 minutes see a sunrise each lap. How many complete sunrises do they see in a day?",
+      "unit": "sunrises",
+      "rounding": "floor",
+      "roundingNote": "Complete sunrises only (round down).",
+      "factors": [
+        {
+          "key": "t",
+          "label": "Orbit time",
+          "unit": "min",
+          "value": 92,
+          "source": "Given in the question"
+        }
+      ],
+      "formula": "24 * 60 / t"
+    }
+  ]
+}

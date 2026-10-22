@@ -1,0 +1,151 @@
+{
+  "id": "063",
+  "questions": [
+    {
+      "id": "credit-cards-on-a-letter-sheet",
+      "category": "Everyday",
+      "prompt": "By area, how many credit cards would cover a sheet of US Letter paper?",
+      "unit": "cards",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest card.",
+      "factors": [
+        {
+          "key": "lw",
+          "label": "US Letter width",
+          "unit": "in",
+          "value": 8.5,
+          "source": "ANSI/ASME Y14.1"
+        },
+        {
+          "key": "lh",
+          "label": "US Letter height",
+          "unit": "in",
+          "value": 11,
+          "source": "ANSI/ASME Y14.1"
+        },
+        {
+          "key": "inch",
+          "label": "Inch",
+          "unit": "mm",
+          "value": 25.4,
+          "source": "International inch, 1959"
+        },
+        {
+          "key": "cl",
+          "label": "Credit card length",
+          "unit": "mm",
+          "value": 85.6,
+          "source": "ISO/IEC 7810 ID-1"
+        },
+        {
+          "key": "cw",
+          "label": "Credit card width",
+          "unit": "mm",
+          "value": 53.98,
+          "source": "ISO/IEC 7810 ID-1"
+        }
+      ],
+      "formula": "lw * inch * lh * inch / (cl * cw)"
+    },
+    {
+      "id": "seatings-at-a-round-table",
+      "category": "Games",
+      "prompt": "Eight people sit at a round table. Counting rotations of the same order as one seating, how many different seatings are there?",
+      "unit": "seatings",
+      "rounding": "round",
+      "roundingNote": "Exact count.",
+      "factors": [
+        {
+          "key": "n",
+          "label": "People",
+          "unit": "people",
+          "value": 8,
+          "source": "Given in the question"
+        }
+      ],
+      "formula": "(n - 1) * (n - 2) * (n - 3) * (n - 4) * (n - 5) * (n - 6)"
+    },
+    {
+      "id": "minutes-of-football-in-a-premier-league-season",
+      "category": "Sport",
+      "prompt": "The Premier League’s 20 clubs play each other home and away. Without stoppage time, how many minutes of football is that across the season?",
+      "unit": "minutes",
+      "rounding": "round",
+      "roundingNote": "Exact count.",
+      "factors": [
+        {
+          "key": "n",
+          "label": "Clubs",
+          "unit": "clubs",
+          "value": 20,
+          "source": "Premier League"
+        },
+        {
+          "key": "m",
+          "label": "Match length",
+          "unit": "min",
+          "value": 90,
+          "source": "IFAB Laws of the Game"
+        }
+      ],
+      "formula": "n * (n - 1) * m"
+    },
+    {
+      "id": "joules-in-a-aa-battery",
+      "category": "Science",
+      "prompt": "An AA battery delivers 2.5 amp-hours at 1.5 V. How many joules of energy is that?",
+      "unit": "J",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest joule.",
+      "factors": [
+        {
+          "key": "ah",
+          "label": "Capacity",
+          "unit": "Ah",
+          "value": 2.5,
+          "source": "Given in the question"
+        },
+        {
+          "key": "v",
+          "label": "Voltage",
+          "unit": "V",
+          "value": 1.5,
+          "source": "Given in the question"
+        }
+      ],
+      "formula": "ah * 3600 * v"
+    },
+    {
+      "id": "speed-of-mars-around-the-sun",
+      "category": "Space",
+      "prompt": "Mars circles the Sun at 1.524 AU every 687 days. Treating its orbit as a circle, how many km/h does it travel?",
+      "unit": "km/h",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest km/h.",
+      "factors": [
+        {
+          "key": "au",
+          "label": "Astronomical unit",
+          "unit": "km",
+          "value": 149597870.7,
+          "source": "IAU 2012 Resolution B2"
+        },
+        {
+          "key": "a",
+          "label": "Mars’s distance from the Sun",
+          "unit": "AU",
+          "value": 1.524,
+          "source": "NASA Mars Fact Sheet"
+        },
+        {
+          "key": "t",
+          "label": "Mars’s year",
+          "unit": "days",
+          "value": 687,
+          "source": "NASA Mars Fact Sheet"
+        }
+      ],
+      "formula": "2 * 3.14159265 * a * au / (t * 24)"
+    }
+  ]
+}

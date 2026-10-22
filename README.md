@@ -33,7 +33,7 @@ src/main.tsx               mounts the app
 src/App.tsx                the game phases and the calculator toggle
 src/app.css                the stylesheet
 src/animation.ts           frame tween and reduced-motion check
-src/game/                  the rules: scoring, altitude, state, the crowd placeholder
+src/game/                  the rules: scoring, the journey, state, progress
 src/questions/             the question-set contract: schema, schedule, source, producer check
 src/expression/            the arithmetic evaluator shared by formulas and the calculator
 src/calculator/            the pop-up calculator

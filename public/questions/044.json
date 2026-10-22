@@ -1,0 +1,109 @@
+{
+  "id": "044",
+  "questions": [
+    {
+      "id": "weight-of-100-dollars-in-pennies",
+      "category": "Everyday",
+      "prompt": "How many kilograms does $100 in pennies weigh?",
+      "unit": "kg",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest kilogram.",
+      "factors": [
+        {
+          "key": "w",
+          "label": "Penny mass",
+          "unit": "g",
+          "value": 2.5,
+          "source": "US Mint specifications"
+        }
+      ],
+      "formula": "10000 * w / 1000"
+    },
+    {
+      "id": "pixel-density-of-a-phone",
+      "category": "Tech",
+      "prompt": "A phone screen measures 6.1 inches corner to corner and is 2,532 × 1,170 pixels. How many pixels per inch is that?",
+      "unit": "ppi",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest pixel per inch.",
+      "factors": [
+        {
+          "key": "diag",
+          "label": "Screen diagonal",
+          "unit": "in",
+          "value": 6.1,
+          "source": "Given in the question"
+        }
+      ],
+      "formula": "(2532 ^ 2 + 1170 ^ 2) ^ 0.5 / diag"
+    },
+    {
+      "id": "soccer-pitches-in-a-square-km",
+      "category": "Sport",
+      "prompt": "How many 105 × 68 m soccer pitches fit, by area, in one square kilometer?",
+      "unit": "pitches",
+      "rounding": "floor",
+      "roundingNote": "Complete pitches only (round down).",
+      "factors": [
+        {
+          "key": "l",
+          "label": "Pitch length",
+          "unit": "m",
+          "value": 105,
+          "source": "FIFA recommended size"
+        },
+        {
+          "key": "w",
+          "label": "Pitch width",
+          "unit": "m",
+          "value": 68,
+          "source": "FIFA recommended size"
+        }
+      ],
+      "formula": "1000000 / (l * w)"
+    },
+    {
+      "id": "km-walked-in-a-year-of-10000-steps",
+      "category": "Body",
+      "prompt": "Walking 10,000 steps of 0.7 m every day, how many km do you cover in a common year?",
+      "unit": "km",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest kilometer.",
+      "factors": [
+        {
+          "key": "step",
+          "label": "Step length",
+          "unit": "m",
+          "value": 0.7,
+          "source": "Given in the question"
+        }
+      ],
+      "formula": "10000 * step * 365 / 1000"
+    },
+    {
+      "id": "sunlight-that-reaches-earth",
+      "category": "Space",
+      "prompt": "Sunlight delivers 1,361 W to each square meter facing it. How many petawatts (10¹⁵ W) does Earth catch?",
+      "unit": "PW",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest petawatt.",
+      "factors": [
+        {
+          "key": "s",
+          "label": "Solar constant",
+          "unit": "W/m²",
+          "value": 1361,
+          "source": "IAU 2015 nominal total solar irradiance"
+        },
+        {
+          "key": "r",
+          "label": "Earth’s mean radius",
+          "unit": "m",
+          "value": 6371000,
+          "source": "IUGG mean radius"
+        }
+      ],
+      "formula": "s * 3.14159265 * r ^ 2 / 1000000000000000"
+    }
+  ]
+}
