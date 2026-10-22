@@ -2,6 +2,7 @@ import type { BandKey } from "../game/scoring.js";
 import {
   PLAYER_ID_HEADER,
   type Crowd,
+  type CrowdResponse,
   type GuessConflict,
   type GuessRequest,
   type GuessResponse,
@@ -67,6 +68,29 @@ export async function submitGuess(
     if (response.status !== 200 && response.status !== 409) return null;
     const result = (await response.json()) as GuessResponse | GuessConflict;
     return result.crowd ?? null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * The crowd for every stage of a launch, without percentiles, for showing
+ * crowd lines again on a run restored after a refresh. Null on any failure.
+ */
+export async function fetchCrowd(
+  launch: number,
+  fetchImpl: typeof fetch = fetch,
+): Promise<Crowd[] | null> {
+  try {
+    const response = await fetchImpl(`/api/crowd?launch=${launch}`);
+    if (!response.ok) return null;
+    const { stages } = (await response.json()) as CrowdResponse;
+    return stages.map(({ players, hitRate, lockHitShare }) => ({
+      players,
+      hitRate,
+      lockHitShare,
+      percentile: null,
+    }));
   } catch {
     return null;
   }

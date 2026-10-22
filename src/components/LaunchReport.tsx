@@ -9,6 +9,7 @@ import {
   MILESTONES,
 } from "../game/altitude";
 import { formatNumber } from "../game/numbers";
+import type { Streak } from "../game/progress";
 import { maxTotalPoints } from "../game/scoring";
 import type { StageResult } from "../game/state";
 import type { LoadedQuestion } from "../questions/source";
@@ -21,6 +22,7 @@ type Props = {
   launchNumber: string;
   questions: LoadedQuestion[];
   stageResults: StageResult[];
+  streak: Streak;
   onRestart: () => void;
 };
 
@@ -28,6 +30,7 @@ export function LaunchReport({
   launchNumber,
   questions,
   stageResults,
+  streak,
   onRestart,
 }: Props) {
   const totalPoints = stageResults.reduce(
@@ -92,6 +95,10 @@ export function LaunchReport({
           <p className="alt num">{formatAltitude(currentAltitudeKm)}</p>
           <p className="dest">{destinationText}</p>
         </div>
+        <p className="streak">
+          Streak <b>{streak.current}</b> · Best <b>{streak.best}</b> · Launches
+          flown <b>{streak.played}</b>
+        </p>
         <ul className="summary">
           {stageResults.map((result, index) => (
             <li key={index}>

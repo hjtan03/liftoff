@@ -36,6 +36,15 @@ docs/archive/.
   reachable from `api/` names its `.js` file, because the functions run as
   plain Node ES modules; `api/tsconfig.json` enforces it in the build.
 
+## Progress
+
+The run in progress and the history of finished launches live in
+localStorage (`src/game/progress.ts`, read and written through
+`src/browserStorage.ts`, which never throws). A refresh resumes today's run;
+a saved run from another launch or in an unknown shape is ignored. Streaks
+count consecutive finished launches and survive until a whole launch is
+missed.
+
 ## The crowd
 
 Each revealed stage is posted to `/api/guess` through `src/api/client.ts`,

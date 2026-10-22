@@ -1094,6 +1094,15 @@ details.scratch[open] summary::after {
   margin: 0;
   line-height: 1;
 }
+.streak {
+  margin: 0;
+  font-family: var(--f-mono);
+  font-size: 14px;
+  color: var(--muted);
+}
+.streak b {
+  color: var(--ink);
+}
 .summary {
   display: flex;
   flex-direction: column;
