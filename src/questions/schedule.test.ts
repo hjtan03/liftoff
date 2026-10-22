@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   computeLaunchNumber,
   daysUntilFirstLaunch,
+  launchDateLabel,
   launchNumberAt,
   launchNumberFromAddress,
 } from "./schedule";
@@ -53,4 +54,11 @@ describe("launchNumberFromAddress", () => {
       expect(launchNumberFromAddress(search)).toBeNull();
     },
   );
+});
+
+describe("launchDateLabel", () => {
+  it("names each launch's calendar date", () => {
+    expect(launchDateLabel(1)).toBe("Sat, Oct 24");
+    expect(launchDateLabel(69)).toBe("Thu, Dec 31");
+  });
 });

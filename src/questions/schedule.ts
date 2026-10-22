@@ -55,6 +55,19 @@ export function computeLaunchNumber(time: Date): number {
   return launch;
 }
 
+/** The calendar date a launch plays on, like "Sat, Oct 24". */
+export function launchDateLabel(launchNumber: number): string {
+  const date = new Date(
+    Date.parse(FIRST_LAUNCH_DATE) + (launchNumber - 1) * MILLISECONDS_PER_DAY,
+  );
+  return date.toLocaleDateString("en-US", {
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+    timeZone: "UTC",
+  });
+}
+
 /** The id of a launch's question set, which names its published file: the number padded to three digits. */
 export function formatQuestionSetId(launchNumber: number): string {
   return String(launchNumber).padStart(3, "0");
@@ -66,8 +79,9 @@ export function daysUntilFirstLaunch(time: Date): number {
 }
 
 /**
- * A launch number named in the page address (`?launch=12`), for playing a
- * set on a preview before its day, or null when none is given.
+ * A launch number named in the page address (`?launch=12`): a past launch
+ * replayed from the archive, or, with `&test`, a future one on a preview.
+ * Null when none is given.
  */
 export function launchNumberFromAddress(search: string): number | null {
   const named = new URLSearchParams(search).get("launch");

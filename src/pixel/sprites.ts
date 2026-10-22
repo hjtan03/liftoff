@@ -26,30 +26,57 @@ export const COLORS = {
   steel: "#8C86B8",
   steelDark: "#5A5490",
   smoke: "#9C94C9",
+  glass: "#BFE3FF",
+  skin: "#FFD2A8",
+  hair: "#7A4A2A",
+  mouth: "#E0466A",
 } as const;
 
 const SUIT_PALETTE: Palette = {
   K: COLORS.outline,
   W: COLORS.suit,
   w: COLORS.suitShade,
-  V: COLORS.visor,
-  h: COLORS.visorShine,
-  e: COLORS.eye,
+  g: COLORS.glass,
+  h: COLORS.eye,
+  S: COLORS.skin,
+  H: COLORS.hair,
   b: COLORS.blush,
   t: COLORS.tear,
+  M: COLORS.mouth,
   G: COLORS.orange,
-  O: COLORS.fuel,
+  O: COLORS.orange,
+  R: COLORS.blush,
+  B: COLORS.visorShine,
+  E: COLORS.fuel,
 };
 export const ASTRONAUT_PALETTE = SUIT_PALETTE;
 
-/** How a crew member feels, from watching the gauge to dancing on a perfect fill. */
+/** How a crew member feels, from concentrating on the job to dancing on a perfect fill. */
 export type Mood = "working" | "sad" | "meh" | "happy" | "cheer" | "party";
 
-const ASTRONAUT_WIDTH = 15;
-const ASTRONAUT_HEIGHT = 16;
+/**
+ * What a crew member's body is doing. Run and pump cycle through frames;
+ * hose holds the nozzle out at the tank's valve.
+ */
+export type Pose =
+  "stand" | "run" | "hose" | "pump" | "cheer" | "shrug" | "slump";
 
-/** One crew member, 15 × 16 pixels. holdsHose points the right arm at the tank. */
-export function astronaut(mood: Mood, holdsHose = false): SpriteGrid {
+export const ASTRONAUT_WIDTH = 16;
+export const ASTRONAUT_HEIGHT = 20;
+/** Where the front glove sits in the hose pose, in sprite pixels: the hose attaches here. */
+export const HOSE_HAND = { x: 14, y: 14 } as const;
+
+/**
+ * One crew member, 16 × 20 pixels, turned three-quarters to the right: a
+ * round glass helmet with a face inside, a white suit with a chest panel, a
+ * life-support pack on the back, orange gloves and boots.
+ */
+export function astronaut(
+  mood: Mood,
+  pose: Pose = "stand",
+  frame = 0,
+  isBlinking = false,
+): SpriteGrid {
   const grid = Array.from({ length: ASTRONAUT_HEIGHT }, () =>
     Array<string>(ASTRONAUT_WIDTH).fill("."),
   );
@@ -60,104 +87,165 @@ export function astronaut(mood: Mood, holdsHose = false): SpriteGrid {
   const hline = (x0: number, x1: number, y: number, c: string) => {
     for (let x = x0; x <= x1; x += 1) put(x, y, c);
   };
+  const vline = (x: number, y0: number, y1: number, c: string) => {
+    for (let y = y0; y <= y1; y += 1) put(x, y, c);
+  };
 
-  // Helmet with visor.
-  hline(5, 9, 0, "K");
-  put(4, 1, "K");
-  hline(5, 9, 1, "W");
-  put(10, 1, "K");
-  for (const y of [2, 3, 4]) {
+  // Life-support pack, behind everything else.
+  for (let y = 10; y <= 16; y += 1) hline(1, 3, y, "w");
+  vline(0, 10, 16, "K");
+  hline(1, 3, 9, "K");
+  hline(1, 3, 17, "K");
+  put(2, 12, "E");
+
+  // Suit: torso with a chest panel and a belt.
+  for (let y = 11; y <= 16; y += 1) {
     put(3, y, "K");
-    put(4, y, "W");
-    hline(5, 9, y, "V");
-    put(10, y, "W");
-    put(11, y, "K");
+    hline(4, 10, y, "W");
+    put(11, y, "w");
+    put(12, y, "K");
   }
-  put(4, 5, "K");
-  hline(5, 9, 5, "W");
-  put(10, 5, "K");
+  hline(4, 11, 16, "w");
+  put(7, 13, "O");
+  put(8, 13, "R");
+  put(9, 13, "B");
+
+  // Helmet: a glass bubble with the face inside and a shine on the glass.
+  for (let y = 0; y <= 11; y += 1) {
+    for (let x = 1; x <= 14; x += 1) {
+      const d = Math.hypot(x - 7.5, y - 5.5);
+      if (d > 5.9) continue;
+      if (d > 4.9) {
+        put(x, y, "K");
+        continue;
+      }
+      const fx = (x - 8.6) / 3.4;
+      const fy = (y - 6.4) / 3.1;
+      if (fx * fx + fy * fy <= 1) put(x, y, y <= 3 ? "H" : "S");
+      else put(x, y, "g");
+    }
+  }
+  put(4, 3, "h");
+  put(4, 4, "h");
   put(5, 2, "h");
+  hline(4, 11, 11, "w");
+  put(3, 11, "K");
+  put(12, 11, "K");
 
-  // Face.
-  const eyeRow = mood === "sad" ? 4 : 3;
-  put(6, eyeRow, "e");
-  put(8, eyeRow, "e");
-  if (mood === "happy" || mood === "cheer" || mood === "party") {
-    put(5, 4, "b");
-    put(9, 4, "b");
+  // Face: eyes, cheeks, mouth.
+  const eyeY = mood === "sad" ? 6 : 5;
+  const eyes = [7, 10];
+  for (const x of eyes) {
+    if (isBlinking) put(x, eyeY + 1, "K");
+    else if (mood === "happy" || mood === "party") put(x, eyeY, "K");
+    else {
+      put(x, eyeY, "K");
+      put(x, eyeY + 1, "K");
+    }
   }
-  if (mood === "cheer" || mood === "party") put(7, 4, "e");
-  if (mood === "sad") put(9, 3, "t");
-
-  // Body, belt, badge.
-  hline(4, 10, 6, "K");
-  for (let y = 7; y <= 11; y += 1) {
-    put(4, y, "K");
-    hline(5, 9, y, y === 10 ? "w" : "W");
-    put(10, y, "K");
+  if (mood !== "sad" && mood !== "working") {
+    put(6, 7, "b");
+    put(11, 7, "b");
   }
-  put(7, 8, "O");
-
-  // Legs and boots.
-  for (const y of [12, 13]) {
-    put(4, y, "K");
-    put(5, y, "W");
-    put(6, y, "K");
-    put(8, y, "K");
-    put(9, y, "W");
-    put(10, y, "K");
-  }
-  hline(4, 6, 14, "G");
-  hline(8, 10, 14, "G");
-  hline(4, 6, 15, "K");
-  hline(8, 10, 15, "K");
-
-  // Arms.
-  const armDown = (side: -1 | 1) => {
-    const x = side < 0 ? 3 : 11;
-    for (let y = 7; y <= 9; y += 1) put(x, y, "W");
-    put(x + side, 7, "K");
-    put(x + side, 8, "K");
-    put(x + side, 9, "K");
-    put(x, 10, "G");
-  };
-  const armUp = (side: -1 | 1) => {
-    const x = side < 0 ? 3 : 11;
-    put(x, 7, "W");
-    put(x + side, 6, "W");
-    put(x + side, 5, "W");
-    put(x + 2 * side, 4, "G");
-    put(x + 2 * side, 3, "G");
-  };
-  const armOut = (side: -1 | 1) => {
-    const x = side < 0 ? 3 : 11;
-    put(x, 7, "W");
-    put(x + side, 7, "W");
-    put(x + 2 * side, 6, "G");
-  };
-  const armForward = () => {
-    put(11, 8, "W");
-    put(12, 8, "W");
-    put(13, 8, "G");
-    put(11, 9, "K");
-    put(12, 9, "K");
-  };
-
-  if (holdsHose && mood !== "cheer" && mood !== "party") {
-    armForward();
-    armDown(-1);
+  if (mood === "sad") {
+    put(7, 9, "K");
+    hline(8, 9, 8, "K");
+    put(10, 9, "K");
+    put(11, 7, "t");
+    put(11, 8, "t");
   } else if (mood === "cheer" || mood === "party") {
-    armUp(-1);
-    armUp(1);
+    hline(8, 9, 8, "M");
+    hline(8, 9, 9, "M");
   } else if (mood === "happy") {
-    armDown(-1);
-    armUp(1);
-  } else if (mood === "meh") {
-    armOut(-1);
-    armOut(1);
+    put(7, 8, "K");
+    hline(8, 9, 9, "K");
+    put(10, 8, "K");
   } else {
-    armDown(-1);
-    armDown(1);
+    hline(8, 9, 8, "K");
+  }
+
+  // Legs and boots, by pose and frame.
+  const leg = (hipX: number, footX: number, lifted: boolean) => {
+    const footY = lifted ? 18 : 19;
+    put(hipX, 17, "W");
+    put(hipX + 1, 17, "w");
+    put(footX, footY - 1, "W");
+    put(footX + 1, footY - 1, "w");
+    hline(footX, footX + 2, footY, "G");
+  };
+  if (pose === "run") {
+    const step = frame % 4;
+    if (step === 0) {
+      leg(8, 10, false);
+      leg(5, 3, true);
+    } else if (step === 2) {
+      leg(5, 4, false);
+      leg(8, 9, true);
+    } else {
+      leg(5, 5, false);
+      leg(8, 8, true);
+    }
+  } else if (pose === "cheer" && frame % 2 === 1) {
+    leg(5, 5, true);
+    leg(8, 8, true);
+  } else {
+    leg(5, 5, false);
+    leg(8, 8, false);
+  }
+
+  // Arms: the far arm mostly hides behind the pack; the near arm does the work.
+  const glove = (x: number, y: number) => put(x, y, "G");
+  switch (pose) {
+    case "run": {
+      const swingForward = frame % 4 < 2;
+      if (swingForward) {
+        put(12, 12, "W");
+        put(13, 13, "W");
+        glove(14, 13);
+      } else {
+        vline(12, 12, 14, "W");
+        glove(11, 15);
+      }
+      break;
+    }
+    case "hose":
+      put(12, 12, "W");
+      put(13, 13, "W");
+      glove(HOSE_HAND.x, HOSE_HAND.y);
+      glove(13, 14);
+      break;
+    case "pump":
+      if (frame % 2 === 0) {
+        put(12, 12, "W");
+        put(13, 12, "W");
+        glove(14, 11);
+      } else {
+        put(12, 13, "W");
+        put(13, 14, "W");
+        glove(14, 15);
+      }
+      break;
+    case "cheer":
+      put(12, 10, "W");
+      put(13, 9, "W");
+      glove(13, 8);
+      put(2, 9, "W");
+      glove(1, 8);
+      break;
+    case "shrug":
+      put(12, 12, "W");
+      put(13, 12, "W");
+      glove(14, 11);
+      put(2, 11, "W");
+      glove(1, 10);
+      break;
+    case "slump":
+      vline(12, 13, 15, "W");
+      glove(12, 16);
+      break;
+    default:
+      vline(12, 12, 14, "W");
+      glove(12, 15);
   }
 
   return grid.map((row) => row.join(""));

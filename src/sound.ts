@@ -109,6 +109,16 @@ export const sfx = {
     noise(0, 0.25, { volume: 0.6, from: 3000, to: 400 });
     tone(220, 0, 0.12, { type: "triangle", slideTo: 440, volume: 0.6 });
   },
+  /** A footstep as the crew runs the hose over: a soft, low tap. */
+  step() {
+    tone(196, 0, 0.03, { type: "triangle", volume: 0.3 });
+  },
+  /** The hose clicks onto the tank's valve. */
+  hookUp() {
+    tone(1319, 0, 0.03, { volume: 0.35 });
+    tone(880, 0.04, 0.05, { volume: 0.35 });
+    noise(0, 0.08, { volume: 0.3, from: 4000, to: 1500 });
+  },
   /** One bubble of fuel; called as the tank fills, pitch rising with the level. */
   fuelBubble(fillFraction: number) {
     const note =

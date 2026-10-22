@@ -50,7 +50,16 @@ docs/archive/.
   only ever starts from a player's action. The header switch mutes it and is
   remembered.
 - The score maps onto stops from the launch pad to Neptune in
-  `src/game/journey.ts`; only a perfect launch reaches Neptune.
+  `src/game/journey.ts`; only a perfect launch reaches Neptune. The flight
+  report (`src/components/Flight.tsx`) follows the rocket up past each stop,
+  then zooms out to the whole route.
+- The reveal (`src/components/FuelScene.tsx`) is choreographed: one crew
+  member pumps at the cart, the other runs the hose to the tank and hooks it
+  up, the fuel flows, then both react to the result. Crew frames come from
+  `astronaut(mood, pose, frame)`; reduced motion skips straight to the end.
+- Bands show as Moonshot (±5%), Orbit (±20%) and Suborbital (2×), an exact
+  hit as Docked and a miss as Scrubbed. The API keeps the keys `lock`,
+  `solid` and `rough`; only the names in `src/game/scoring.ts` changed.
 
 ## Progress
 
@@ -60,6 +69,14 @@ localStorage (`src/game/progress.ts`, read and written through
 a saved run from another launch or in an unknown shape is ignored. Streaks
 count consecutive finished launches and survive until a whole launch is
 missed.
+
+The address picks the screen (`src/route.ts`): no query plays today's
+launch; `?archive` lists past launches, opening on day 2; `?launch=N` replays
+a past launch. A replay keeps its own run under `liftoff.archive.NNN`, never
+touches today's run or the history, never posts guesses, and shows the
+crowd from its launch day. Future launches stay shut unless the address adds
+`&test` (or the first launch hasn't happened yet), for checking a set on a
+preview.
 
 ## The crowd
 

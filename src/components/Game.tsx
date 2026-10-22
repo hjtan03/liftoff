@@ -3,6 +3,7 @@ import { fetchCrowd, submitGuess, type CrowdState } from "../api/client";
 import { readStorage, writeStorage } from "../browserStorage";
 import { Calculator } from "../calculator/Calculator";
 import {
+  archiveRunKey,
   computeStreak,
   HISTORY_STORAGE_KEY,
   parseHistory,
@@ -18,12 +19,21 @@ import { LaunchReport } from "./LaunchReport";
 import { Shell } from "./Shell";
 import { StageScreen } from "./StageScreen";
 
-type Props = { questionSet: LoadedQuestionSet };
+type Props = {
+  questionSet: LoadedQuestionSet;
+  /**
+   * Today's launch counts: its guesses are recorded with the server and its
+   * finish goes into the history streaks are counted from. Any other launch is
+   * a replay, kept in its own storage, with the crowd from its own day.
+   */
+  isToday: boolean;
+};
 
-export function Game({ questionSet }: Props) {
-  /** Today's run as the browser left it, or a fresh one. */
+export function Game({ questionSet, isToday }: Props) {
+  const runKey = isToday ? RUN_STORAGE_KEY : archiveRunKey(questionSet.id);
+  /** The run as the browser left it, or a fresh one. */
   const [restoredGame] = useState(() =>
-    restoreRun(questionSet, readStorage(RUN_STORAGE_KEY)),
+    restoreRun(questionSet, readStorage(runKey)),
   );
   const [game, dispatch] = useReducer(gameReducer, restoredGame);
   const [isCalculatorOpen, setCalculatorOpen] = useState(false);
@@ -31,10 +41,9 @@ export function Game({ questionSet }: Props) {
   const [crowdByStage, setCrowdByStage] = useState<Record<number, CrowdState>>(
     () =>
       Object.fromEntries(
-        restoredGame.stageResults.map((_, index) => [
-          index,
-          { status: "loading" } satisfies CrowdState,
-        ]),
+        (isToday ? restoredGame.stageResults : questionSet.questions).map(
+          (_, index) => [index, { status: "loading" } satisfies CrowdState],
+        ),
       ),
   );
   const [storedHistory] = useState(() =>
@@ -43,12 +52,15 @@ export function Game({ questionSet }: Props) {
 
   // Every change to the run is saved, so a refresh resumes where it left off.
   useEffect(() => {
-    writeStorage(RUN_STORAGE_KEY, serializeRun(game));
-  }, [game]);
+    writeStorage(runKey, serializeRun(game));
+  }, [runKey, game]);
 
-  // A restored run shows its crowd lines again without re-posting its guesses.
+  // A restored run shows its crowd lines again without re-posting its guesses;
+  // a replay shows the crowd from its launch day for every stage.
   useEffect(() => {
-    const restoredStages = restoredGame.stageResults.length;
+    const restoredStages = isToday
+      ? restoredGame.stageResults.length
+      : questionSet.questions.length;
     if (restoredStages === 0) return;
     let isStale = false;
     void fetchCrowd(Number(restoredGame.launchNumber)).then((crowds) => {
@@ -68,16 +80,22 @@ export function Game({ questionSet }: Props) {
     return () => {
       isStale = true;
     };
-  }, [restoredGame]);
+  }, [restoredGame, isToday, questionSet]);
 
   /** Finished launches, including today's once the rocket has flown. */
   const history = useMemo(() => {
-    if (game.phase !== "done") return storedHistory;
+    if (!isToday || game.phase !== "done") return storedHistory;
     return recordFinishedLaunch(storedHistory, game.launchNumber, {
       points: game.stageResults.reduce((sum, result) => sum + result.points, 0),
       grid: game.stageResults.map((result) => result.emoji).join(""),
     });
-  }, [storedHistory, game.phase, game.launchNumber, game.stageResults]);
+  }, [
+    isToday,
+    storedHistory,
+    game.phase,
+    game.launchNumber,
+    game.stageResults,
+  ]);
 
   useEffect(() => {
     if (history !== storedHistory)
@@ -92,6 +110,8 @@ export function Game({ questionSet }: Props) {
     if (!pending) return;
     const stageIndex = game.stageIndex;
     dispatch({ type: "assumptions-submitted", assumedFactorValues });
+    // A replay's guesses are its own; the crowd it shows is from launch day.
+    if (!isToday) return;
     setCrowdByStage((crowds) => ({
       ...crowds,
       [stageIndex]: { status: "loading" },
@@ -112,23 +132,27 @@ export function Game({ questionSet }: Props) {
     );
   };
 
+  const launchLabel = isToday
+    ? `Launch #${game.launchNumber}`
+    : `Replay #${game.launchNumber}`;
   const metaText =
     game.phase === "done"
-      ? `Launch #${game.launchNumber} · Flight report`
-      : `Launch #${game.launchNumber} · Stage ${game.stageIndex + 1} of ${game.questions.length}`;
+      ? `${launchLabel} · Flight report`
+      : `${launchLabel} · Stage ${game.stageIndex + 1} of ${game.questions.length}`;
 
   return (
     <>
-      <Shell metaText={metaText}>
+      <Shell metaText={metaText} screen={isToday ? "today" : "replay"}>
         {game.phase === "done" ? (
           <LaunchReport
             launchNumber={game.launchNumber}
             questions={game.questions}
             stageResults={game.stageResults}
-            streak={streak}
+            streak={isToday ? streak : null}
             onRestart={() => {
               dispatch({ type: "game-restarted" });
-              setCrowdByStage({});
+              // A replay keeps its launch-day crowd; today's run starts over.
+              if (isToday) setCrowdByStage({});
               window.scrollTo({ top: 0 });
             }}
           />
@@ -137,6 +161,7 @@ export function Game({ questionSet }: Props) {
             game={game}
             dispatch={dispatch}
             crowd={crowdByStage[game.stageIndex] ?? { status: "unavailable" }}
+            isReplay={!isToday}
             onAssumptionsSubmitted={revealStage}
             isCalculatorOpen={isCalculatorOpen}
             onToggleCalculator={() => setCalculatorOpen((open) => !open)}
