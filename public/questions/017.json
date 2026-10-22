@@ -2,22 +2,22 @@
   "id": "017",
   "questions": [
     {
-      "id": "horsepower-in-kilowatts",
+      "id": "bulb-left-on-for-a-year",
       "category": "Everyday",
-      "prompt": "How many kilowatts is a 300-horsepower engine?",
-      "unit": "kW",
+      "prompt": "A 60 W bulb is left on for a whole common year. How many kilowatt-hours does it use?",
+      "unit": "kWh",
       "rounding": "round",
-      "roundingNote": "Rounded to the nearest kilowatt.",
+      "roundingNote": "Rounded to the nearest kWh.",
       "factors": [
         {
-          "key": "hp",
-          "label": "Mechanical horsepower",
-          "unit": "W",
-          "value": 745.7,
-          "source": "550 ft·lbf/s"
+          "key": "d",
+          "label": "Days in a common year",
+          "unit": "days",
+          "value": 365,
+          "source": "Gregorian calendar"
         }
       ],
-      "formula": "300 * hp / 1000"
+      "formula": "60 * 24 * d / 1000"
     },
     {
       "id": "frequency-of-middle-c",
@@ -81,29 +81,29 @@
       "formula": "eq / 24"
     },
     {
-      "id": "earths-across-the-sun",
+      "id": "sunlight-to-neptune",
       "category": "Space",
-      "prompt": "How many Earths, side by side, span the Sun’s diameter?",
-      "unit": "Earths",
-      "rounding": "floor",
-      "roundingNote": "Complete Earths only (round down).",
+      "prompt": "Neptune orbits about 30 AU from the Sun. How many minutes does sunlight take to get there?",
+      "unit": "min",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest minute.",
       "factors": [
         {
-          "key": "sun",
-          "label": "Sun’s radius",
+          "key": "au",
+          "label": "Astronomical unit",
           "unit": "km",
-          "value": 695700,
-          "source": "IAU 2015 nominal value"
+          "value": 149597870.7,
+          "source": "IAU 2012 definition"
         },
         {
-          "key": "earth",
-          "label": "Earth’s mean radius",
-          "unit": "km",
-          "value": 6371,
-          "source": "IUGG mean radius"
+          "key": "c",
+          "label": "Speed of light",
+          "unit": "km/s",
+          "value": 299792.458,
+          "source": "SI definition"
         }
       ],
-      "formula": "sun / earth"
+      "formula": "30 * au / c / 60"
     }
   ]
 }

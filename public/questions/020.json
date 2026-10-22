@@ -2,22 +2,29 @@
   "id": "020",
   "questions": [
     {
-      "id": "grams-in-a-400-ounce-gold-bar",
+      "id": "letter-sheets-on-plywood",
       "category": "Everyday",
-      "prompt": "How many grams of gold are in a 400 troy ounce bar?",
-      "unit": "g",
-      "rounding": "round",
-      "roundingNote": "Rounded to the nearest gram.",
+      "prompt": "How many US Letter sheets, laid flat without overlapping, cover a 4 × 8 ft sheet of plywood?",
+      "unit": "sheets",
+      "rounding": "ceil",
+      "roundingNote": "Enough to cover it (round up).",
       "factors": [
         {
-          "key": "oz",
-          "label": "Troy ounce",
-          "unit": "g",
-          "value": 31.103,
-          "source": "International troy ounce"
+          "key": "l",
+          "label": "Long edge of a Letter sheet",
+          "unit": "in",
+          "value": 11,
+          "source": "ANSI Letter, 8.5 × 11 in"
+        },
+        {
+          "key": "w",
+          "label": "Short edge of a Letter sheet",
+          "unit": "in",
+          "value": 8.5,
+          "source": "ANSI Letter, 8.5 × 11 in"
         }
       ],
-      "formula": "400 * oz"
+      "formula": "4 * 8 * 144 / (l * w)"
     },
     {
       "id": "frequency-of-the-top-piano-key",

@@ -2,12 +2,12 @@
   "id": "025",
   "questions": [
     {
-      "id": "days-in-an-olympiad",
+      "id": "hours-old-at-21",
       "category": "Calendar",
-      "prompt": "An Olympiad is four years, one of them a leap year. How many days is that?",
-      "unit": "days",
+      "prompt": "How many hours old are you on your 21st birthday, if those years held 5 leap days?",
+      "unit": "hours",
       "rounding": "round",
-      "roundingNote": "Exact count.",
+      "roundingNote": "Rounded to the nearest hour.",
       "factors": [
         {
           "key": "d",
@@ -17,7 +17,7 @@
           "source": "Gregorian calendar"
         }
       ],
-      "formula": "4 * d + 1"
+      "formula": "(21 * d + 5) * 24"
     },
     {
       "id": "hours-to-drive-around-the-equator",

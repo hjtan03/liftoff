@@ -1,8 +1,18 @@
-import { useReducer, useState } from "react";
-import { submitGuess, type CrowdState } from "../api/client";
+import { useEffect, useMemo, useReducer, useState } from "react";
+import { fetchCrowd, submitGuess, type CrowdState } from "../api/client";
+import { readStorage, writeStorage } from "../browserStorage";
 import { Calculator } from "../calculator/Calculator";
+import {
+  computeStreak,
+  HISTORY_STORAGE_KEY,
+  parseHistory,
+  recordFinishedLaunch,
+  restoreRun,
+  RUN_STORAGE_KEY,
+  serializeRun,
+} from "../game/progress";
+import { gameReducer } from "../game/state";
 import type { FactorValues } from "../questions/factors";
-import { gameReducer, initialGameState } from "../game/state";
 import type { LoadedQuestionSet } from "../questions/source";
 import { LaunchReport } from "./LaunchReport";
 import { Shell } from "./Shell";
@@ -11,16 +21,70 @@ import { StageScreen } from "./StageScreen";
 type Props = { questionSet: LoadedQuestionSet };
 
 export function Game({ questionSet }: Props) {
-  const [game, dispatch] = useReducer(
-    gameReducer,
-    questionSet,
-    initialGameState,
+  /** Today's run as the browser left it, or a fresh one. */
+  const [restoredGame] = useState(() =>
+    restoreRun(questionSet, readStorage(RUN_STORAGE_KEY)),
   );
+  const [game, dispatch] = useReducer(gameReducer, restoredGame);
   const [isCalculatorOpen, setCalculatorOpen] = useState(false);
   /** The crowd for each stage of this run, by stage index, filled in as the server answers. */
   const [crowdByStage, setCrowdByStage] = useState<Record<number, CrowdState>>(
-    {},
+    () =>
+      Object.fromEntries(
+        restoredGame.stageResults.map((_, index) => [
+          index,
+          { status: "loading" } satisfies CrowdState,
+        ]),
+      ),
   );
+  const [storedHistory] = useState(() =>
+    parseHistory(readStorage(HISTORY_STORAGE_KEY)),
+  );
+
+  // Every change to the run is saved, so a refresh resumes where it left off.
+  useEffect(() => {
+    writeStorage(RUN_STORAGE_KEY, serializeRun(game));
+  }, [game]);
+
+  // A restored run shows its crowd lines again without re-posting its guesses.
+  useEffect(() => {
+    const restoredStages = restoredGame.stageResults.length;
+    if (restoredStages === 0) return;
+    let isStale = false;
+    void fetchCrowd(Number(restoredGame.launchNumber)).then((crowds) => {
+      if (isStale) return;
+      setCrowdByStage((current) => {
+        const next = { ...current };
+        for (let index = 0; index < restoredStages; index += 1) {
+          if (next[index]?.status !== "loading") continue;
+          const crowd = crowds?.[index];
+          next[index] = crowd
+            ? { status: "loaded", crowd }
+            : { status: "unavailable" };
+        }
+        return next;
+      });
+    });
+    return () => {
+      isStale = true;
+    };
+  }, [restoredGame]);
+
+  /** Finished launches, including today's once the rocket has flown. */
+  const history = useMemo(() => {
+    if (game.phase !== "done") return storedHistory;
+    return recordFinishedLaunch(storedHistory, game.launchNumber, {
+      points: game.stageResults.reduce((sum, result) => sum + result.points, 0),
+      grid: game.stageResults.map((result) => result.emoji).join(""),
+    });
+  }, [storedHistory, game.phase, game.launchNumber, game.stageResults]);
+
+  useEffect(() => {
+    if (history !== storedHistory)
+      writeStorage(HISTORY_STORAGE_KEY, JSON.stringify(history));
+  }, [history, storedHistory]);
+
+  const streak = computeStreak(history, Number(game.launchNumber));
 
   /** Reveals the fired stage and records it with the server, which answers with the crowd. */
   const revealStage = (assumedFactorValues: FactorValues) => {
@@ -61,6 +125,7 @@ export function Game({ questionSet }: Props) {
             launchNumber={game.launchNumber}
             questions={game.questions}
             stageResults={game.stageResults}
+            streak={streak}
             onRestart={() => {
               dispatch({ type: "game-restarted" });
               setCrowdByStage({});

@@ -4,7 +4,7 @@
  * device's own time zone, so every player meets the same launch on the same
  * calendar date wherever they are.
  */
-export const FIRST_LAUNCH_DATE = "2026-10-15";
+export const FIRST_LAUNCH_DATE = "2026-10-24";
 
 const MILLISECONDS_PER_DAY = 86_400_000;
 
@@ -33,4 +33,26 @@ export function computeLaunchNumber(deviceTime: Date): number {
 /** The id of a launch's question set, which names its published file: the number padded to three digits. */
 export function formatQuestionSetId(launchNumber: number): string {
   return String(launchNumber).padStart(3, "0");
+}
+
+/** Whole calendar days from deviceTime's date until the first launch; zero or less once it has begun. */
+export function daysUntilFirstLaunch(deviceTime: Date): number {
+  const deviceCalendarDayMs = Date.UTC(
+    deviceTime.getFullYear(),
+    deviceTime.getMonth(),
+    deviceTime.getDate(),
+  );
+  return (
+    (Date.parse(FIRST_LAUNCH_DATE) - deviceCalendarDayMs) / MILLISECONDS_PER_DAY
+  );
+}
+
+/**
+ * A launch number named in the page address (`?launch=12`), for playing a
+ * set on a preview before its day, or null when none is given.
+ */
+export function launchNumberFromAddress(search: string): number | null {
+  const named = new URLSearchParams(search).get("launch");
+  if (!named || !/^\d{1,4}$/.test(named) || Number(named) < 1) return null;
+  return Number(named);
 }

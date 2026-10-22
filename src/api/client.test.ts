@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import type { Crowd } from "./contract.js";
-import { playerId, submitGuess } from "./client.js";
+import { fetchCrowd, playerId, submitGuess } from "./client.js";
 
 const CROWD: Crowd = {
   players: 3,
@@ -93,6 +93,39 @@ describe("submitGuess", () => {
       submitGuess(request, async () => {
         throw new TypeError("offline");
       }),
+    ).resolves.toBeNull();
+  });
+});
+
+describe("fetchCrowd", () => {
+  it("returns each stage's crowd without a percentile", async () => {
+    const fetchImpl = vi.fn(async () =>
+      Response.json({
+        launch: 6,
+        stages: [
+          {
+            stage: 1,
+            players: 3,
+            hitRate: CROWD.hitRate,
+            lockHitShare: 0.5,
+          },
+        ],
+      }),
+    );
+    await expect(fetchCrowd(6, fetchImpl)).resolves.toEqual([
+      {
+        players: 3,
+        hitRate: CROWD.hitRate,
+        lockHitShare: 0.5,
+        percentile: null,
+      },
+    ]);
+    expect(fetchImpl).toHaveBeenCalledWith("/api/crowd?launch=6");
+  });
+
+  it("gives null when the server fails", async () => {
+    await expect(
+      fetchCrowd(6, async () => new Response("", { status: 503 })),
     ).resolves.toBeNull();
   });
 });

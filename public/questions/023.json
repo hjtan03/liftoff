@@ -2,29 +2,22 @@
   "id": "023",
   "questions": [
     {
-      "id": "leap-days-in-400-years",
+      "id": "counting-to-a-million",
       "category": "Calendar",
-      "prompt": "How many leap days does the Gregorian calendar add in a 400-year cycle?",
-      "unit": "days",
+      "prompt": "Saying one number every second without a break, how many hours does it take to count to one million?",
+      "unit": "hours",
       "rounding": "round",
-      "roundingNote": "Exact count.",
+      "roundingNote": "Rounded to the nearest hour.",
       "factors": [
         {
-          "key": "d",
-          "label": "Days in a 400-year Gregorian cycle",
-          "unit": "days",
-          "value": 146097,
-          "source": "Gregorian calendar rules"
-        },
-        {
-          "key": "y",
-          "label": "Days in a common year",
-          "unit": "days",
-          "value": 365,
-          "source": "Gregorian calendar"
+          "key": "hr",
+          "label": "Seconds in an hour",
+          "unit": "s",
+          "value": 3600,
+          "source": "SI hour"
         }
       ],
-      "formula": "d - 400 * y"
+      "formula": "1000000 / hr"
     },
     {
       "id": "minutes-for-a-1000-km-trip-at-70-mph",

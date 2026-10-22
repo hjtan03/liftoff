@@ -34,22 +34,22 @@
       "formula": "ac * 144 / (l * s)"
     },
     {
-      "id": "bones-on-a-soccer-pitch",
+      "id": "blinks-in-a-year",
       "category": "Body",
-      "prompt": "How many bones are in the 22 players on the pitch at a soccer kickoff?",
-      "unit": "bones",
+      "prompt": "Blinking 15 times a minute for 16 waking hours a day, how many times do you blink in a common year?",
+      "unit": "blinks",
       "rounding": "round",
-      "roundingNote": "Exact count.",
+      "roundingNote": "Rounded to the nearest blink.",
       "factors": [
         {
-          "key": "b",
-          "label": "Bones in an adult human",
-          "unit": "bones",
-          "value": 206,
-          "source": "Gray’s Anatomy"
+          "key": "d",
+          "label": "Days in a common year",
+          "unit": "days",
+          "value": 365,
+          "source": "Gregorian calendar"
         }
       ],
-      "formula": "22 * b"
+      "formula": "15 * 60 * 16 * d"
     },
     {
       "id": "quarters-stacked-to-the-crossbar",

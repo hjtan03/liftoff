@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it } from "vitest";
+import { FIRST_LAUNCH_DATE } from "../questions/schedule.js";
 import type { QuestionSet } from "../questions/schema.js";
 import type { Crowd } from "./contract.js";
 import {
@@ -15,8 +16,9 @@ import {
 
 const PLAYER = "11111111-1111-4111-8111-111111111111";
 const OTHER_PLAYER = "22222222-2222-4222-8222-222222222222";
-// FIRST_LAUNCH_DATE is 2026-10-15, so noon UTC on 2026-10-17 is launch 3.
-const NOW = new Date("2026-10-17T12:00:00Z");
+const DAY_MS = 86_400_000;
+/** Noon UTC two days after the first launch date: launch 3. */
+const NOW = new Date(Date.parse(FIRST_LAUNCH_DATE) + 2 * DAY_MS + DAY_MS / 2);
 
 const SET: QuestionSet = {
   id: "003",
@@ -116,8 +118,8 @@ const guess = (
 
 describe("launch numbers", () => {
   it("count UTC calendar days from the first launch", () => {
-    expect(utcLaunchNumber(new Date("2026-10-15T00:00:00Z"))).toBe(1);
-    expect(utcLaunchNumber(new Date("2026-10-15T23:59:59Z"))).toBe(1);
+    expect(utcLaunchNumber(new Date(`${FIRST_LAUNCH_DATE}T00:00:00Z`))).toBe(1);
+    expect(utcLaunchNumber(new Date(`${FIRST_LAUNCH_DATE}T23:59:59Z`))).toBe(1);
     expect(utcLaunchNumber(NOW)).toBe(3);
   });
   it("are playable within one day of UTC's, so every time zone is covered", () => {

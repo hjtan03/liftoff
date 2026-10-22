@@ -11,6 +11,9 @@ import {
 } from "../game/scoring";
 import type { StageResult } from "../game/state";
 import { type LoadedQuestion, workedSolution } from "../questions/source";
+import { sfx } from "../sound";
+import type { Mood } from "../pixel/sprites";
+import { FuelScene } from "./FuelScene";
 import { RangeAxis } from "./RangeAxis";
 
 const FILL_MS = 1300;
@@ -18,6 +21,8 @@ const LIT_PAUSE_MS = 250;
 const SPUTTER_MS = 550;
 const DRAIN_MS = 750;
 const DRAINED_PAUSE_MS = 150;
+/** Bubble sounds played over one fill. */
+const FILL_BUBBLES = 8;
 /** How far a misfire fills before it sputters out. */
 const MISFIRE_SPUTTER_PERCENT = 26;
 /** An assumed constant within this fraction of the real one reads as spot on. */
@@ -91,20 +96,35 @@ export function RevealStage({
     }
     let cancelTween = () => {};
     let pauseHandle = 0;
+    let bubblesPlayed = 0;
+    const bubbleAt = (progress: number, fillFraction: number) => {
+      const due = Math.floor(progress * FILL_BUBBLES);
+      if (due <= bubblesPlayed) return;
+      bubblesPlayed = due;
+      sfx.fuelBubble(fillFraction);
+    };
     if (result.hit) {
       cancelTween = tween(
         FILL_MS,
-        (progress) => setTank({ phase: "filling", progress }),
+        (progress) => {
+          setTank({ phase: "filling", progress });
+          bubbleAt(progress, (fullFillPercent / 100) * easeOutCubic(progress));
+        },
         () => {
           setTank({ phase: "lit" });
+          sfx.stageFired(soundLevel(result));
           pauseHandle = window.setTimeout(finishAnimation, LIT_PAUSE_MS);
         },
       );
     } else {
       cancelTween = tween(
         SPUTTER_MS,
-        (progress) => setTank({ phase: "sputtering", progress }),
+        (progress) => {
+          setTank({ phase: "sputtering", progress });
+          bubbleAt(progress, (MISFIRE_SPUTTER_PERCENT / 100) * progress);
+        },
         () => {
+          sfx.misfire();
           cancelTween = tween(
             DRAIN_MS,
             (progress) => setTank({ phase: "draining", progress }),
@@ -122,7 +142,7 @@ export function RevealStage({
       cancelTween();
       clearTimeout(pauseHandle);
     };
-  }, [isAnimating, result.hit]);
+  }, [isAnimating, result, fullFillPercent]);
 
   const fillPercent =
     tank.phase === "filling"
@@ -138,14 +158,10 @@ export function RevealStage({
       : tank.phase === "lit"
         ? result.points
         : 0;
-  const tankClassName = [
-    "tankwrap",
-    result.hit ? "" : "bad",
-    tank.phase === "lit" ? "lit" : "",
-    tank.phase === "draining" ? "shake smoking" : "",
-  ]
-    .filter(Boolean)
-    .join(" ");
+  const mood: Mood =
+    tank.phase === "filling" || tank.phase === "sputtering"
+      ? "working"
+      : resultMood(result);
 
   const verdict = result.exact
     ? "Dead on."
@@ -159,44 +175,21 @@ export function RevealStage({
   return (
     <div className="card">
       <div className="rv-top">
-        <div className={tankClassName} aria-hidden="true">
-          <div className="tank-cap"></div>
-          <div className="tank-mid">
-            <div className="tank-body">
-              <div className="fuel" style={{ height: `${fillPercent}%` }}>
-                <b></b>
-                <b></b>
-                <b></b>
-              </div>
-              <div className="tank-read num">{Math.round(fillPercent)}%</div>
-            </div>
-            <div className="ticks">
-              {FUEL_TICKS.map((tick) => {
-                const isMine = result.exact
-                  ? tick.key === "exact"
-                  : tick.key === result.band;
-                return (
-                  <div
-                    key={tick.key}
-                    className={`tk${isMine ? " me" : ""}`}
-                    style={{
-                      bottom: `${(tick.points / MAX_POINTS_PER_STAGE) * 100}%`,
-                    }}
-                  >
-                    <span>{tick.label}</span>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-          <div className="tank-noz"></div>
-          <div className="tflame"></div>
-          <div className="smoke">
-            <i></i>
-            <i></i>
-            <i></i>
-          </div>
-        </div>
+        <FuelScene
+          fillPercent={fillPercent}
+          isFlowing={tank.phase === "filling" || tank.phase === "sputtering"}
+          mood={mood}
+          isSmoking={tank.phase === "draining"}
+          isMisfire={!result.hit}
+          readoutPercent={Math.round(fillPercent)}
+          ticks={FUEL_TICKS.map((tick) => ({
+            label: tick.label,
+            points: tick.points,
+            isMine: result.exact
+              ? tick.key === "exact"
+              : result.hit && tick.key === result.band,
+          }))}
+        />
         <div className="rv-main">
           <h2
             className={`verdict ${result.hit ? "ok" : "bad"}`}
@@ -309,4 +302,21 @@ function CrowdLine({ crowd }: { crowd: CrowdState }) {
       )}
     </>
   );
+}
+
+/** The crew's reaction once the tank settles. */
+function resultMood(result: StageResult): Mood {
+  if (!result.hit) return "sad";
+  if (result.exact) return "party";
+  if (result.band === "lock") return "cheer";
+  if (result.band === "solid") return "happy";
+  return "meh";
+}
+
+/** How big the settling chime is: one note for rough up to a fanfare for dead on. */
+function soundLevel(result: StageResult): 1 | 2 | 3 | 4 {
+  if (result.exact) return 4;
+  if (result.band === "lock") return 3;
+  if (result.band === "solid") return 2;
+  return 1;
 }

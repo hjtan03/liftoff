@@ -2,22 +2,22 @@
   "id": "027",
   "questions": [
     {
-      "id": "minutes-in-a-common-year",
+      "id": "a-million-minutes",
       "category": "Calendar",
-      "prompt": "How many minutes are in a common year?",
-      "unit": "min",
-      "rounding": "round",
-      "roundingNote": "Exact count.",
+      "prompt": "How many days long is one million minutes?",
+      "unit": "days",
+      "rounding": "floor",
+      "roundingNote": "Complete days only (round down).",
       "factors": [
         {
-          "key": "d",
-          "label": "Days in a common year",
-          "unit": "days",
-          "value": 365,
-          "source": "Gregorian calendar"
+          "key": "hr",
+          "label": "Hours in a day",
+          "unit": "hours",
+          "value": 24,
+          "source": "SI day"
         }
       ],
-      "formula": "d * 24 * 60"
+      "formula": "1000000 / (hr * 60)"
     },
     {
       "id": "kilometers-a-ship-sails-in-a-day",

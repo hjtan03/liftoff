@@ -2,22 +2,22 @@
   "id": "009",
   "questions": [
     {
-      "id": "gallons-in-a-cubic-meter",
+      "id": "soda-cans-to-fill-a-bathtub",
       "category": "Everyday",
-      "prompt": "How many US gallons fill one cubic meter?",
-      "unit": "gallons",
-      "rounding": "round",
-      "roundingNote": "Rounded to the nearest gallon.",
+      "prompt": "A bathtub holds 150 liters. How many 12 fl oz soda cans would it take to fill it?",
+      "unit": "cans",
+      "rounding": "ceil",
+      "roundingNote": "Enough to fill it (round up).",
       "factors": [
         {
-          "key": "gal",
-          "label": "US gallon",
-          "unit": "L",
-          "value": 3.785,
-          "source": "NIST Handbook 44, 3.785411784 L"
+          "key": "oz",
+          "label": "US fluid ounce",
+          "unit": "mL",
+          "value": 29.574,
+          "source": "US customary definition"
         }
       ],
-      "formula": "1000 / gal"
+      "formula": "150000 / (12 * oz)"
     },
     {
       "id": "fiber-delay-over-1000-km",
@@ -81,22 +81,22 @@
       "formula": "kg * 1000 / rho"
     },
     {
-      "id": "escape-velocity-in-kilometers-per-hour",
+      "id": "one-iss-orbit",
       "category": "Space",
-      "prompt": "How many km/h must a rocket reach to escape Earth’s gravity from the surface?",
-      "unit": "km/h",
+      "prompt": "The ISS flies 408 km above the surface at 7.66 km/s. How many minutes does one lap around Earth take?",
+      "unit": "min",
       "rounding": "round",
-      "roundingNote": "Rounded to the nearest km/h.",
+      "roundingNote": "Rounded to the nearest minute.",
       "factors": [
         {
-          "key": "v",
-          "label": "Earth’s escape velocity",
-          "unit": "km/s",
-          "value": 11.186,
-          "source": "NASA Earth fact sheet"
+          "key": "r",
+          "label": "Earth’s mean radius",
+          "unit": "km",
+          "value": 6371,
+          "source": "IUGG mean radius"
         }
       ],
-      "formula": "v * 3600"
+      "formula": "2 * 3.14159265 * (r + 408) / 7.66 / 60"
     }
   ]
 }

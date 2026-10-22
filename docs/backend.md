@@ -42,7 +42,7 @@ Never prefix these with `VITE_`. Vite bundles every `VITE_*` variable into the J
 A launch is one day's set of five questions.
 
 - `launch = daysBetween(FIRST_LAUNCH_DATE, localDate) + 1`, where `localDate` is the player's local calendar date. Everyone plays the same launch on the same local day, the way Wordle rolls over at local midnight.
-- `FIRST_LAUNCH_DATE` and `computeLaunchNumber` live in `src/questions/schedule.ts`; the API imports them rather than repeating the date. The date is provisional and moves to the public launch date before we go live: nobody is playing yet, so renumbering is harmless until then and breaking after.
+- `FIRST_LAUNCH_DATE` and `computeLaunchNumber` live in `src/questions/schedule.ts`; the API imports them rather than repeating the date. Launch #001 is **Saturday, October 24, 2026**. Changing the date now renumbers every puzzle players have played. Before that date the game shows a countdown; `?launch=N` in the address plays a set early, for testing previews.
 - The game fetches `/questions/NNN.json`, where `NNN` is the zero-padded launch number. The set's `id` equals the file name, which a test already enforces.
 
 ## Scoring

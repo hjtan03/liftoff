@@ -8,7 +8,7 @@ test.beforeEach(async ({ page }) => {
   await page.clock.setFixedTime(new Date(`${FIRST_LAUNCH_DATE}T12:00:00`));
 });
 
-test("five exact locked-in answers reach the Moon with a full share string", async ({
+test("five exact locked-in answers reach Neptune with a full share string", async ({
   page,
 }) => {
   await page.goto("./");
@@ -27,11 +27,11 @@ test("five exact locked-in answers reach the Moon with a full share string", asy
       })
       .click();
   }
-  await expect(page.locator(".dest")).toHaveText("The Moon", {
+  await expect(page.locator(".dest")).toHaveText("Reached Neptune", {
     timeout: 10_000,
   });
   await expect(page.locator(".share")).toHaveText(
-    "🚀 Liftoff #001 🎯🎯🎯🎯🎯\nReached: The Moon (384,400 km)\nThrust 6,250 / 6,250",
+    "🚀 Liftoff #001 🎯🎯🎯🎯🎯\nReached Neptune · 6,250 / 6,250 fuel",
   );
 });
 
@@ -109,4 +109,27 @@ test("without the server the reveal still plays, with no crowd line", async ({
   await page.getByRole("button", { name: "Skip" }).click();
   await expect(page.locator(".crowd")).not.toContainText("players");
   await expect(page.locator(".crowd")).not.toContainText("Checking");
+});
+
+test("a refresh resumes the run where it left off", async ({ page }) => {
+  await page.goto("./");
+  await page.getByLabel("Your answer").fill(EXACT_ANSWERS[0]);
+  await page.getByRole("button", { name: "Locked in" }).click();
+  await page.getByRole("button", { name: "Fire stage 1" }).click();
+  await page.getByRole("button", { name: "Reveal" }).click();
+  await page.getByRole("button", { name: "Next stage" }).click();
+  await page.getByLabel("Your answer").fill("42");
+
+  await page.reload();
+  await expect(page.getByText("Stage 2", { exact: true })).toBeVisible();
+  await expect(page.getByLabel("Your answer")).toHaveValue("42");
+});
+
+test("before the first launch the site counts down", async ({ page }) => {
+  const dayBefore = new Date(`${FIRST_LAUNCH_DATE}T12:00:00`);
+  dayBefore.setDate(dayBefore.getDate() - 1);
+  await page.clock.setFixedTime(dayBefore);
+  await page.goto("./");
+  await expect(page.getByText("T−1 day")).toBeVisible();
+  await expect(page.getByLabel("Your answer")).toHaveCount(0);
 });
