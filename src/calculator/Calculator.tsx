@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { sfx } from "../sound";
 import {
   calculatorDisplayText,
   calculatorHistoryText,
@@ -110,7 +111,10 @@ export function Calculator({ isOpen, onClose }: Props) {
             className={`k${kind ? ` ${kind}` : ""}`}
             aria-label={ariaLabel}
             ref={key === "=" ? equalsRef : undefined}
-            onClick={() => press(key)}
+            onClick={() => {
+              sfx.tick();
+              press(key);
+            }}
           >
             {key}
           </button>

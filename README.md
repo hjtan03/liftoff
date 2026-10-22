@@ -4,7 +4,7 @@ A daily estimation game: five questions, one rocket.
 
 ## About
 
-Every question is answered by reasoning from well-known, sourced constants, not trivia. The player works out a number, picks a confidence band, and fires a rocket stage; after five stages the rocket launches, and its altitude is the score. Liftoff is a Vite + React + TypeScript single-page app with no backend. Where it is going is in [docs/roadmap.md](docs/roadmap.md).
+Every question is answered by reasoning from well-known, sourced constants, not trivia. The player works out a number, picks a confidence band, and fires a rocket stage; after five stages the rocket launches, and how far out into the solar system it gets is the score. Liftoff is a Vite + React + TypeScript single-page app, with a small API on Vercel and Supabase for crowd stats (docs/backend.md). Where it is going is in [docs/roadmap.md](docs/roadmap.md).
 
 ## Getting started
 

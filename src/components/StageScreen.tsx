@@ -2,6 +2,7 @@ import type { Dispatch } from "react";
 import type { CrowdState } from "../api/client";
 import type { GameAction, GameState } from "../game/state";
 import type { FactorValues } from "../questions/factors";
+import { sfx } from "../sound";
 import { AskStage } from "./AskStage";
 import { AssumptionsForm } from "./AssumptionsForm";
 import { RevealStage } from "./RevealStage";
@@ -81,6 +82,7 @@ export function StageScreen({
               dispatch({ type: "reveal-animation-finished" })
             }
             onNext={() => {
+              sfx.next();
               dispatch({ type: "next-stage" });
               window.scrollTo({ top: 0 });
             }}

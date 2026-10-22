@@ -8,7 +8,7 @@ test.beforeEach(async ({ page }) => {
   await page.clock.setFixedTime(new Date(`${FIRST_LAUNCH_DATE}T12:00:00`));
 });
 
-test("five exact locked-in answers reach the Moon with a full share string", async ({
+test("five exact locked-in answers reach Neptune with a full share string", async ({
   page,
 }) => {
   await page.goto("./");
@@ -27,11 +27,11 @@ test("five exact locked-in answers reach the Moon with a full share string", asy
       })
       .click();
   }
-  await expect(page.locator(".dest")).toHaveText("The Moon", {
+  await expect(page.locator(".dest")).toHaveText("Reached Neptune", {
     timeout: 10_000,
   });
   await expect(page.locator(".share")).toHaveText(
-    "🚀 Liftoff #001 🎯🎯🎯🎯🎯\nReached: The Moon (384,400 km)\nThrust 6,250 / 6,250",
+    "🚀 Liftoff #001 🎯🎯🎯🎯🎯\nReached Neptune · 6,250 / 6,250 fuel",
   );
 });
 

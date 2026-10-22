@@ -1,22 +1,25 @@
 import { useEffect, useRef, useState } from "react";
 import { easeOutCubic, prefersReducedMotion, tween } from "../animation";
+import { GAME_NAME } from "../brand";
 import {
-  altitudeForScore,
-  altitudeTrackPercent,
-  destinationForAltitude,
-  formatAltitude,
-  LAUNCH_PAD_ALTITUDE_KM,
-  MILESTONES,
-} from "../game/altitude";
+  formatDistance,
+  routePosition,
+  STOPS,
+  stopReached,
+} from "../game/journey";
 import { formatNumber } from "../game/numbers";
 import type { Streak } from "../game/progress";
 import { maxTotalPoints } from "../game/scoring";
 import type { StageResult } from "../game/state";
+import { PixelSprite } from "../pixel/Sprite";
+import { planet, PLANET_LOOKS, ROCKET, ROCKET_PALETTE } from "../pixel/sprites";
 import type { LoadedQuestion } from "../questions/source";
+import { sfx } from "../sound";
 
-const CLIMB_MS = 3600;
-/** The rocket starts just above the ground strip. */
-const ROCKET_REST_PERCENT = 2.5;
+const CLIMB_MS = 4200;
+/** Where the first and last stops sit on the track, as a share of its height. */
+const TRACK_BOTTOM_PERCENT = 5;
+const TRACK_TOP_PERCENT = 91;
 
 type Props = {
   launchNumber: string;
@@ -26,6 +29,14 @@ type Props = {
   onRestart: () => void;
 };
 
+const trackPercent = (position: number) =>
+  TRACK_BOTTOM_PERCENT +
+  (position / (STOPS.length - 1)) * (TRACK_TOP_PERCENT - TRACK_BOTTOM_PERCENT);
+
+const capitalize = (text: string) =>
+  text.charAt(0).toUpperCase() + text.slice(1);
+
+/** The flight report: the rocket's trip out through the solar system, the stage-by-stage tally, and the share text. */
 export function LaunchReport({
   launchNumber,
   questions,
@@ -38,33 +49,35 @@ export function LaunchReport({
     0,
   );
   const maxPoints = maxTotalPoints(questions.length);
-  const peakAltitudeKm = altitudeForScore(totalPoints, maxPoints);
-  const destination = destinationForAltitude(peakAltitudeKm);
+  const finalPosition = routePosition(totalPoints, maxPoints);
+  const destination = stopReached(totalPoints, maxPoints);
   const emojiGrid = stageResults.map((result) => result.emoji).join("");
-  const shareText = `🚀 Liftoff #${launchNumber} ${emojiGrid}\nReached: ${destination} (${formatAltitude(peakAltitudeKm)})\nThrust ${formatNumber(totalPoints)} / ${formatNumber(maxPoints)}`;
+  const shareText = `🚀 ${GAME_NAME} #${launchNumber} ${emojiGrid}\nReached ${destination.name} · ${formatNumber(totalPoints)} / ${formatNumber(maxPoints)} fuel`;
 
-  const [climbProgress, setClimbProgress] = useState(0);
+  // With reduced motion the rocket is simply there, without the climb.
+  const [climbProgress, setClimbProgress] = useState(() =>
+    prefersReducedMotion() ? 1 : 0,
+  );
   const [copyStatus, setCopyStatus] = useState("");
   const shareRef = useRef<HTMLPreElement>(null);
 
   useEffect(() => {
-    return tween(prefersReducedMotion() ? 0 : CLIMB_MS, setClimbProgress);
-  }, []);
+    if (prefersReducedMotion()) return;
+    sfx.launch();
+    let stopsPassed = 0;
+    return tween(CLIMB_MS, (progress) => {
+      setClimbProgress(progress);
+      const position = finalPosition * easeOutCubic(progress);
+      while (stopsPassed < Math.floor(position + 1e-9)) {
+        stopsPassed += 1;
+        sfx.passStop(stopsPassed);
+      }
+    });
+  }, [finalPosition]);
 
-  const eased = easeOutCubic(climbProgress);
-  const padLog = Math.log10(LAUNCH_PAD_ALTITUDE_KM);
-  const peakLog = Math.log10(peakAltitudeKm);
-  const currentAltitudeKm = Math.pow(10, padLog + (peakLog - padLog) * eased);
-  const rocketBottomPercent = Math.max(
-    ROCKET_REST_PERCENT,
-    altitudeTrackPercent(peakAltitudeKm) * eased,
-  );
-  const destinationText =
-    climbProgress === 0
-      ? "Ignition…"
-      : climbProgress < 1
-        ? "Climbing…"
-        : destination;
+  const rocketPosition = finalPosition * easeOutCubic(climbProgress);
+  const hasLanded = climbProgress >= 1;
+  const passed = Math.floor(rocketPosition + 1e-9);
 
   const copyShareText = () => {
     navigator.clipboard
@@ -82,44 +95,42 @@ export function LaunchReport({
 
   return (
     <div className="launch">
-      <section
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: 20,
-          minWidth: 0,
-        }}
-      >
-        <div>
-          <p className="label">Peak altitude</p>
-          <p className="alt num">{formatAltitude(currentAltitudeKm)}</p>
-          <p className="dest">{destinationText}</p>
+      <section className="report">
+        <div className="destination" aria-live="polite">
+          <h1 className="dest">
+            {hasLanded
+              ? `Reached ${destination.name}`
+              : climbProgress === 0
+                ? "Ignition…"
+                : "Climbing…"}
+          </h1>
+          <p className="dest-sub">
+            {hasLanded && destination.distanceKm > 0
+              ? `${formatDistance(destination.distanceKm)} from Earth on ${formatNumber(totalPoints)} fuel.`
+              : hasLanded
+                ? `${formatNumber(totalPoints)} fuel wasn’t enough to leave the pad.`
+                : " "}
+          </p>
         </div>
         <p className="streak">
           Streak <b>{streak.current}</b> · Best <b>{streak.best}</b> · Launches
           flown <b>{streak.played}</b>
         </p>
-        <ul className="summary">
+        <ol className="summary">
           {stageResults.map((result, index) => (
             <li key={index}>
-              <span>{result.emoji}</span>
+              <span aria-hidden="true">{result.emoji}</span>
               <span>{questions[index].prompt}</span>
               <span className="pt">+{formatNumber(result.points)}</span>
             </li>
           ))}
-        </ul>
-        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-          <p className="label">Share</p>
+        </ol>
+        <div className="share-box">
           <pre className="share" ref={shareRef}>
             {shareText}
           </pre>
           <div className="row">
-            <button
-              className="fire"
-              type="button"
-              style={{ fontSize: 18, padding: "10px 22px" }}
-              onClick={copyShareText}
-            >
+            <button className="fire" type="button" onClick={copyShareText}>
               Copy result
             </button>
             <button className="ghost" type="button" onClick={onRestart}>
@@ -131,44 +142,53 @@ export function LaunchReport({
           </div>
         </div>
         <p className="note">
-          🎯 exact · 🟢 locked in · 🟡 solid · 🟠 rough · 🔴 misfire. Crowd
-          stats are simulated in this prototype.
+          🎯 dead on · 🟢 locked in · 🟡 solid · 🟠 rough · 🔴 misfire. A new
+          launch arrives at midnight.
         </p>
       </section>
-      <div className="sky" aria-label="Altitude track, log scale">
-        {MILESTONES.map((milestone) => (
-          <div
-            key={milestone.name}
-            className="tick"
-            style={{ bottom: `${altitudeTrackPercent(milestone.altitudeKm)}%` }}
-          >
-            <span>{milestone.name}</span>
-            <span>{formatAltitude(milestone.altitudeKm)}</span>
-          </div>
-        ))}
-        <div className="ground"></div>
-        <div className="rocket" style={{ bottom: `${rocketBottomPercent}%` }}>
-          <svg viewBox="0 0 30 64" aria-hidden="true">
-            <path
-              d="M15 0 C24 10 24 22 24 40 L6 40 C6 22 6 10 15 0Z"
-              fill="#F4F6FA"
-              stroke="#12213A"
-              strokeWidth="1.5"
-            />
-            <circle
-              cx="15"
-              cy="20"
-              r="4"
-              fill="#3B5B8C"
-              stroke="#12213A"
-              strokeWidth="1.2"
-            />
-            <path d="M6 30 L0 44 L6 42Z M24 30 L30 44 L24 42Z" fill="#F2541B" />
-            <g className="flame">
-              <path d="M9 41 L15 62 L21 41Z" fill="#FFB020" />
-              <path d="M12 41 L15 54 L18 41Z" fill="#FFF1C4" />
-            </g>
-          </svg>
+      <div
+        className="track"
+        role="img"
+        aria-label={`The rocket's route from the launch pad out to Neptune. It reached ${destination.name}.`}
+      >
+        <div className="track-line" />
+        <div
+          className="track-trail"
+          style={{
+            height: `${trackPercent(rocketPosition) - TRACK_BOTTOM_PERCENT}%`,
+          }}
+        />
+        {STOPS.map((stop, index) => {
+          const look = PLANET_LOOKS[stop.name];
+          const art = look ? planet(look) : null;
+          return (
+            <div
+              key={stop.name}
+              className={`stop${index <= passed ? " passed" : ""}${index === passed && hasLanded ? " here" : ""}`}
+              style={{ bottom: `${trackPercent(index)}%` }}
+            >
+              <span className="stop-art">
+                {art ? (
+                  <PixelSprite
+                    grid={art.grid}
+                    palette={art.palette}
+                    pixelSize={4}
+                  />
+                ) : index === 0 ? (
+                  <span className="pad" />
+                ) : (
+                  <span className="orbit-dot" />
+                )}
+              </span>
+              <span className="stop-name">{capitalize(stop.name)}</span>
+            </div>
+          );
+        })}
+        <div
+          className={`flyer${climbProgress > 0 && !hasLanded ? " burning" : ""}`}
+          style={{ bottom: `${trackPercent(rocketPosition)}%` }}
+        >
+          <PixelSprite grid={ROCKET} palette={ROCKET_PALETTE} pixelSize={3} />
         </div>
       </div>
     </div>

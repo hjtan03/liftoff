@@ -1,6 +1,7 @@
 import { formatNumber, parseNumberInput } from "../game/numbers";
 import type { Question } from "../questions/schema";
 import { BAND_KEYS, type BandKey, CONFIDENCE_BANDS } from "../game/scoring";
+import { sfx } from "../sound";
 
 type Props = {
   question: Question;
@@ -54,7 +55,10 @@ export function AskStage({
             aria-label="Your answer"
             onChange={(event) => onGuessTextChange(event.target.value)}
             onKeyDown={(event) => {
-              if (event.key === "Enter" && isGuessValid) onFire(guess);
+              if (event.key === "Enter" && isGuessValid) {
+                sfx.fire();
+                onFire(guess);
+              }
             }}
           />
           <span className="u">{question.unit}</span>
@@ -77,7 +81,10 @@ export function AskStage({
                 type="button"
                 className="cbtn"
                 aria-pressed={selectedBand === bandKey}
-                onClick={() => onBandSelect(bandKey)}
+                onClick={() => {
+                  sfx.select(BAND_KEYS.indexOf(bandKey));
+                  onBandSelect(bandKey);
+                }}
               >
                 <span className="t">{band.name}</span>
                 <span className="p">
@@ -93,7 +100,10 @@ export function AskStage({
         className="fire"
         type="button"
         disabled={!isGuessValid}
-        onClick={() => onFire(guess)}
+        onClick={() => {
+          sfx.fire();
+          onFire(guess);
+        }}
       >
         Fire stage {stageNumber}
       </button>
