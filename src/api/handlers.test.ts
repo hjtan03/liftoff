@@ -8,7 +8,6 @@ import {
   isPlayableLaunch,
   logError,
   parseGuessRequest,
-  utcLaunchNumber,
   type Dependencies,
   type GuessStore,
   type StoredGuess,
@@ -117,12 +116,7 @@ const guess = (
   );
 
 describe("launch numbers", () => {
-  it("count UTC calendar days from the first launch", () => {
-    expect(utcLaunchNumber(new Date(`${FIRST_LAUNCH_DATE}T00:00:00Z`))).toBe(1);
-    expect(utcLaunchNumber(new Date(`${FIRST_LAUNCH_DATE}T23:59:59Z`))).toBe(1);
-    expect(utcLaunchNumber(NOW)).toBe(3);
-  });
-  it("are playable within one day of UTC's, so every time zone is covered", () => {
+  it("are playable the day before and after today's, for runs across midnight and fast clocks", () => {
     expect(isPlayableLaunch(2, NOW)).toBe(true);
     expect(isPlayableLaunch(3, NOW)).toBe(true);
     expect(isPlayableLaunch(4, NOW)).toBe(true);

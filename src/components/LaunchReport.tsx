@@ -143,7 +143,7 @@ export function LaunchReport({
         </div>
         <p className="note">
           🎯 dead on · 🟢 locked in · 🟡 solid · 🟠 rough · 🔴 misfire. A new
-          launch arrives at midnight.
+          launch arrives at midnight Eastern.
         </p>
       </section>
       <div

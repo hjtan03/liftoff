@@ -52,8 +52,8 @@ export function App() {
             T−{load.days} {load.days === 1 ? "day" : "days"}
           </p>
           <p className="note">
-            The first daily launch lifts off on Saturday, October 24. Five
-            questions, one rocket, a new flight every day.
+            The first daily launch lifts off at midnight Eastern on Saturday,
+            October 24. Five questions, one rocket, a new flight every day.
           </p>
         </div>
       </Shell>
@@ -78,7 +78,7 @@ export function App() {
 }
 
 /**
- * Fetches the set for the launch on the device's calendar date, or the one
+ * Fetches today's set (days roll over at midnight Eastern), or the one
  * named in the address (`?launch=N`) when testing.
  */
 async function fetchQuestionSetForToday(): Promise<LoadedQuestionSet> {
