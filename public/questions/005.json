@@ -27,47 +27,47 @@
       "formula": "yd * 914.4 / mm"
     },
     {
-      "id": "ipv4-addresses",
+      "id": "streaming-a-terabyte",
       "category": "Tech",
-      "prompt": "How many distinct IPv4 addresses are there?",
-      "unit": "addresses",
+      "prompt": "Streaming 4K video at 25 megabits per second, how many hours does it take to download one terabyte?",
+      "unit": "hours",
       "rounding": "round",
-      "roundingNote": "Exact count.",
+      "roundingNote": "Rounded to the nearest hour.",
       "factors": [
         {
-          "key": "bits",
-          "label": "IPv4 address length",
-          "unit": "bits",
-          "value": 32,
-          "source": "RFC 791"
+          "key": "tb",
+          "label": "Terabyte",
+          "unit": "bytes",
+          "value": 1000000000000.0,
+          "source": "SI prefix: 10¹² bytes"
         }
       ],
-      "formula": "2 ^ bits"
+      "formula": "tb * 8 / 25000000 / 3600"
     },
     {
-      "id": "laps-of-a-track-in-a-marathon",
+      "id": "tennis-balls-across-an-nba-court",
       "category": "Sport",
-      "prompt": "How many complete laps of a standard running track fit in a marathon?",
-      "unit": "laps",
+      "prompt": "How many tennis balls, side by side in a straight line, fit along the full length of an NBA court?",
+      "unit": "balls",
       "rounding": "floor",
-      "roundingNote": "Complete laps only (round down).",
+      "roundingNote": "Whole balls only (round down).",
       "factors": [
         {
-          "key": "m",
-          "label": "One lap of a standard track, lane 1",
-          "unit": "m",
-          "value": 400,
-          "source": "World Athletics rules"
+          "key": "ft",
+          "label": "NBA court length",
+          "unit": "ft",
+          "value": 94,
+          "source": "NBA rulebook"
         },
         {
-          "key": "d",
-          "label": "Marathon distance",
-          "unit": "km",
-          "value": 42.195,
-          "source": "World Athletics standard"
+          "key": "cm",
+          "label": "Tennis ball diameter",
+          "unit": "cm",
+          "value": 6.7,
+          "source": "ITF ball specification, 6.54–6.86 cm"
         }
       ],
-      "formula": "d * 1000 / m"
+      "formula": "ft * 30.48 / cm"
     },
     {
       "id": "meters-a-kilowatt-hour-lifts-a-car",
@@ -95,29 +95,22 @@
       "formula": "e / (1000 * g)"
     },
     {
-      "id": "earths-between-earth-and-the-moon",
+      "id": "radio-to-mars",
       "category": "Space",
-      "prompt": "How many Earths, side by side, fit in the average distance from Earth’s center to the Moon’s center?",
-      "unit": "Earths",
-      "rounding": "floor",
-      "roundingNote": "Complete Earths only (round down).",
+      "prompt": "When Mars is 225 million km away, its average distance from Earth, how many minutes does a radio message take to reach it?",
+      "unit": "min",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest minute.",
       "factors": [
         {
-          "key": "d",
-          "label": "Average Earth–Moon distance",
-          "unit": "km",
-          "value": 384400,
-          "source": "NASA"
-        },
-        {
-          "key": "r",
-          "label": "Earth’s mean radius",
-          "unit": "km",
-          "value": 6371,
-          "source": "IUGG mean radius"
+          "key": "c",
+          "label": "Speed of light",
+          "unit": "km/s",
+          "value": 299792.458,
+          "source": "SI definition"
         }
       ],
-      "formula": "d / (2 * r)"
+      "formula": "225000000 / c / 60"
     }
   ]
 }

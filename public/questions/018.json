@@ -2,29 +2,29 @@
   "id": "018",
   "questions": [
     {
-      "id": "ounces-in-a-wine-bottle",
+      "id": "wine-bottles-in-a-drum",
       "category": "Everyday",
-      "prompt": "How many US fluid ounces does a standard wine bottle hold?",
-      "unit": "fl oz",
-      "rounding": "round",
-      "roundingNote": "Rounded to the nearest ounce.",
+      "prompt": "How many standard wine bottles does it take to fill a 55-gallon drum?",
+      "unit": "bottles",
+      "rounding": "ceil",
+      "roundingNote": "Enough to fill it (round up).",
       "factors": [
+        {
+          "key": "gal",
+          "label": "US gallon",
+          "unit": "L",
+          "value": 3.785,
+          "source": "US customary definition, 231 in³"
+        },
         {
           "key": "ml",
           "label": "Standard wine bottle",
           "unit": "mL",
           "value": 750,
           "source": "EU and US standard fill"
-        },
-        {
-          "key": "oz",
-          "label": "US fluid ounce",
-          "unit": "mL",
-          "value": 29.574,
-          "source": "NIST Handbook 44"
         }
       ],
-      "formula": "ml / oz"
+      "formula": "55 * gal * 1000 / ml"
     },
     {
       "id": "turns-of-an-lp-side",
@@ -70,29 +70,29 @@
       "formula": "ft * 304.8 / mm"
     },
     {
-      "id": "hectares-in-a-square-mile",
+      "id": "everest-on-a-globe",
       "category": "Earth",
-      "prompt": "How many hectares are in a square mile?",
-      "unit": "ha",
+      "prompt": "Shrink Earth to a globe 30 cm across. How many micrometers tall is Everest on it?",
+      "unit": "µm",
       "rounding": "round",
-      "roundingNote": "Rounded to the nearest hectare.",
+      "roundingNote": "Rounded to the nearest micrometer.",
       "factors": [
         {
-          "key": "mi",
-          "label": "Mile",
+          "key": "h",
+          "label": "Height of Mount Everest",
           "unit": "m",
-          "value": 1609.344,
-          "source": "International mile, 1959"
+          "value": 8848.86,
+          "source": "China–Nepal joint survey, 2020"
         },
         {
-          "key": "ha",
-          "label": "Hectare",
-          "unit": "m²",
-          "value": 10000,
-          "source": "SI-accepted unit"
+          "key": "r",
+          "label": "Earth’s mean radius",
+          "unit": "km",
+          "value": 6371,
+          "source": "IUGG mean radius"
         }
       ],
-      "formula": "mi ^ 2 / ha"
+      "formula": "h / (2 * r * 1000) * 300000"
     },
     {
       "id": "earths-across-jupiter",

@@ -84,22 +84,29 @@
       "formula": "mi ^ 2 / (l * w)"
     },
     {
-      "id": "degrees-fahrenheit-below-zero-at-absolute-zero",
+      "id": "gold-bar-in-water-bottles",
       "category": "Science",
-      "prompt": "How many degrees below 0 °F is absolute zero?",
-      "unit": "°F",
+      "prompt": "A solid gold bar measures 25 × 10 × 5 cm. How many one-liter bottles of water weigh the same?",
+      "unit": "bottles",
       "rounding": "round",
-      "roundingNote": "Rounded to the nearest degree.",
+      "roundingNote": "Rounded to the nearest bottle.",
       "factors": [
         {
-          "key": "k",
-          "label": "Absolute zero, below 0 °C",
-          "unit": "°C",
-          "value": 273.15,
-          "source": "SI kelvin definition"
+          "key": "rho",
+          "label": "Density of gold",
+          "unit": "g/cm³",
+          "value": 19.32,
+          "source": "CRC Handbook of Chemistry and Physics"
+        },
+        {
+          "key": "kg",
+          "label": "Mass of one liter of water",
+          "unit": "kg",
+          "value": 1,
+          "source": "Definition of the liter, near 4 °C"
         }
       ],
-      "formula": "k * 9 / 5 - 32"
+      "formula": "25 * 10 * 5 * rho / (kg * 1000)"
     },
     {
       "id": "astronomical-units-in-a-light-year",

@@ -52,12 +52,12 @@
       "formula": "100 * fat * kcal / 1000"
     },
     {
-      "id": "knots-of-a-900-kmh-airliner",
+      "id": "cargo-ship-across-the-atlantic",
       "category": "Travel",
-      "prompt": "How many knots is an airliner cruising at 900 km/h?",
-      "unit": "knots",
+      "prompt": "A cargo ship holds 24 knots across 6,000 km of Atlantic. How many hours does the crossing take?",
+      "unit": "hours",
       "rounding": "round",
-      "roundingNote": "Rounded to the nearest knot.",
+      "roundingNote": "Rounded to the nearest hour.",
       "factors": [
         {
           "key": "nm",
@@ -67,7 +67,7 @@
           "source": "International definition, 1929"
         }
       ],
-      "formula": "900000 / nm"
+      "formula": "6000000 / (24 * nm)"
     },
     {
       "id": "gallons-in-an-olympic-pool",

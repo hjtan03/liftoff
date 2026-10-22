@@ -70,29 +70,22 @@
       "formula": "kg * 1000 / g"
     },
     {
-      "id": "nautical-miles-around-the-equator",
+      "id": "square-km-of-ocean",
       "category": "Earth",
-      "prompt": "How many nautical miles is it around the equator?",
-      "unit": "nmi",
+      "prompt": "About 71% of Earth’s surface is ocean. How many million square kilometers is that?",
+      "unit": "million km²",
       "rounding": "round",
-      "roundingNote": "Rounded to the nearest nautical mile.",
+      "roundingNote": "Rounded to the nearest million km².",
       "factors": [
         {
-          "key": "eq",
-          "label": "Equator circumference",
+          "key": "r",
+          "label": "Earth’s mean radius",
           "unit": "km",
-          "value": 40075,
-          "source": "WGS 84"
-        },
-        {
-          "key": "nm",
-          "label": "Nautical mile",
-          "unit": "m",
-          "value": 1852,
-          "source": "International definition, 1929"
+          "value": 6371,
+          "source": "IUGG mean radius"
         }
       ],
-      "formula": "eq * 1000 / nm"
+      "formula": "4 * 3.14159265 * r ^ 2 * 0.71 / 1000000"
     },
     {
       "id": "how-many-times-farther-the-sun-is-than-the-moon",

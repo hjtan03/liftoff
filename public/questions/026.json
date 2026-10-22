@@ -20,22 +20,22 @@
       "formula": "d / 4 / 7"
     },
     {
-      "id": "speed-of-sound-in-kilometers-per-hour",
+      "id": "new-york-to-london",
       "category": "Travel",
-      "prompt": "How many km/h is the speed of sound in 20 °C air?",
-      "unit": "km/h",
+      "prompt": "New York to London is about 3,460 miles. At 900 km/h, how many minutes is the flight?",
+      "unit": "min",
       "rounding": "round",
-      "roundingNote": "Rounded to the nearest km/h.",
+      "roundingNote": "Rounded to the nearest minute.",
       "factors": [
         {
-          "key": "v",
-          "label": "Speed of sound in air at 20 °C",
-          "unit": "m/s",
-          "value": 343,
-          "source": "Dry air at 20 °C"
+          "key": "mi",
+          "label": "Mile",
+          "unit": "m",
+          "value": 1609.344,
+          "source": "International mile, 1959"
         }
       ],
-      "formula": "v * 3600 / 1000"
+      "formula": "3460 * mi / 1000 / 900 * 60"
     },
     {
       "id": "milliseconds-for-a-dart",

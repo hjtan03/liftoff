@@ -74,29 +74,22 @@
       "formula": "3 * t"
     },
     {
-      "id": "how-many-times-wider-the-sun-is-than-the-moon",
+      "id": "jupiters-spin-speed",
       "category": "Space",
-      "prompt": "How many times wider than the Moon is the Sun?",
-      "unit": "times",
+      "prompt": "Jupiter turns once every 10 hours. How many km/h does a point on its equator move?",
+      "unit": "km/h",
       "rounding": "round",
-      "roundingNote": "Rounded to the nearest whole number.",
+      "roundingNote": "Rounded to the nearest km/h.",
       "factors": [
         {
-          "key": "sun",
-          "label": "Sun’s radius",
+          "key": "j",
+          "label": "Jupiter’s equatorial radius",
           "unit": "km",
-          "value": 695700,
+          "value": 71492,
           "source": "IAU 2015 nominal value"
-        },
-        {
-          "key": "moon",
-          "label": "Moon’s mean radius",
-          "unit": "km",
-          "value": 1737.4,
-          "source": "NASA Moon fact sheet"
         }
       ],
-      "formula": "sun / moon"
+      "formula": "2 * 3.14159265 * j / 10"
     }
   ]
 }
