@@ -124,3 +124,12 @@ test("a refresh resumes the run where it left off", async ({ page }) => {
   await expect(page.getByText("Stage 2", { exact: true })).toBeVisible();
   await expect(page.getByLabel("Your answer")).toHaveValue("42");
 });
+
+test("before the first launch the site counts down", async ({ page }) => {
+  const dayBefore = new Date(`${FIRST_LAUNCH_DATE}T12:00:00`);
+  dayBefore.setDate(dayBefore.getDate() - 1);
+  await page.clock.setFixedTime(dayBefore);
+  await page.goto("./");
+  await expect(page.getByText("T−1 day")).toBeVisible();
+  await expect(page.getByLabel("Your answer")).toHaveCount(0);
+});
