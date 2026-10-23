@@ -1,0 +1,130 @@
+{
+  "id": "038",
+  "questions": [
+    {
+      "id": "phone-charges-in-a-kilowatt-hour",
+      "category": "Tech",
+      "prompt": "A phone battery holds 4,000 mAh at 3.85 V. With no losses, how many full charges does one kilowatt-hour give?",
+      "unit": "charges",
+      "rounding": "floor",
+      "roundingNote": "Complete charges only (round down).",
+      "factors": [
+        {
+          "key": "mah",
+          "label": "Battery capacity",
+          "unit": "mAh",
+          "value": 4000,
+          "source": "Given in the question"
+        },
+        {
+          "key": "volt",
+          "label": "Battery voltage",
+          "unit": "V",
+          "value": 3.85,
+          "source": "Given in the question"
+        }
+      ],
+      "formula": "1000 / (mah / 1000 * volt)"
+    },
+    {
+      "id": "handshakes-among-thirty",
+      "category": "Everyday",
+      "prompt": "Thirty people each shake hands once with everyone else. How many handshakes is that?",
+      "unit": "handshakes",
+      "rounding": "round",
+      "roundingNote": "Exact count.",
+      "factors": [
+        {
+          "key": "n",
+          "label": "People",
+          "unit": "people",
+          "value": 30,
+          "source": "Given in the question"
+        }
+      ],
+      "formula": "n * (n - 1) / 2"
+    },
+    {
+      "id": "matches-at-the-2026-world-cup",
+      "category": "Sport",
+      "prompt": "The 2026 World Cup puts 48 teams into 12 groups of four, each a round robin. The top 32 then play a knockout, plus a third-place match. How many matches is that?",
+      "unit": "matches",
+      "rounding": "round",
+      "roundingNote": "Exact count.",
+      "factors": [
+        {
+          "key": "gr",
+          "label": "Groups",
+          "unit": "groups",
+          "value": 12,
+          "source": "FIFA World Cup 2026 format"
+        },
+        {
+          "key": "n",
+          "label": "Teams per group",
+          "unit": "teams",
+          "value": 4,
+          "source": "FIFA World Cup 2026 format"
+        },
+        {
+          "key": "k",
+          "label": "Teams in the knockout",
+          "unit": "teams",
+          "value": 32,
+          "source": "FIFA World Cup 2026 format"
+        }
+      ],
+      "formula": "gr * n * (n - 1) / 2 + (k - 1) + 1"
+    },
+    {
+      "id": "liters-of-air-breathed-in-a-day",
+      "category": "Body",
+      "prompt": "Taking 12 breaths a minute of half a liter each, how many liters of air do you breathe in a day?",
+      "unit": "L",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest liter.",
+      "factors": [
+        {
+          "key": "b",
+          "label": "Breaths per minute",
+          "unit": "breaths",
+          "value": 12,
+          "source": "Given in the question"
+        },
+        {
+          "key": "v",
+          "label": "Air per breath",
+          "unit": "L",
+          "value": 0.5,
+          "source": "Given in the question"
+        }
+      ],
+      "formula": "b * v * 60 * 24"
+    },
+    {
+      "id": "mass-the-sun-turns-into-light",
+      "category": "Space",
+      "prompt": "The Sun shines 382.8 yottawatts (10²⁴ W). By E = mc², how many million tonnes of mass does it turn into light each second?",
+      "unit": "million tonnes",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest million tonnes.",
+      "factors": [
+        {
+          "key": "L",
+          "label": "Solar luminosity",
+          "unit": "YW",
+          "value": 382.8,
+          "source": "IAU 2015 nominal solar luminosity"
+        },
+        {
+          "key": "c",
+          "label": "Speed of light",
+          "unit": "m/s",
+          "value": 299792458,
+          "source": "SI definition of the meter"
+        }
+      ],
+      "formula": "L * 1000000000000000 / c ^ 2"
+    }
+  ]
+}

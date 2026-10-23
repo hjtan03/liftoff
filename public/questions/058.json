@@ -1,0 +1,137 @@
+{
+  "id": "058",
+  "questions": [
+    {
+      "id": "minutes-to-walk-a-mile",
+      "category": "Everyday",
+      "prompt": "Walking at 5 km/h, how many minutes does a mile take?",
+      "unit": "minutes",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest minute.",
+      "factors": [
+        {
+          "key": "mile",
+          "label": "Mile",
+          "unit": "m",
+          "value": 1609.344,
+          "source": "International mile, 1959"
+        },
+        {
+          "key": "v",
+          "label": "Walking speed",
+          "unit": "km/h",
+          "value": 5,
+          "source": "Given in the question"
+        }
+      ],
+      "formula": "mile / 1000 / v * 60"
+    },
+    {
+      "id": "turns-of-a-hard-drive-in-an-hour",
+      "category": "Tech",
+      "prompt": "A hard drive platter spins at 7,200 rpm. How many times does it turn in an hour?",
+      "unit": "turns",
+      "rounding": "round",
+      "roundingNote": "Exact count.",
+      "factors": [
+        {
+          "key": "rpm",
+          "label": "Spin speed",
+          "unit": "rpm",
+          "value": 7200,
+          "source": "Given in the question"
+        }
+      ],
+      "formula": "rpm * 60"
+    },
+    {
+      "id": "games-in-an-nhl-season",
+      "category": "Sport",
+      "prompt": "Each of the NHL’s 32 teams plays 82 regular-season games. How many games are played in all?",
+      "unit": "games",
+      "rounding": "round",
+      "roundingNote": "Exact count.",
+      "factors": [
+        {
+          "key": "t",
+          "label": "NHL teams",
+          "unit": "teams",
+          "value": 32,
+          "source": "NHL"
+        },
+        {
+          "key": "gp",
+          "label": "Games per team",
+          "unit": "games",
+          "value": 82,
+          "source": "NHL"
+        }
+      ],
+      "formula": "t * gp / 2"
+    },
+    {
+      "id": "minutes-of-sunlight-to-match-a-year-of-human-power",
+      "category": "Earth",
+      "prompt": "Humanity uses energy at about 19 TW. How many minutes of the sunlight Earth catches would match a whole year of that use?",
+      "unit": "minutes",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest minute.",
+      "factors": [
+        {
+          "key": "use",
+          "label": "World energy use",
+          "unit": "TW",
+          "value": 19,
+          "source": "Given in the question"
+        },
+        {
+          "key": "s",
+          "label": "Solar constant",
+          "unit": "W/m²",
+          "value": 1361,
+          "source": "IAU 2015 nominal total solar irradiance"
+        },
+        {
+          "key": "r",
+          "label": "Earth’s mean radius",
+          "unit": "m",
+          "value": 6371000,
+          "source": "IUGG mean radius"
+        },
+        {
+          "key": "yr",
+          "label": "Julian year",
+          "unit": "s",
+          "value": 31557600,
+          "source": "IAU: 365.25 days of 86,400 s"
+        }
+      ],
+      "formula": "use * 1000000000000 * yr / (s * 3.14159265 * r ^ 2) / 60"
+    },
+    {
+      "id": "mercurys-year-from-keplers-law",
+      "category": "Space",
+      "prompt": "A planet’s year, in Earth years, is its distance from the Sun in AU raised to the power 1.5. How many days is Mercury’s year?",
+      "unit": "days",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest day.",
+      "factors": [
+        {
+          "key": "a",
+          "label": "Mercury’s average distance from the Sun",
+          "unit": "AU",
+          "value": 0.387,
+          "source": "NASA Mercury Fact Sheet"
+        },
+        {
+          "key": "y",
+          "label": "Days in a year",
+          "unit": "days",
+          "value": 365.25,
+          "source": "Julian year"
+        }
+      ],
+      "formula": "a ^ 1.5 * y"
+    }
+  ]
+}

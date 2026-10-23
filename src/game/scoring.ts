@@ -10,21 +10,21 @@ export type ConfidenceBand = {
 
 export const CONFIDENCE_BANDS: Record<BandKey, ConfidenceBand> = {
   lock: {
-    name: "Locked in",
+    name: "Moonshot",
     rule: "±5%",
     points: 1000,
     lowBound: (guess) => guess * 0.95,
     highBound: (guess) => guess * 1.05,
   },
   solid: {
-    name: "Solid",
+    name: "Orbit",
     rule: "±20%",
     points: 500,
     lowBound: (guess) => guess * 0.8,
     highBound: (guess) => guess * 1.2,
   },
   rough: {
-    name: "Rough",
+    name: "Suborbital",
     rule: "within 2×",
     points: 200,
     lowBound: (guess) => guess / 2,

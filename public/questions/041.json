@@ -1,0 +1,130 @@
+{
+  "id": "041",
+  "questions": [
+    {
+      "id": "bulbs-on-one-circuit",
+      "category": "Everyday",
+      "prompt": "How many 60 W bulbs can run at once on one 15 A, 120 V household circuit?",
+      "unit": "bulbs",
+      "rounding": "round",
+      "roundingNote": "Exact count.",
+      "factors": [
+        {
+          "key": "a",
+          "label": "Circuit current",
+          "unit": "A",
+          "value": 15,
+          "source": "Given in the question"
+        },
+        {
+          "key": "v",
+          "label": "Circuit voltage",
+          "unit": "V",
+          "value": 120,
+          "source": "Given in the question"
+        }
+      ],
+      "formula": "a * v / 60"
+    },
+    {
+      "id": "odds-of-a-yahtzee",
+      "category": "Games",
+      "prompt": "On one roll of five dice, the chance of a Yahtzee (all five the same) is 1 in how many?",
+      "unit": "rolls",
+      "rounding": "round",
+      "roundingNote": "Exact count.",
+      "factors": [
+        {
+          "key": "f",
+          "label": "Faces on a die",
+          "unit": "faces",
+          "value": 6,
+          "source": "Standard six-sided die"
+        }
+      ],
+      "formula": "f ^ 5 / f"
+    },
+    {
+      "id": "slapshot-from-the-blue-line",
+      "category": "Sport",
+      "prompt": "A 160 km/h slapshot from the blue line, 64 ft from the goal line, takes how many milliseconds to reach the net?",
+      "unit": "ms",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest millisecond.",
+      "factors": [
+        {
+          "key": "dist",
+          "label": "Blue line to goal line",
+          "unit": "ft",
+          "value": 64,
+          "source": "NHL Official Rules, Rule 1"
+        },
+        {
+          "key": "ft",
+          "label": "Foot",
+          "unit": "m",
+          "value": 0.3048,
+          "source": "International foot, 1959"
+        }
+      ],
+      "formula": "dist * ft / (160 / 3.6) * 1000"
+    },
+    {
+      "id": "water-that-weighs-as-much-as-the-sky",
+      "category": "Science",
+      "prompt": "How many centimeters of fresh water press down as hard as the whole atmosphere at sea level?",
+      "unit": "cm",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest centimeter.",
+      "factors": [
+        {
+          "key": "p",
+          "label": "Standard sea-level air pressure",
+          "unit": "Pa",
+          "value": 101325,
+          "source": "Standard atmosphere (ISO 2533)"
+        },
+        {
+          "key": "rho",
+          "label": "Density of fresh water",
+          "unit": "kg/m³",
+          "value": 1000,
+          "source": "Water near 4 °C"
+        },
+        {
+          "key": "g",
+          "label": "Standard gravity",
+          "unit": "m/s²",
+          "value": 9.807,
+          "source": "CGPM, 1901, 9.80665 m/s²"
+        }
+      ],
+      "formula": "p / (rho * g) * 100"
+    },
+    {
+      "id": "bathroom-scale-on-jupiter",
+      "category": "Space",
+      "prompt": "A bathroom scale reads 70 kg on Earth. What would it read for the same person at Jupiter’s cloud tops?",
+      "unit": "kg",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest kilogram.",
+      "factors": [
+        {
+          "key": "g",
+          "label": "Standard gravity",
+          "unit": "m/s²",
+          "value": 9.807,
+          "source": "CGPM, 1901, 9.80665 m/s²"
+        },
+        {
+          "key": "gj",
+          "label": "Gravity at Jupiter’s cloud tops",
+          "unit": "m/s²",
+          "value": 24.79,
+          "source": "NASA Jupiter Fact Sheet"
+        }
+      ],
+      "formula": "70 * gj / g"
+    }
+  ]
+}

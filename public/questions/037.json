@@ -1,0 +1,123 @@
+{
+  "id": "037",
+  "questions": [
+    {
+      "id": "one-16-inch-pizza-vs-two-12s",
+      "category": "Food",
+      "prompt": "What percentage of the pizza in two 12-inch pizzas do you get in one 16-inch pizza?",
+      "unit": "%",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest percent.",
+      "factors": [
+        {
+          "key": "big",
+          "label": "Large pizza diameter",
+          "unit": "in",
+          "value": 16,
+          "source": "Given in the question"
+        },
+        {
+          "key": "small",
+          "label": "Small pizza diameter",
+          "unit": "in",
+          "value": 12,
+          "source": "Given in the question"
+        }
+      ],
+      "formula": "big ^ 2 / (2 * small ^ 2) * 100"
+    },
+    {
+      "id": "chess-positions-after-one-move-each",
+      "category": "Games",
+      "prompt": "Each side has 20 legal first moves in chess. How many different positions can the board show after White and Black have each moved once?",
+      "unit": "positions",
+      "rounding": "round",
+      "roundingNote": "Exact count.",
+      "factors": [
+        {
+          "key": "m",
+          "label": "Legal first moves per side",
+          "unit": "moves",
+          "value": 20,
+          "source": "FIDE Laws of Chess: 16 pawn moves and 4 knight moves"
+        }
+      ],
+      "formula": "m * m"
+    },
+    {
+      "id": "f1-laps-at-silverstone",
+      "category": "Sport",
+      "prompt": "A Formula 1 race runs the fewest laps that cover more than 305 km. How many laps is that at Silverstone, a 5.891 km circuit?",
+      "unit": "laps",
+      "rounding": "ceil",
+      "roundingNote": "Enough to pass 305 km (round up).",
+      "factors": [
+        {
+          "key": "dist",
+          "label": "Minimum race distance",
+          "unit": "km",
+          "value": 305,
+          "source": "FIA Formula One Sporting Regulations"
+        },
+        {
+          "key": "lap",
+          "label": "Silverstone lap",
+          "unit": "km",
+          "value": 5.891,
+          "source": "Given in the question"
+        }
+      ],
+      "formula": "dist / lap"
+    },
+    {
+      "id": "swing-of-a-one-meter-pendulum",
+      "category": "Science",
+      "prompt": "How many milliseconds does a 1 m pendulum take to swing there and back?",
+      "unit": "ms",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest millisecond.",
+      "factors": [
+        {
+          "key": "g",
+          "label": "Standard gravity",
+          "unit": "m/s²",
+          "value": 9.807,
+          "source": "CGPM, 1901, 9.80665 m/s²"
+        }
+      ],
+      "formula": "2 * 3.14159265 * (1 / g) ^ 0.5 * 1000"
+    },
+    {
+      "id": "height-of-a-geostationary-orbit",
+      "category": "Space",
+      "prompt": "A satellite that circles Earth once per turn of Earth (86,164 s) hangs over one spot. How many km above the equator does it fly?",
+      "unit": "km",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest kilometer.",
+      "factors": [
+        {
+          "key": "gm",
+          "label": "Earth’s gravitational parameter (G × mass)",
+          "unit": "km³/s²",
+          "value": 398600.4418,
+          "source": "IERS Conventions 2010"
+        },
+        {
+          "key": "t",
+          "label": "One turn of Earth against the stars",
+          "unit": "s",
+          "value": 86164.1,
+          "source": "IERS sidereal day"
+        },
+        {
+          "key": "re",
+          "label": "Earth’s equatorial radius",
+          "unit": "km",
+          "value": 6378.137,
+          "source": "WGS 84 ellipsoid"
+        }
+      ],
+      "formula": "(gm * t ^ 2 / (4 * 3.14159265 ^ 2)) ^ (1 / 3) - re"
+    }
+  ]
+}

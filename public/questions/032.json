@@ -1,0 +1,116 @@
+{
+  "id": "032",
+  "questions": [
+    {
+      "id": "nickels-in-a-meter",
+      "category": "Everyday",
+      "prompt": "How many nickels, laid edge to edge in a straight line, make a line one meter long?",
+      "unit": "nickels",
+      "rounding": "ceil",
+      "roundingNote": "Enough to reach the full meter (round up).",
+      "factors": [
+        {
+          "key": "d",
+          "label": "Nickel diameter",
+          "unit": "mm",
+          "value": 21.21,
+          "source": "US Mint specifications"
+        }
+      ],
+      "formula": "1000 / d"
+    },
+    {
+      "id": "powerball-tickets",
+      "category": "Games",
+      "prompt": "Powerball draws 5 white balls from 69, in any order, and 1 red ball from 26. How many different tickets are possible?",
+      "unit": "tickets",
+      "rounding": "round",
+      "roundingNote": "Exact count.",
+      "factors": [
+        {
+          "key": "w",
+          "label": "White balls",
+          "unit": "balls",
+          "value": 69,
+          "source": "Powerball rules, since 2015"
+        },
+        {
+          "key": "red",
+          "label": "Red balls",
+          "unit": "balls",
+          "value": 26,
+          "source": "Powerball rules, since 2015"
+        }
+      ],
+      "formula": "w * (w - 1) * (w - 2) * (w - 3) * (w - 4) / 120 * red"
+    },
+    {
+      "id": "soccer-balls-along-the-goal-line",
+      "category": "Sport",
+      "prompt": "How many soccer balls, side by side, fit between the posts along the goal line?",
+      "unit": "balls",
+      "rounding": "floor",
+      "roundingNote": "Whole balls only (round down).",
+      "factors": [
+        {
+          "key": "gw",
+          "label": "Width between the goalposts",
+          "unit": "m",
+          "value": 7.32,
+          "source": "IFAB Laws of the Game (8 yd)"
+        },
+        {
+          "key": "circ",
+          "label": "Ball circumference, largest allowed",
+          "unit": "cm",
+          "value": 70,
+          "source": "IFAB Laws of the Game"
+        }
+      ],
+      "formula": "gw * 100 / (circ / 3.14159265)"
+    },
+    {
+      "id": "ice-melted-by-a-kilowatt-hour",
+      "category": "Science",
+      "prompt": "How many grams of ice at 0 °C can one kilowatt-hour of heat melt?",
+      "unit": "g",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest gram.",
+      "factors": [
+        {
+          "key": "lf",
+          "label": "Heat to melt ice at 0 °C",
+          "unit": "J/g",
+          "value": 334,
+          "source": "Latent heat of fusion of water"
+        }
+      ],
+      "formula": "3600000 / lf"
+    },
+    {
+      "id": "bathroom-scale-on-mars",
+      "category": "Space",
+      "prompt": "A bathroom scale reads 70 kg on Earth. What would it read for the same person on Mars?",
+      "unit": "kg",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest kilogram.",
+      "factors": [
+        {
+          "key": "g",
+          "label": "Standard gravity",
+          "unit": "m/s²",
+          "value": 9.807,
+          "source": "CGPM, 1901, 9.80665 m/s²"
+        },
+        {
+          "key": "gmars",
+          "label": "Surface gravity on Mars",
+          "unit": "m/s²",
+          "value": 3.71,
+          "source": "NASA Mars Fact Sheet"
+        }
+      ],
+      "formula": "70 * gmars / g"
+    }
+  ]
+}

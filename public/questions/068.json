@@ -1,0 +1,109 @@
+{
+  "id": "068",
+  "questions": [
+    {
+      "id": "speed-of-the-times-square-ball",
+      "category": "Everyday",
+      "prompt": "On New Year’s Eve the Times Square ball drops 43 m in 60 seconds. How many centimeters a second is that?",
+      "unit": "cm/s",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest cm/s.",
+      "factors": [
+        {
+          "key": "h",
+          "label": "Drop",
+          "unit": "m",
+          "value": 43,
+          "source": "Given in the question"
+        }
+      ],
+      "formula": "h * 100 / 60"
+    },
+    {
+      "id": "ipv4-addresses",
+      "category": "Tech",
+      "prompt": "IPv4 addresses are 32 bits long. How many million different addresses can there be?",
+      "unit": "million",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest million.",
+      "factors": [
+        {
+          "key": "b",
+          "label": "Address length",
+          "unit": "bits",
+          "value": 32,
+          "source": "IETF RFC 791"
+        }
+      ],
+      "formula": "2 ^ b / 1000000"
+    },
+    {
+      "id": "drives-to-cover-a-marathon",
+      "category": "Sport",
+      "prompt": "How many 300-yard golf drives, end to end, would cover a marathon?",
+      "unit": "drives",
+      "rounding": "ceil",
+      "roundingNote": "Enough to finish (round up).",
+      "factors": [
+        {
+          "key": "km",
+          "label": "Marathon distance",
+          "unit": "km",
+          "value": 42.195,
+          "source": "World Athletics"
+        },
+        {
+          "key": "yd",
+          "label": "Yard",
+          "unit": "m",
+          "value": 0.9144,
+          "source": "International yard, 1959"
+        }
+      ],
+      "formula": "km * 1000 / (300 * yd)"
+    },
+    {
+      "id": "days-a-lightning-bolt-runs-a-bulb",
+      "category": "Science",
+      "prompt": "A lightning bolt releases about a billion joules. How many days could that run a 60 W bulb?",
+      "unit": "days",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest day.",
+      "factors": [
+        {
+          "key": "e",
+          "label": "Energy in the bolt",
+          "unit": "J",
+          "value": 1000000000,
+          "source": "Given in the question"
+        }
+      ],
+      "formula": "e / 60 / 86400"
+    },
+    {
+      "id": "years-to-drive-to-the-sun",
+      "category": "Space",
+      "prompt": "Driving nonstop at 100 km/h, how many years would it take to reach the Sun?",
+      "unit": "years",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest year.",
+      "factors": [
+        {
+          "key": "au",
+          "label": "Astronomical unit",
+          "unit": "km",
+          "value": 149597870.7,
+          "source": "IAU 2012 Resolution B2"
+        },
+        {
+          "key": "y",
+          "label": "Hours in a Julian year",
+          "unit": "h",
+          "value": 8766,
+          "source": "IAU: 365.25 days"
+        }
+      ],
+      "formula": "au / 100 / y"
+    }
+  ]
+}

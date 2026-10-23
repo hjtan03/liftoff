@@ -1,0 +1,116 @@
+{
+  "id": "054",
+  "questions": [
+    {
+      "id": "height-of-100-pennies",
+      "category": "Everyday",
+      "prompt": "How many centimeters tall is a stack of 100 pennies?",
+      "unit": "cm",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest centimeter.",
+      "factors": [
+        {
+          "key": "t",
+          "label": "Penny thickness",
+          "unit": "mm",
+          "value": 1.52,
+          "source": "US Mint specifications"
+        }
+      ],
+      "formula": "100 * t / 10"
+    },
+    {
+      "id": "days-of-music-on-a-terabyte",
+      "category": "Tech",
+      "prompt": "How many days of 128 kbps MP3 music fit on a 1 TB drive?",
+      "unit": "days",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest day.",
+      "factors": [
+        {
+          "key": "kbps",
+          "label": "MP3 bitrate",
+          "unit": "kbps",
+          "value": 128,
+          "source": "Given in the question"
+        }
+      ],
+      "formula": "1000000000000 * 8 / (kbps * 1000) / 86400"
+    },
+    {
+      "id": "extra-distance-in-lane-8",
+      "category": "Sport",
+      "prompt": "Track lanes are 1.22 m wide. Running one full lap in lane 8 instead of lane 1, how many extra meters do you cover?",
+      "unit": "m",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest meter.",
+      "factors": [
+        {
+          "key": "w",
+          "label": "Lane width",
+          "unit": "m",
+          "value": 1.22,
+          "source": "World Athletics"
+        }
+      ],
+      "formula": "2 * 3.14159265 * 7 * w"
+    },
+    {
+      "id": "pressure-at-the-bottom-of-the-mariana-trench",
+      "category": "Earth",
+      "prompt": "How many atmospheres does the seawater above press down at the bottom of the Mariana Trench, 10,935 m deep?",
+      "unit": "atm",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest atmosphere.",
+      "factors": [
+        {
+          "key": "h",
+          "label": "Depth of the Challenger Deep",
+          "unit": "m",
+          "value": 10935,
+          "source": "Given in the question"
+        },
+        {
+          "key": "rho",
+          "label": "Density of seawater",
+          "unit": "kg/m³",
+          "value": 1025,
+          "source": "Typical surface seawater"
+        },
+        {
+          "key": "g",
+          "label": "Standard gravity",
+          "unit": "m/s²",
+          "value": 9.807,
+          "source": "CGPM, 1901, 9.80665 m/s²"
+        },
+        {
+          "key": "p",
+          "label": "Standard sea-level air pressure",
+          "unit": "Pa",
+          "value": 101325,
+          "source": "Standard atmosphere (ISO 2533)"
+        }
+      ],
+      "formula": "rho * g * h / p"
+    },
+    {
+      "id": "how-far-the-moon-has-drifted-since-the-dinosaurs",
+      "category": "Space",
+      "prompt": "The Moon drifts 3.8 cm farther from Earth every year. At that rate, how many km farther away is it now than when the dinosaurs died out, 66 million years ago?",
+      "unit": "km",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest kilometer.",
+      "factors": [
+        {
+          "key": "rate",
+          "label": "Lunar recession",
+          "unit": "cm/year",
+          "value": 3.8,
+          "source": "Apollo laser-ranging measurements"
+        }
+      ],
+      "formula": "rate * 66000000 / 100000"
+    }
+  ]
+}

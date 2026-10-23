@@ -1,0 +1,109 @@
+{
+  "id": "033",
+  "questions": [
+    {
+      "id": "pennies-in-a-kilogram",
+      "category": "Everyday",
+      "prompt": "How many pennies weigh one kilogram?",
+      "unit": "pennies",
+      "rounding": "round",
+      "roundingNote": "Exact count.",
+      "factors": [
+        {
+          "key": "w",
+          "label": "Penny mass",
+          "unit": "g",
+          "value": 2.5,
+          "source": "US Mint specifications"
+        }
+      ],
+      "formula": "1000 / w"
+    },
+    {
+      "id": "lowercase-passwords",
+      "category": "Tech",
+      "prompt": "How many 8-character passwords can be made from only the 26 lowercase letters? Answer in billions.",
+      "unit": "billion",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest billion.",
+      "factors": [
+        {
+          "key": "n",
+          "label": "Lowercase letters",
+          "unit": "letters",
+          "value": 26,
+          "source": "ISO basic Latin alphabet"
+        }
+      ],
+      "formula": "n ^ 8 / 1000000000"
+    },
+    {
+      "id": "laps-of-a-track-in-a-marathon",
+      "category": "Sport",
+      "prompt": "How many laps of a standard running track does it take to cover a marathon?",
+      "unit": "laps",
+      "rounding": "ceil",
+      "roundingNote": "Enough to finish the marathon (round up).",
+      "factors": [
+        {
+          "key": "km",
+          "label": "Marathon distance",
+          "unit": "km",
+          "value": 42.195,
+          "source": "World Athletics"
+        },
+        {
+          "key": "lap",
+          "label": "One lap of a standard track, lane 1",
+          "unit": "m",
+          "value": 400,
+          "source": "World Athletics"
+        }
+      ],
+      "formula": "km * 1000 / lap"
+    },
+    {
+      "id": "minutes-to-read-a-novel",
+      "category": "Everyday",
+      "prompt": "Reading 250 words a minute, how many minutes does a 90,000-word novel take?",
+      "unit": "minutes",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest minute.",
+      "factors": [
+        {
+          "key": "wpm",
+          "label": "Reading speed",
+          "unit": "words/min",
+          "value": 250,
+          "source": "Given in the question"
+        }
+      ],
+      "formula": "90000 / wpm"
+    },
+    {
+      "id": "moons-from-earth-to-the-moon",
+      "category": "Space",
+      "prompt": "How many Moons, side by side, would bridge the average distance from Earth to the Moon?",
+      "unit": "Moons",
+      "rounding": "ceil",
+      "roundingNote": "Enough to bridge the gap (round up).",
+      "factors": [
+        {
+          "key": "d",
+          "label": "Average Earth–Moon distance",
+          "unit": "km",
+          "value": 384400,
+          "source": "NASA Moon Fact Sheet"
+        },
+        {
+          "key": "moon",
+          "label": "Moon’s mean diameter",
+          "unit": "km",
+          "value": 3474.8,
+          "source": "NASA Moon Fact Sheet"
+        }
+      ],
+      "formula": "d / moon"
+    }
+  ]
+}

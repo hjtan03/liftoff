@@ -1,0 +1,109 @@
+{
+  "id": "043",
+  "questions": [
+    {
+      "id": "kilowatt-hours-an-led-saves",
+      "category": "Everyday",
+      "prompt": "Swapping a 60 W bulb for a 9 W LED that runs 3 hours a day, how many kilowatt-hours do you save in a common year?",
+      "unit": "kWh",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest kilowatt-hour.",
+      "factors": [
+        {
+          "key": "h",
+          "label": "Hours on per day",
+          "unit": "h",
+          "value": 3,
+          "source": "Given in the question"
+        }
+      ],
+      "formula": "(60 - 9) * h * 365 / 1000"
+    },
+    {
+      "id": "bridge-hands",
+      "category": "Games",
+      "prompt": "How many different 13-card bridge hands can be dealt from a standard deck? Answer in billions.",
+      "unit": "billion",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest billion.",
+      "factors": [
+        {
+          "key": "n",
+          "label": "Cards in a deck",
+          "unit": "cards",
+          "value": 52,
+          "source": "Standard 52-card deck"
+        }
+      ],
+      "formula": "n * (n - 1) * (n - 2) * (n - 3) * (n - 4) * (n - 5) * (n - 6) * (n - 7) * (n - 8) * (n - 9) * (n - 10) * (n - 11) * (n - 12) / 6227020800 / 1000000000"
+    },
+    {
+      "id": "pool-lengths-to-swim-the-channel",
+      "category": "Sport",
+      "prompt": "The English Channel is 21 miles across at its narrowest. How many lengths of a 50 m pool is that?",
+      "unit": "lengths",
+      "rounding": "ceil",
+      "roundingNote": "Enough to reach France (round up).",
+      "factors": [
+        {
+          "key": "mile",
+          "label": "Mile",
+          "unit": "m",
+          "value": 1609.344,
+          "source": "International mile, 1959"
+        },
+        {
+          "key": "pool",
+          "label": "Olympic pool length",
+          "unit": "m",
+          "value": 50,
+          "source": "World Aquatics"
+        }
+      ],
+      "formula": "21 * mile / pool"
+    },
+    {
+      "id": "distance-to-the-horizon-on-a-beach",
+      "category": "Earth",
+      "prompt": "Standing with your eyes 1.7 m above the sea, how many meters away is the horizon, ignoring refraction?",
+      "unit": "m",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest meter.",
+      "factors": [
+        {
+          "key": "r",
+          "label": "Earth’s mean radius",
+          "unit": "m",
+          "value": 6371000,
+          "source": "IUGG mean radius"
+        }
+      ],
+      "formula": "(2 * r * 1.7) ^ 0.5"
+    },
+    {
+      "id": "gps-signal-delay",
+      "category": "Space",
+      "prompt": "GPS satellites fly 20,200 km up. How many milliseconds does a signal from one directly overhead take to reach you?",
+      "unit": "ms",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest millisecond.",
+      "factors": [
+        {
+          "key": "h",
+          "label": "GPS orbit altitude",
+          "unit": "km",
+          "value": 20200,
+          "source": "Given in the question"
+        },
+        {
+          "key": "c",
+          "label": "Speed of light",
+          "unit": "km/s",
+          "value": 299792.458,
+          "source": "SI definition of the meter"
+        }
+      ],
+      "formula": "h / c * 1000"
+    }
+  ]
+}

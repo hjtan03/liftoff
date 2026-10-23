@@ -40,6 +40,6 @@ A set is an id and its questions. The id is the launch number the player sees:
 { "id": "001", "questions": [] }
 ```
 
-Launch 001 plays on the first launch date in `src/questions/schedule.ts`, and each calendar day after it, in the player's own time zone, plays the next number. A set must therefore be published for every day: the producer's test fails when any number between 001 and the last published set is missing, and once the last set's day has passed the game shows an error naming the file it could not load.
+Launch 001 plays on the first launch date in `src/questions/schedule.ts`, and each day after it plays the next number, rolling over at midnight Eastern for every player. A set must therefore be published for every day: the producer's test fails when any number between 001 and the last published set is missing, and once the last set's day has passed the game shows an error naming the file it could not load.
 
 Rule for every question: each input is either a canonical, sourced constant or stated in the prompt. No pure-trivia numbers.

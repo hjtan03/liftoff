@@ -1,0 +1,116 @@
+{
+  "id": "040",
+  "questions": [
+    {
+      "id": "calories-in-a-tablespoon-of-butter",
+      "category": "Food",
+      "prompt": "A tablespoon of butter weighs 14 g and is 81% fat. How many food Calories does its fat carry?",
+      "unit": "kcal",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest Calorie.",
+      "factors": [
+        {
+          "key": "m",
+          "label": "Butter in a tablespoon",
+          "unit": "g",
+          "value": 14,
+          "source": "Given in the question"
+        },
+        {
+          "key": "fat",
+          "label": "Energy in fat",
+          "unit": "kcal/g",
+          "value": 9,
+          "source": "Atwater general factors"
+        }
+      ],
+      "formula": "m * 0.81 * fat"
+    },
+    {
+      "id": "new-bitcoins-per-day",
+      "category": "Tech",
+      "prompt": "Bitcoin aims for one block every 10 minutes, and since 2024 each block creates 3.125 new coins. How many new bitcoins is that per day?",
+      "unit": "bitcoins",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest coin.",
+      "factors": [
+        {
+          "key": "t",
+          "label": "Target time per block",
+          "unit": "min",
+          "value": 10,
+          "source": "Bitcoin protocol"
+        },
+        {
+          "key": "sub",
+          "label": "New coins per block",
+          "unit": "BTC",
+          "value": 3.125,
+          "source": "Bitcoin protocol, after the April 2024 halving"
+        }
+      ],
+      "formula": "24 * 60 / t * sub"
+    },
+    {
+      "id": "matches-in-a-premier-league-season",
+      "category": "Sport",
+      "prompt": "The Premier League’s 20 clubs each play every other club twice, home and away. How many matches are in a season?",
+      "unit": "matches",
+      "rounding": "round",
+      "roundingNote": "Exact count.",
+      "factors": [
+        {
+          "key": "n",
+          "label": "Clubs",
+          "unit": "clubs",
+          "value": 20,
+          "source": "Premier League"
+        }
+      ],
+      "formula": "n * (n - 1)"
+    },
+    {
+      "id": "width-of-a-time-zone",
+      "category": "Earth",
+      "prompt": "If Earth’s 24 hour-wide time zones split the globe evenly, how many km wide is one at the equator?",
+      "unit": "km",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest kilometer.",
+      "factors": [
+        {
+          "key": "eq",
+          "label": "Earth’s equatorial circumference",
+          "unit": "km",
+          "value": 40075.017,
+          "source": "WGS 84 ellipsoid"
+        }
+      ],
+      "formula": "eq / 24"
+    },
+    {
+      "id": "light-year-in-laps-of-the-equator",
+      "category": "Space",
+      "prompt": "How many million times around the equator does light travel in one light-year?",
+      "unit": "million laps",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest million.",
+      "factors": [
+        {
+          "key": "ly",
+          "label": "Light-year",
+          "unit": "km",
+          "value": 9460730472580.8,
+          "source": "IAU: light’s travel in a Julian year"
+        },
+        {
+          "key": "eq",
+          "label": "Earth’s equatorial circumference",
+          "unit": "km",
+          "value": 40075.017,
+          "source": "WGS 84 ellipsoid"
+        }
+      ],
+      "formula": "ly / eq / 1000000"
+    }
+  ]
+}

@@ -1,0 +1,123 @@
+{
+  "id": "034",
+  "questions": [
+    {
+      "id": "minutes-to-roast-a-turkey",
+      "category": "Food",
+      "prompt": "A common rule of thumb roasts a turkey 15 minutes per pound. How many minutes for a 16 lb bird?",
+      "unit": "minutes",
+      "rounding": "round",
+      "roundingNote": "Exact count.",
+      "factors": [
+        {
+          "key": "r",
+          "label": "Roasting time",
+          "unit": "min/lb",
+          "value": 15,
+          "source": "Given in the question"
+        }
+      ],
+      "formula": "16 * r"
+    },
+    {
+      "id": "double-sixes-in-3600-rolls",
+      "category": "Games",
+      "prompt": "Rolling a pair of dice 3,600 times, how many double sixes should you expect?",
+      "unit": "double sixes",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest roll.",
+      "factors": [
+        {
+          "key": "f",
+          "label": "Faces on a die",
+          "unit": "faces",
+          "value": 6,
+          "source": "Standard six-sided die"
+        }
+      ],
+      "formula": "3600 / (f * f)"
+    },
+    {
+      "id": "volleyballs-along-the-net",
+      "category": "Sport",
+      "prompt": "How many volleyballs, side by side, fit along the net from one sideline to the other?",
+      "unit": "balls",
+      "rounding": "floor",
+      "roundingNote": "Whole balls only (round down).",
+      "factors": [
+        {
+          "key": "w",
+          "label": "Court width",
+          "unit": "m",
+          "value": 9,
+          "source": "FIVB Official Volleyball Rules"
+        },
+        {
+          "key": "circ",
+          "label": "Ball circumference",
+          "unit": "cm",
+          "value": 66,
+          "source": "FIVB Official Volleyball Rules (65–67 cm)"
+        }
+      ],
+      "formula": "w * 100 / (circ / 3.14159265)"
+    },
+    {
+      "id": "weight-of-the-atmosphere",
+      "category": "Earth",
+      "prompt": "Air pressure at sea level is the weight of all the air above it. How many trillion tonnes does Earth’s atmosphere weigh?",
+      "unit": "trillion tonnes",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest trillion tonnes.",
+      "factors": [
+        {
+          "key": "p",
+          "label": "Standard sea-level air pressure",
+          "unit": "Pa",
+          "value": 101325,
+          "source": "Standard atmosphere (ISO 2533)"
+        },
+        {
+          "key": "r",
+          "label": "Earth’s mean radius",
+          "unit": "m",
+          "value": 6371000,
+          "source": "IUGG mean radius"
+        },
+        {
+          "key": "g",
+          "label": "Standard gravity",
+          "unit": "m/s²",
+          "value": 9.807,
+          "source": "CGPM, 1901, 9.80665 m/s²"
+        }
+      ],
+      "formula": "p * 4 * 3.14159265 * r ^ 2 / g / 1000000000000000"
+    },
+    {
+      "id": "earths-escape-speed",
+      "category": "Space",
+      "prompt": "Ignoring air, how many km/h must something move to escape Earth from its surface?",
+      "unit": "km/h",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest km/h.",
+      "factors": [
+        {
+          "key": "gm",
+          "label": "Earth’s gravitational parameter (G × mass)",
+          "unit": "km³/s²",
+          "value": 398600.4418,
+          "source": "IERS Conventions 2010"
+        },
+        {
+          "key": "r",
+          "label": "Earth’s mean radius",
+          "unit": "km",
+          "value": 6371,
+          "source": "IUGG mean radius"
+        }
+      ],
+      "formula": "(2 * gm / r) ^ 0.5 * 3600"
+    }
+  ]
+}

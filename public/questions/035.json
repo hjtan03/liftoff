@@ -1,0 +1,123 @@
+{
+  "id": "035",
+  "questions": [
+    {
+      "id": "calories-in-a-can-of-soda",
+      "category": "Food",
+      "prompt": "A 12 fl oz can of soda holds 39 g of sugar. How many food Calories is that?",
+      "unit": "kcal",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest Calorie.",
+      "factors": [
+        {
+          "key": "s",
+          "label": "Sugar in the can",
+          "unit": "g",
+          "value": 39,
+          "source": "Given in the question"
+        },
+        {
+          "key": "carb",
+          "label": "Energy in carbohydrate",
+          "unit": "kcal/g",
+          "value": 4,
+          "source": "Atwater general factors"
+        }
+      ],
+      "formula": "s * carb"
+    },
+    {
+      "id": "seconds-to-send-a-4-gb-file",
+      "category": "Tech",
+      "prompt": "How many seconds does a 4 GB file take to send over a 100 Mbps connection?",
+      "unit": "seconds",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest second.",
+      "factors": [
+        {
+          "key": "bits",
+          "label": "Bits in a byte",
+          "unit": "bits",
+          "value": 8,
+          "source": "ISO/IEC 80000-13"
+        }
+      ],
+      "formula": "4000 * bits / 100"
+    },
+    {
+      "id": "hockey-rinks-in-a-mile",
+      "category": "Sport",
+      "prompt": "How many NHL rinks, laid end to end, would stretch a mile?",
+      "unit": "rinks",
+      "rounding": "ceil",
+      "roundingNote": "Enough to finish the mile (round up).",
+      "factors": [
+        {
+          "key": "mile",
+          "label": "Mile",
+          "unit": "m",
+          "value": 1609.344,
+          "source": "International mile, 1959"
+        },
+        {
+          "key": "len",
+          "label": "NHL rink length",
+          "unit": "ft",
+          "value": 200,
+          "source": "NHL Official Rules, Rule 1"
+        },
+        {
+          "key": "ft",
+          "label": "Foot",
+          "unit": "m",
+          "value": 0.3048,
+          "source": "International foot, 1959"
+        }
+      ],
+      "formula": "mile / (len * ft)"
+    },
+    {
+      "id": "hair-grown-in-80-years",
+      "category": "Body",
+      "prompt": "Hair grows about 1.25 cm a month. Never cut, how many meters long would it grow in 80 years?",
+      "unit": "m",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest meter.",
+      "factors": [
+        {
+          "key": "rate",
+          "label": "Hair growth",
+          "unit": "cm/month",
+          "value": 1.25,
+          "source": "Given in the question"
+        }
+      ],
+      "formula": "rate * 12 * 80 / 100"
+    },
+    {
+      "id": "moons-orbit-from-keplers-law",
+      "category": "Space",
+      "prompt": "Kepler’s third law gives an orbit’s period as 2π√(a³ ÷ GM). How many days does it give for the Moon around Earth?",
+      "unit": "days",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest day.",
+      "factors": [
+        {
+          "key": "d",
+          "label": "Average Earth–Moon distance",
+          "unit": "km",
+          "value": 384400,
+          "source": "NASA Moon Fact Sheet"
+        },
+        {
+          "key": "gm",
+          "label": "Earth’s gravitational parameter (G × mass)",
+          "unit": "km³/s²",
+          "value": 398600.4418,
+          "source": "IERS Conventions 2010"
+        }
+      ],
+      "formula": "2 * 3.14159265 * (d ^ 3 / gm) ^ 0.5 / 86400"
+    }
+  ]
+}

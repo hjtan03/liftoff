@@ -1,0 +1,102 @@
+{
+  "id": "064",
+  "questions": [
+    {
+      "id": "days-to-spend-a-million-dollars",
+      "category": "Everyday",
+      "prompt": "Spending a dollar every second without stopping, how many days does it take to spend a million dollars?",
+      "unit": "days",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest day.",
+      "factors": [
+        {
+          "key": "rate",
+          "label": "Spending rate",
+          "unit": "$/s",
+          "value": 1,
+          "source": "Given in the question"
+        }
+      ],
+      "formula": "1000000 / rate / 86400"
+    },
+    {
+      "id": "minutes-to-read-a-terabyte",
+      "category": "Tech",
+      "prompt": "A hard drive reads 200 MB a second. How many minutes does it take to read all of a 1 TB drive?",
+      "unit": "minutes",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest minute.",
+      "factors": [
+        {
+          "key": "rate",
+          "label": "Read speed",
+          "unit": "MB/s",
+          "value": 200,
+          "source": "Given in the question"
+        }
+      ],
+      "formula": "1000000 / rate / 60"
+    },
+    {
+      "id": "minutes-an-nhl-team-plays",
+      "category": "Sport",
+      "prompt": "An NHL game has three 20-minute periods. How many minutes of regulation play does a team have in an 82-game season?",
+      "unit": "minutes",
+      "rounding": "round",
+      "roundingNote": "Exact count.",
+      "factors": [
+        {
+          "key": "p",
+          "label": "Period length",
+          "unit": "min",
+          "value": 20,
+          "source": "NHL Official Rules"
+        },
+        {
+          "key": "gp",
+          "label": "Games per team",
+          "unit": "games",
+          "value": 82,
+          "source": "NHL"
+        }
+      ],
+      "formula": "3 * p * gp"
+    },
+    {
+      "id": "a-degree-of-longitude-at-60-north",
+      "category": "Earth",
+      "prompt": "At 60° north a circle of latitude is half as long as the equator. How many km is one degree of longitude there?",
+      "unit": "km",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest kilometer.",
+      "factors": [
+        {
+          "key": "eq",
+          "label": "Earth’s equatorial circumference",
+          "unit": "km",
+          "value": 40075.017,
+          "source": "WGS 84 ellipsoid"
+        }
+      ],
+      "formula": "eq / 2 / 360"
+    },
+    {
+      "id": "gravity-aboard-the-iss",
+      "category": "Space",
+      "prompt": "Gravity weakens with the square of distance from Earth’s center. What percentage of surface gravity is left 400 km up, where the ISS flies?",
+      "unit": "%",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest percent.",
+      "factors": [
+        {
+          "key": "r",
+          "label": "Earth’s mean radius",
+          "unit": "km",
+          "value": 6371,
+          "source": "IUGG mean radius"
+        }
+      ],
+      "formula": "(r / (r + 400)) ^ 2 * 100"
+    }
+  ]
+}

@@ -41,8 +41,8 @@ Never prefix these with `VITE_`. Vite bundles every `VITE_*` variable into the J
 
 A launch is one day's set of five questions.
 
-- `launch = daysBetween(FIRST_LAUNCH_DATE, localDate) + 1`, where `localDate` is the player's local calendar date. Everyone plays the same launch on the same local day, the way Wordle rolls over at local midnight.
-- `FIRST_LAUNCH_DATE` and `computeLaunchNumber` live in `src/questions/schedule.ts`; the API imports them rather than repeating the date. Launch #001 is **Saturday, October 24, 2026**. Changing the date now renumbers every puzzle players have played. Before that date the game shows a countdown; `?launch=N` in the address plays a set early, for testing previews.
+- `launch = daysBetween(FIRST_LAUNCH_DATE, easternDate) + 1`, where `easternDate` is the calendar date in `America/New_York`. Every player rolls over to the next launch at the same moment, midnight Eastern (daylight saving included), and the API computes the same number as the game.
+- `FIRST_LAUNCH_DATE`, `LAUNCH_TIME_ZONE` and `launchNumberAt` live in `src/questions/schedule.ts`; the API imports them rather than repeating the date. Launch #001 is **Saturday, October 24, 2026**. Changing the date now renumbers every puzzle players have played. Before that date the game shows a countdown. `?launch=N` replays a past launch from the archive without recording guesses; a future launch needs `?launch=N&test`, for checking a set on a preview.
 - The game fetches `/questions/NNN.json`, where `NNN` is the zero-padded launch number. The set's `id` equals the file name, which a test already enforces.
 
 ## Scoring
@@ -81,7 +81,7 @@ Request:
 
 The API:
 
-1. validates the body: `launch` within ±1 of today's launch computed in UTC (covers every timezone, blocks playing far ahead); `stage` 1–5; `band` one of `lock`, `solid`, `rough`; `guess` finite, above 0 and below 1e15;
+1. validates the body: `launch` within ±1 of today's Eastern launch (a run started just before midnight, or a device clock running a little fast, still records; playing far ahead does not); `stage` 1–5; `band` one of `lock`, `solid`, `rough`; `guess` finite, above 0 and below 1e15;
 2. loads `public/questions/NNN.json`, takes question `stage`, and computes the answer;
 3. scores the guess with `scoreGuess` from `src/game/scoring.ts` and computes `log_error = |ln(guess / answer)|`;
 4. upserts the player, inserts the guess, and calls `crowd_stats(launch, stage, log_error)`.
@@ -103,7 +103,7 @@ Response `200`:
 ```
 
 - `hitRate.<band>`: of the players who chose that band, the share who hit. `null` when nobody chose it.
-- `lockHitShare`: of all players on this stage, the share who chose `lock` and hit. This is the "only 9% locked in and hit this one" line.
+- `lockHitShare`: of all players on this stage, the share who chose `lock` and hit. This is the "only 9% went Moonshot and hit this one" line. The API keys (`lock`, `solid`, `rough`) stay as they are; the game shows them as Moonshot, Orbit and Suborbital.
 - `percentile`: the share of players whose guess was further off than this one.
 - `crowd` includes this guess.
 

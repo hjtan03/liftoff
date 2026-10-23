@@ -4,12 +4,18 @@ import { initialGameState, type GameState } from "./state";
 
 /**
  * What the browser remembers between visits: the run in progress for today's
- * launch, and a history of finished launches that streaks are counted from.
+ * launch, a history of launches finished on their own day that streaks are
+ * counted from, and a separate run for each launch replayed from the archive.
  * Everything here is pure; the component reads and writes storage.
  */
 
 export const RUN_STORAGE_KEY = "liftoff.run";
 export const HISTORY_STORAGE_KEY = "liftoff.history";
+
+/** Where an archive replay of a launch is kept, apart from today's run and the history. */
+export function archiveRunKey(launchNumber: string): string {
+  return `liftoff.archive.${launchNumber}`;
+}
 const RUN_FORMAT_VERSION = 1;
 
 type SavedRun = {
@@ -103,6 +109,32 @@ function isSavedRunFor(
     (state.phase !== "assume" || state.pendingResult !== null) &&
     (state.phase !== "reveal" || state.stageResults[state.stageIndex] != null)
   );
+}
+
+/** How far a saved run got: its emoji grid and points so far, and whether the rocket flew. */
+export type RunSummary = { grid: string; points: number; isFinished: boolean };
+
+/** Reads a saved run's progress without its question set, for the archive list; null when there is none worth showing. */
+export function summarizeSavedRun(saved: string | null): RunSummary | null {
+  if (!saved) return null;
+  try {
+    const run = JSON.parse(saved) as Partial<SavedRun>;
+    const results = run.state?.stageResults;
+    if (run.version !== RUN_FORMAT_VERSION || !Array.isArray(results))
+      return null;
+    const revealed = results.filter(
+      (result) =>
+        typeof result?.emoji === "string" && typeof result.points === "number",
+    );
+    if (revealed.length === 0) return null;
+    return {
+      grid: revealed.map((result) => result.emoji).join(""),
+      points: revealed.reduce((sum, result) => sum + result.points, 0),
+      isFinished: run.state?.phase === "done",
+    };
+  } catch {
+    return null;
+  }
 }
 
 export function parseHistory(saved: string | null): LaunchHistory {

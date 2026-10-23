@@ -1,11 +1,14 @@
 import { describe, expect, it } from "vitest";
 import type { LoadedQuestionSet } from "../questions/source";
 import {
+  archiveRunKey,
   computeStreak,
   parseHistory,
   recordFinishedLaunch,
   restoreRun,
+  RUN_STORAGE_KEY,
   serializeRun,
+  summarizeSavedRun,
 } from "./progress";
 import { gameReducer, initialGameState } from "./state";
 
@@ -120,5 +123,42 @@ describe("computeStreak", () => {
 
   it("is zero with no history", () => {
     expect(computeStreak({}, 1)).toEqual({ current: 0, best: 0, played: 0 });
+  });
+});
+
+describe("archive runs", () => {
+  it("are kept under their own key, apart from today's run", () => {
+    expect(archiveRunKey("007")).toBe("liftoff.archive.007");
+    expect(archiveRunKey("007")).not.toBe(RUN_STORAGE_KEY);
+  });
+
+  it("summarize how far a saved run got, for the archive list", () => {
+    const saved = JSON.stringify({
+      version: 1,
+      launchNumber: "002",
+      stageCount: 5,
+      state: {
+        phase: "done",
+        stageResults: [
+          { emoji: "🎯", points: 1250 },
+          { emoji: "🔴", points: 0 },
+        ],
+      },
+    });
+    expect(summarizeSavedRun(saved)).toEqual({
+      grid: "🎯🔴",
+      points: 1250,
+      isFinished: true,
+    });
+  });
+
+  it("show nothing for a run with no revealed stage or an unreadable entry", () => {
+    expect(summarizeSavedRun(null)).toBeNull();
+    expect(summarizeSavedRun("{")).toBeNull();
+    expect(
+      summarizeSavedRun(
+        JSON.stringify({ version: 1, state: { stageResults: [] } }),
+      ),
+    ).toBeNull();
   });
 });

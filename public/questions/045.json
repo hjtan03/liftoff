@@ -1,0 +1,116 @@
+{
+  "id": "045",
+  "questions": [
+    {
+      "id": "dollar-bills-as-tall-as-a-person",
+      "category": "Everyday",
+      "prompt": "How many dollar bills, stacked flat, make a pile as tall as a 6 ft person?",
+      "unit": "bills",
+      "rounding": "ceil",
+      "roundingNote": "Enough to reach the top (round up).",
+      "factors": [
+        {
+          "key": "ft",
+          "label": "Foot",
+          "unit": "m",
+          "value": 0.3048,
+          "source": "International foot, 1959"
+        },
+        {
+          "key": "bt",
+          "label": "Dollar bill thickness",
+          "unit": "mm",
+          "value": 0.11,
+          "source": "US Bureau of Engraving and Printing"
+        }
+      ],
+      "formula": "6 * ft * 1000 / bt"
+    },
+    {
+      "id": "ten-heads-in-a-row",
+      "category": "Games",
+      "prompt": "Flipping a fair coin, the chance of 10 heads in a row is 1 in how many?",
+      "unit": "flips",
+      "rounding": "round",
+      "roundingNote": "Exact count.",
+      "factors": [
+        {
+          "key": "s",
+          "label": "Sides of a coin",
+          "unit": "sides",
+          "value": 2,
+          "source": "A fair coin"
+        }
+      ],
+      "formula": "s ^ 10"
+    },
+    {
+      "id": "matches-in-a-grand-slam-draw",
+      "category": "Sport",
+      "prompt": "A Grand Slam singles draw starts with 128 players in a straight knockout. How many matches does it take to crown a champion?",
+      "unit": "matches",
+      "rounding": "round",
+      "roundingNote": "Exact count.",
+      "factors": [
+        {
+          "key": "n",
+          "label": "Players in the draw",
+          "unit": "players",
+          "value": 128,
+          "source": "Grand Slam rules"
+        }
+      ],
+      "formula": "n - 1"
+    },
+    {
+      "id": "eratosthenes-measures-the-earth",
+      "category": "Earth",
+      "prompt": "Eratosthenes saw the noon Sun 7.2° from overhead in Alexandria while it stood straight overhead in Syene, 800 km south. What circumference did that give Earth, in km?",
+      "unit": "km",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest kilometer.",
+      "factors": [
+        {
+          "key": "ang",
+          "label": "Sun’s angle from overhead in Alexandria",
+          "unit": "°",
+          "value": 7.2,
+          "source": "Given in the question"
+        },
+        {
+          "key": "dist",
+          "label": "Alexandria to Syene",
+          "unit": "km",
+          "value": 800,
+          "source": "Given in the question"
+        }
+      ],
+      "formula": "360 / ang * dist"
+    },
+    {
+      "id": "orbital-speed-400-km-up",
+      "category": "Space",
+      "prompt": "How many km/h must a satellite move to circle Earth 400 km above the surface?",
+      "unit": "km/h",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest km/h.",
+      "factors": [
+        {
+          "key": "gm",
+          "label": "Earth’s gravitational parameter (G × mass)",
+          "unit": "km³/s²",
+          "value": 398600.4418,
+          "source": "IERS Conventions 2010"
+        },
+        {
+          "key": "r",
+          "label": "Earth’s mean radius",
+          "unit": "km",
+          "value": 6371,
+          "source": "IUGG mean radius"
+        }
+      ],
+      "formula": "(gm / (r + 400)) ^ 0.5 * 3600"
+    }
+  ]
+}

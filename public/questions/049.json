@@ -1,0 +1,102 @@
+{
+  "id": "049",
+  "questions": [
+    {
+      "id": "minutes-a-banana-runs-a-bulb",
+      "category": "Food",
+      "prompt": "A banana holds about 105 food Calories. How many minutes could that energy run a 60 W bulb?",
+      "unit": "minutes",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest minute.",
+      "factors": [
+        {
+          "key": "e",
+          "label": "Energy in a banana",
+          "unit": "kcal",
+          "value": 105,
+          "source": "Given in the question"
+        },
+        {
+          "key": "kcal",
+          "label": "Kilocalorie (food Calorie)",
+          "unit": "J",
+          "value": 4184,
+          "source": "Thermochemical; warms 1 kg of water by 1 °C"
+        }
+      ],
+      "formula": "e * kcal / 60 / 60"
+    },
+    {
+      "id": "six-character-codes",
+      "category": "Tech",
+      "prompt": "How many 6-character codes can be made from the 26 capital letters and 10 digits? Answer in millions.",
+      "unit": "million",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest million.",
+      "factors": [
+        {
+          "key": "n",
+          "label": "Letters and digits",
+          "unit": "symbols",
+          "value": 36,
+          "source": "26 letters + 10 digits"
+        }
+      ],
+      "formula": "n ^ 6 / 1000000"
+    },
+    {
+      "id": "length-of-bolts-stride",
+      "category": "Sport",
+      "prompt": "Usain Bolt ran his 100 m world record in 41 strides. How many centimeters long was his average stride?",
+      "unit": "cm",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest centimeter.",
+      "factors": [
+        {
+          "key": "s",
+          "label": "Strides",
+          "unit": "strides",
+          "value": 41,
+          "source": "Given in the question"
+        }
+      ],
+      "formula": "100 * 100 / s"
+    },
+    {
+      "id": "distance-covered-while-reacting",
+      "category": "Travel",
+      "prompt": "Driving at 100 km/h, how many meters do you cover in the 1.5 seconds it takes to react and hit the brake?",
+      "unit": "m",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest meter.",
+      "factors": [
+        {
+          "key": "t",
+          "label": "Reaction time",
+          "unit": "s",
+          "value": 1.5,
+          "source": "Given in the question"
+        }
+      ],
+      "formula": "100 / 3.6 * t"
+    },
+    {
+      "id": "length-of-the-moons-orbit",
+      "category": "Space",
+      "prompt": "Treating it as a circle at the Moon’s average distance, how many thousand km long is the Moon’s orbit?",
+      "unit": "thousand km",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest thousand km.",
+      "factors": [
+        {
+          "key": "d",
+          "label": "Average Earth–Moon distance",
+          "unit": "km",
+          "value": 384400,
+          "source": "NASA Moon Fact Sheet"
+        }
+      ],
+      "formula": "2 * 3.14159265 * d / 1000"
+    }
+  ]
+}

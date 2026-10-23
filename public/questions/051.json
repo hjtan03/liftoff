@@ -1,0 +1,116 @@
+{
+  "id": "051",
+  "questions": [
+    {
+      "id": "quarters-in-a-foot",
+      "category": "Everyday",
+      "prompt": "How many quarters, laid edge to edge in a straight line, make a line one foot long?",
+      "unit": "quarters",
+      "rounding": "ceil",
+      "roundingNote": "Enough to reach the full foot (round up).",
+      "factors": [
+        {
+          "key": "d",
+          "label": "Quarter diameter",
+          "unit": "mm",
+          "value": 24.26,
+          "source": "US Mint specifications"
+        },
+        {
+          "key": "ft",
+          "label": "Foot",
+          "unit": "m",
+          "value": 0.3048,
+          "source": "International foot, 1959"
+        }
+      ],
+      "formula": "ft * 1000 / d"
+    },
+    {
+      "id": "tiles-in-a-double-six-domino-set",
+      "category": "Games",
+      "prompt": "A double-six domino set has one tile for every pairing of 0 to 6 spots, doubles included. How many tiles is that?",
+      "unit": "tiles",
+      "rounding": "round",
+      "roundingNote": "Exact count.",
+      "factors": [
+        {
+          "key": "n",
+          "label": "Different spot counts, 0 through 6",
+          "unit": "values",
+          "value": 7,
+          "source": "Double-six domino set"
+        }
+      ],
+      "formula": "n * (n + 1) / 2"
+    },
+    {
+      "id": "basketballs-along-an-nba-court",
+      "category": "Sport",
+      "prompt": "How many basketballs, side by side in a straight line, span the full length of an NBA court?",
+      "unit": "balls",
+      "rounding": "ceil",
+      "roundingNote": "Enough to span the court (round up).",
+      "factors": [
+        {
+          "key": "len",
+          "label": "NBA court length",
+          "unit": "ft",
+          "value": 94,
+          "source": "NBA Official Rules"
+        },
+        {
+          "key": "circ",
+          "label": "Basketball circumference",
+          "unit": "in",
+          "value": 29.5,
+          "source": "NBA official ball, size 7"
+        }
+      ],
+      "formula": "len * 12 / (circ / 3.14159265)"
+    },
+    {
+      "id": "echo-from-a-cliff",
+      "category": "Science",
+      "prompt": "You shout at a cliff and hear the echo 2 seconds later. In 20 °C air, how many meters away is the cliff?",
+      "unit": "m",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest meter.",
+      "factors": [
+        {
+          "key": "v",
+          "label": "Speed of sound in 20 °C air",
+          "unit": "m/s",
+          "value": 343,
+          "source": "Dry air at 20 °C"
+        }
+      ],
+      "formula": "v * 2 / 2"
+    },
+    {
+      "id": "earths-between-earth-and-the-moon",
+      "category": "Space",
+      "prompt": "How many Earths, side by side, fit in the gap between Earth and the Moon at their average distance?",
+      "unit": "Earths",
+      "rounding": "floor",
+      "roundingNote": "Complete Earths only (round down).",
+      "factors": [
+        {
+          "key": "d",
+          "label": "Average Earth–Moon distance",
+          "unit": "km",
+          "value": 384400,
+          "source": "NASA Moon Fact Sheet"
+        },
+        {
+          "key": "de",
+          "label": "Earth’s mean diameter",
+          "unit": "km",
+          "value": 12742,
+          "source": "IUGG mean radius × 2"
+        }
+      ],
+      "formula": "d / de"
+    }
+  ]
+}

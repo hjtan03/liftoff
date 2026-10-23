@@ -1,0 +1,123 @@
+{
+  "id": "065",
+  "questions": [
+    {
+      "id": "cups-of-coffee-in-a-pound-of-beans",
+      "category": "Food",
+      "prompt": "Using 10 g of beans a cup, how many cups of coffee does a one-pound bag make?",
+      "unit": "cups",
+      "rounding": "floor",
+      "roundingNote": "Full cups only (round down).",
+      "factors": [
+        {
+          "key": "lb",
+          "label": "Pound",
+          "unit": "g",
+          "value": 453.59237,
+          "source": "International pound, 1959"
+        },
+        {
+          "key": "g",
+          "label": "Beans per cup",
+          "unit": "g",
+          "value": 10,
+          "source": "Given in the question"
+        }
+      ],
+      "formula": "lb / g"
+    },
+    {
+      "id": "odds-of-a-royal-flush",
+      "category": "Games",
+      "prompt": "There are 2,598,960 five-card poker hands and one royal flush in each of the four suits. A royal flush is a 1-in-how-many deal?",
+      "unit": "hands",
+      "rounding": "round",
+      "roundingNote": "Exact count.",
+      "factors": [
+        {
+          "key": "s",
+          "label": "Suits",
+          "unit": "suits",
+          "value": 4,
+          "source": "Standard 52-card deck"
+        }
+      ],
+      "formula": "2598960 / s"
+    },
+    {
+      "id": "joules-to-top-out-a-boulder",
+      "category": "Sport",
+      "prompt": "A 70 kg climber tops out a 4 m boulder problem. How many joules does lifting their body that high take?",
+      "unit": "J",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest joule.",
+      "factors": [
+        {
+          "key": "g",
+          "label": "Standard gravity",
+          "unit": "m/s²",
+          "value": 9.807,
+          "source": "CGPM, 1901, 9.80665 m/s²"
+        },
+        {
+          "key": "h",
+          "label": "Height climbed",
+          "unit": "m",
+          "value": 4,
+          "source": "Given in the question"
+        }
+      ],
+      "formula": "70 * g * h"
+    },
+    {
+      "id": "minutes-to-charge-an-ev",
+      "category": "Tech",
+      "prompt": "An electric car’s 75 kWh battery charges at 11 kW. With no losses, how many minutes does a full charge take?",
+      "unit": "minutes",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest minute.",
+      "factors": [
+        {
+          "key": "kwh",
+          "label": "Battery capacity",
+          "unit": "kWh",
+          "value": 75,
+          "source": "Given in the question"
+        },
+        {
+          "key": "kw",
+          "label": "Charger power",
+          "unit": "kW",
+          "value": 11,
+          "source": "Given in the question"
+        }
+      ],
+      "formula": "kwh / kw * 60"
+    },
+    {
+      "id": "earths-from-the-earth-to-the-sun",
+      "category": "Space",
+      "prompt": "How many Earths, side by side, would bridge the distance from Earth to the Sun?",
+      "unit": "Earths",
+      "rounding": "ceil",
+      "roundingNote": "Enough to bridge it (round up).",
+      "factors": [
+        {
+          "key": "au",
+          "label": "Astronomical unit",
+          "unit": "km",
+          "value": 149597870.7,
+          "source": "IAU 2012 Resolution B2"
+        },
+        {
+          "key": "de",
+          "label": "Earth’s mean diameter",
+          "unit": "km",
+          "value": 12742,
+          "source": "IUGG mean radius × 2"
+        }
+      ],
+      "formula": "au / de"
+    }
+  ]
+}

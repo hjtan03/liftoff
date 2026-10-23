@@ -1,37 +1,23 @@
-import { useEffect, useRef, useState } from "react";
-import { easeOutCubic, prefersReducedMotion, tween } from "../animation";
+import { useRef, useState } from "react";
 import { GAME_NAME } from "../brand";
-import {
-  formatDistance,
-  routePosition,
-  STOPS,
-  stopReached,
-} from "../game/journey";
+import { formatDistance, STOPS, stopReached } from "../game/journey";
 import { formatNumber } from "../game/numbers";
 import type { Streak } from "../game/progress";
 import { maxTotalPoints } from "../game/scoring";
 import type { StageResult } from "../game/state";
-import { PixelSprite } from "../pixel/Sprite";
-import { planet, PLANET_LOOKS, ROCKET, ROCKET_PALETTE } from "../pixel/sprites";
 import type { LoadedQuestion } from "../questions/source";
-import { sfx } from "../sound";
-
-const CLIMB_MS = 4200;
-/** Where the first and last stops sit on the track, as a share of its height. */
-const TRACK_BOTTOM_PERCENT = 5;
-const TRACK_TOP_PERCENT = 91;
+import { launchNumberAt } from "../questions/schedule";
+import { hrefFor } from "../route";
+import { Flight, type FlightPhase } from "./Flight";
 
 type Props = {
   launchNumber: string;
   questions: LoadedQuestion[];
   stageResults: StageResult[];
-  streak: Streak;
+  /** Today's streak; null for a replay, which doesn't count toward it. */
+  streak: Streak | null;
   onRestart: () => void;
 };
-
-const trackPercent = (position: number) =>
-  TRACK_BOTTOM_PERCENT +
-  (position / (STOPS.length - 1)) * (TRACK_TOP_PERCENT - TRACK_BOTTOM_PERCENT);
 
 const capitalize = (text: string) =>
   text.charAt(0).toUpperCase() + text.slice(1);
@@ -49,35 +35,14 @@ export function LaunchReport({
     0,
   );
   const maxPoints = maxTotalPoints(questions.length);
-  const finalPosition = routePosition(totalPoints, maxPoints);
   const destination = stopReached(totalPoints, maxPoints);
   const emojiGrid = stageResults.map((result) => result.emoji).join("");
   const shareText = `🚀 ${GAME_NAME} #${launchNumber} ${emojiGrid}\nReached ${destination.name} · ${formatNumber(totalPoints)} / ${formatNumber(maxPoints)} fuel`;
 
-  // With reduced motion the rocket is simply there, without the climb.
-  const [climbProgress, setClimbProgress] = useState(() =>
-    prefersReducedMotion() ? 1 : 0,
-  );
+  const [flightPhase, setFlightPhase] = useState<FlightPhase>("ignition");
   const [copyStatus, setCopyStatus] = useState("");
   const shareRef = useRef<HTMLPreElement>(null);
-
-  useEffect(() => {
-    if (prefersReducedMotion()) return;
-    sfx.launch();
-    let stopsPassed = 0;
-    return tween(CLIMB_MS, (progress) => {
-      setClimbProgress(progress);
-      const position = finalPosition * easeOutCubic(progress);
-      while (stopsPassed < Math.floor(position + 1e-9)) {
-        stopsPassed += 1;
-        sfx.passStop(stopsPassed);
-      }
-    });
-  }, [finalPosition]);
-
-  const rocketPosition = finalPosition * easeOutCubic(climbProgress);
-  const hasLanded = climbProgress >= 1;
-  const passed = Math.floor(rocketPosition + 1e-9);
+  const hasArrived = flightPhase === "arrived" || flightPhase === "zoomed";
 
   const copyShareText = () => {
     navigator.clipboard
@@ -98,24 +63,31 @@ export function LaunchReport({
       <section className="report">
         <div className="destination" aria-live="polite">
           <h1 className="dest">
-            {hasLanded
+            {hasArrived
               ? `Reached ${destination.name}`
-              : climbProgress === 0
+              : flightPhase === "ignition"
                 ? "Ignition…"
                 : "Climbing…"}
           </h1>
           <p className="dest-sub">
-            {hasLanded && destination.distanceKm > 0
+            {hasArrived && destination.distanceKm > 0
               ? `${formatDistance(destination.distanceKm)} from Earth on ${formatNumber(totalPoints)} fuel.`
-              : hasLanded
+              : hasArrived
                 ? `${formatNumber(totalPoints)} fuel wasn’t enough to leave the pad.`
                 : " "}
           </p>
         </div>
-        <p className="streak">
-          Streak <b>{streak.current}</b> · Best <b>{streak.best}</b> · Launches
-          flown <b>{streak.played}</b>
-        </p>
+        {streak ? (
+          <p className="streak">
+            Streak <b>{streak.current}</b> · Best <b>{streak.best}</b> ·
+            Launches flown <b>{streak.played}</b>
+          </p>
+        ) : (
+          <p className="streak">
+            A replay from the archive: it doesn’t count toward your streak.{" "}
+            <a href={hrefFor.archive()}>Back to the archive</a>
+          </p>
+        )}
         <ol className="summary">
           {stageResults.map((result, index) => (
             <li key={index}>
@@ -142,55 +114,21 @@ export function LaunchReport({
           </div>
         </div>
         <p className="note">
-          🎯 dead on · 🟢 locked in · 🟡 solid · 🟠 rough · 🔴 misfire. A new
-          launch arrives at midnight.
+          🎯 docked · 🟢 moonshot · 🟡 orbit · 🟠 suborbital · 🔴 scrubbed. A
+          new launch arrives at midnight Eastern.
+          {streak && launchNumberAt(new Date()) >= 2 ? (
+            <>
+              {" "}
+              Missed one? <a href={hrefFor.archive()}>Fly past launches</a>.
+            </>
+          ) : null}
         </p>
       </section>
-      <div
-        className="track"
-        role="img"
-        aria-label={`The rocket's route from the launch pad out to Neptune. It reached ${destination.name}.`}
-      >
-        <div className="track-line" />
-        <div
-          className="track-trail"
-          style={{
-            height: `${trackPercent(rocketPosition) - TRACK_BOTTOM_PERCENT}%`,
-          }}
-        />
-        {STOPS.map((stop, index) => {
-          const look = PLANET_LOOKS[stop.name];
-          const art = look ? planet(look) : null;
-          return (
-            <div
-              key={stop.name}
-              className={`stop${index <= passed ? " passed" : ""}${index === passed && hasLanded ? " here" : ""}`}
-              style={{ bottom: `${trackPercent(index)}%` }}
-            >
-              <span className="stop-art">
-                {art ? (
-                  <PixelSprite
-                    grid={art.grid}
-                    palette={art.palette}
-                    pixelSize={4}
-                  />
-                ) : index === 0 ? (
-                  <span className="pad" />
-                ) : (
-                  <span className="orbit-dot" />
-                )}
-              </span>
-              <span className="stop-name">{capitalize(stop.name)}</span>
-            </div>
-          );
-        })}
-        <div
-          className={`flyer${climbProgress > 0 && !hasLanded ? " burning" : ""}`}
-          style={{ bottom: `${trackPercent(rocketPosition)}%` }}
-        >
-          <PixelSprite grid={ROCKET} palette={ROCKET_PALETTE} pixelSize={3} />
-        </div>
-      </div>
+      <Flight
+        stopIndex={STOPS.indexOf(destination)}
+        destinationName={capitalize(destination.name)}
+        onPhase={setFlightPhase}
+      />
     </div>
   );
 }

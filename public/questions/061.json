@@ -1,0 +1,144 @@
+{
+  "id": "061",
+  "questions": [
+    {
+      "id": "calories-in-a-liter-of-whole-milk",
+      "category": "Food",
+      "prompt": "A liter of whole milk holds 33 g of fat, 48 g of carbohydrate and 33 g of protein. How many food Calories is that?",
+      "unit": "kcal",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest Calorie.",
+      "factors": [
+        {
+          "key": "f",
+          "label": "Fat",
+          "unit": "g",
+          "value": 33,
+          "source": "Given in the question"
+        },
+        {
+          "key": "c",
+          "label": "Carbohydrate",
+          "unit": "g",
+          "value": 48,
+          "source": "Given in the question"
+        },
+        {
+          "key": "p",
+          "label": "Protein",
+          "unit": "g",
+          "value": 33,
+          "source": "Given in the question"
+        },
+        {
+          "key": "fat",
+          "label": "Energy in fat",
+          "unit": "kcal/g",
+          "value": 9,
+          "source": "Atwater general factors"
+        },
+        {
+          "key": "carb",
+          "label": "Energy in carbohydrate",
+          "unit": "kcal/g",
+          "value": 4,
+          "source": "Atwater general factors"
+        },
+        {
+          "key": "pro",
+          "label": "Energy in protein",
+          "unit": "kcal/g",
+          "value": 4,
+          "source": "Atwater general factors"
+        }
+      ],
+      "formula": "f * fat + c * carb + p * pro"
+    },
+    {
+      "id": "chance-of-rolling-seven",
+      "category": "Games",
+      "prompt": "Rolling two dice, what percentage of rolls come up a total of 7?",
+      "unit": "%",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest percent.",
+      "factors": [
+        {
+          "key": "f",
+          "label": "Faces on a die",
+          "unit": "faces",
+          "value": 6,
+          "source": "Standard six-sided die"
+        }
+      ],
+      "formula": "6 / (f * f) * 100"
+    },
+    {
+      "id": "innings-in-a-baseball-season",
+      "category": "Sport",
+      "prompt": "A team plays 162 games of 9 innings. Without extra innings, how many innings is a season?",
+      "unit": "innings",
+      "rounding": "round",
+      "roundingNote": "Exact count.",
+      "factors": [
+        {
+          "key": "gp",
+          "label": "Games per team",
+          "unit": "games",
+          "value": 162,
+          "source": "MLB"
+        },
+        {
+          "key": "inn",
+          "label": "Innings per game",
+          "unit": "innings",
+          "value": 9,
+          "source": "MLB Official Baseball Rules"
+        }
+      ],
+      "formula": "gp * inn"
+    },
+    {
+      "id": "iodine-131-left-after-a-month",
+      "category": "Science",
+      "prompt": "Iodine-131 has a half-life of 8.02 days. What percentage of a sample is left after 30 days?",
+      "unit": "%",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest percent.",
+      "factors": [
+        {
+          "key": "hl",
+          "label": "Half-life of iodine-131",
+          "unit": "days",
+          "value": 8.02,
+          "source": "NNDC, Brookhaven National Laboratory"
+        }
+      ],
+      "formula": "100 * 0.5 ^ (30 / hl)"
+    },
+    {
+      "id": "moons-to-match-earths-mass",
+      "category": "Space",
+      "prompt": "How many Moons would it take to match Earth’s mass?",
+      "unit": "Moons",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest Moon.",
+      "factors": [
+        {
+          "key": "gm",
+          "label": "Earth’s gravitational parameter (G × mass)",
+          "unit": "km³/s²",
+          "value": 398600.4418,
+          "source": "IERS Conventions 2010"
+        },
+        {
+          "key": "gmm",
+          "label": "Moon’s gravitational parameter (G × mass)",
+          "unit": "km³/s²",
+          "value": 4902.8,
+          "source": "NASA Moon Fact Sheet"
+        }
+      ],
+      "formula": "gm / gmm"
+    }
+  ]
+}

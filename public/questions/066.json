@@ -1,0 +1,130 @@
+{
+  "id": "066",
+  "questions": [
+    {
+      "id": "seconds-to-microwave-a-mug",
+      "category": "Everyday",
+      "prompt": "A 1,000 W microwave with no losses warms a 250 mL mug of water from 20 °C to 60 °C. How many seconds does it take?",
+      "unit": "seconds",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest second.",
+      "factors": [
+        {
+          "key": "cw",
+          "label": "Specific heat of water",
+          "unit": "J/(g·°C)",
+          "value": 4.184,
+          "source": "Thermochemical calorie"
+        }
+      ],
+      "formula": "cw * 250 * (60 - 20) / 1000"
+    },
+    {
+      "id": "pixels-on-a-phone-screen",
+      "category": "Tech",
+      "prompt": "How many pixels are on a 2,532 × 1,170 phone screen?",
+      "unit": "pixels",
+      "rounding": "round",
+      "roundingNote": "Exact count.",
+      "factors": [
+        {
+          "key": "w",
+          "label": "Screen height",
+          "unit": "pixels",
+          "value": 2532,
+          "source": "Given in the question"
+        },
+        {
+          "key": "h",
+          "label": "Screen width",
+          "unit": "pixels",
+          "value": 1170,
+          "source": "Given in the question"
+        }
+      ],
+      "formula": "w * h"
+    },
+    {
+      "id": "minutes-of-an-nfl-season",
+      "category": "Sport",
+      "prompt": "An NFL game has four 15-minute quarters. How many minutes of game clock does a team play in a 17-game season?",
+      "unit": "minutes",
+      "rounding": "round",
+      "roundingNote": "Exact count.",
+      "factors": [
+        {
+          "key": "q",
+          "label": "Quarter length",
+          "unit": "min",
+          "value": 15,
+          "source": "NFL Rulebook"
+        },
+        {
+          "key": "gp",
+          "label": "Games per team",
+          "unit": "games",
+          "value": 17,
+          "source": "NFL, since 2021"
+        }
+      ],
+      "formula": "4 * q * gp"
+    },
+    {
+      "id": "fingernail-grown-in-80-years",
+      "category": "Body",
+      "prompt": "Fingernails grow about 3.5 mm a month. Never cut, how many meters would one grow in 80 years?",
+      "unit": "m",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest meter.",
+      "factors": [
+        {
+          "key": "rate",
+          "label": "Nail growth",
+          "unit": "mm/month",
+          "value": 3.5,
+          "source": "Given in the question"
+        }
+      ],
+      "formula": "rate * 12 * 80 / 1000"
+    },
+    {
+      "id": "moon-gravity-as-a-share-of-earths",
+      "category": "Space",
+      "prompt": "Surface gravity is GM ÷ r². What percentage of Earth’s surface gravity does the Moon have?",
+      "unit": "%",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest percent.",
+      "factors": [
+        {
+          "key": "gmm",
+          "label": "Moon’s gravitational parameter (G × mass)",
+          "unit": "km³/s²",
+          "value": 4902.8,
+          "source": "NASA Moon Fact Sheet"
+        },
+        {
+          "key": "rm",
+          "label": "Moon’s mean radius",
+          "unit": "km",
+          "value": 1737.4,
+          "source": "NASA Moon Fact Sheet"
+        },
+        {
+          "key": "gm",
+          "label": "Earth’s gravitational parameter (G × mass)",
+          "unit": "km³/s²",
+          "value": 398600.4418,
+          "source": "IERS Conventions 2010"
+        },
+        {
+          "key": "r",
+          "label": "Earth’s mean radius",
+          "unit": "km",
+          "value": 6371,
+          "source": "IUGG mean radius"
+        }
+      ],
+      "formula": "(gmm / rm ^ 2) / (gm / r ^ 2) * 100"
+    }
+  ]
+}

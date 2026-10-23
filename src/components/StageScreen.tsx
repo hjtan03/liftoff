@@ -13,6 +13,8 @@ type Props = {
   dispatch: Dispatch<GameAction>;
   /** What the server said about this stage's crowd. */
   crowd: CrowdState;
+  /** A replay of a past launch shows its launch-day crowd. */
+  isReplay: boolean;
   onAssumptionsSubmitted: (assumedFactorValues: FactorValues) => void;
   isCalculatorOpen: boolean;
   onToggleCalculator: () => void;
@@ -22,6 +24,7 @@ export function StageScreen({
   game,
   dispatch,
   crowd,
+  isReplay,
   onAssumptionsSubmitted,
   isCalculatorOpen,
   onToggleCalculator,
@@ -76,6 +79,7 @@ export function StageScreen({
             question={question}
             result={stageResult}
             crowd={crowd}
+            isReplay={isReplay}
             isLastStage={game.stageIndex === game.questions.length - 1}
             isAnimating={game.animatingStageIndex === game.stageIndex}
             onAnimationFinished={() =>

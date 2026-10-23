@@ -1,0 +1,123 @@
+{
+  "id": "036",
+  "questions": [
+    {
+      "id": "lego-bricks-to-a-meter-tall",
+      "category": "Everyday",
+      "prompt": "Ignoring the studs on top, how many LEGO bricks stacked straight up make a tower one meter tall?",
+      "unit": "bricks",
+      "rounding": "ceil",
+      "roundingNote": "Enough to reach a full meter (round up).",
+      "factors": [
+        {
+          "key": "h",
+          "label": "LEGO brick height",
+          "unit": "mm",
+          "value": 9.6,
+          "source": "LEGO system: three 3.2 mm plates"
+        }
+      ],
+      "formula": "1000 / h"
+    },
+    {
+      "id": "license-plates-from-three-letters-and-four-digits",
+      "category": "Everyday",
+      "prompt": "A license plate format is three letters followed by four digits. How many different plates can it make?",
+      "unit": "plates",
+      "rounding": "round",
+      "roundingNote": "Exact count.",
+      "factors": [
+        {
+          "key": "l",
+          "label": "Letters",
+          "unit": "letters",
+          "value": 26,
+          "source": "ISO basic Latin alphabet"
+        },
+        {
+          "key": "dg",
+          "label": "Digits",
+          "unit": "digits",
+          "value": 10,
+          "source": "0 through 9"
+        }
+      ],
+      "formula": "l ^ 3 * dg ^ 4"
+    },
+    {
+      "id": "games-in-an-nba-season",
+      "category": "Sport",
+      "prompt": "Each of the NBA’s 30 teams plays 82 regular-season games. How many games are played in all?",
+      "unit": "games",
+      "rounding": "round",
+      "roundingNote": "Exact count.",
+      "factors": [
+        {
+          "key": "t",
+          "label": "NBA teams",
+          "unit": "teams",
+          "value": 30,
+          "source": "NBA"
+        },
+        {
+          "key": "gp",
+          "label": "Games per team",
+          "unit": "games",
+          "value": 82,
+          "source": "NBA"
+        }
+      ],
+      "formula": "t * gp / 2"
+    },
+    {
+      "id": "energy-to-boil-away-a-liter",
+      "category": "Science",
+      "prompt": "How many kilojoules does it take to heat 1 L of water from 20 °C and then boil it all away?",
+      "unit": "kJ",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest kilojoule.",
+      "factors": [
+        {
+          "key": "cw",
+          "label": "Specific heat of water",
+          "unit": "J/(g·°C)",
+          "value": 4.184,
+          "source": "Thermochemical calorie"
+        },
+        {
+          "key": "lv",
+          "label": "Heat to boil water away at 100 °C",
+          "unit": "J/g",
+          "value": 2257,
+          "source": "Latent heat of vaporization of water"
+        }
+      ],
+      "formula": "cw * 80 + lv"
+    },
+    {
+      "id": "moon-in-arcminutes",
+      "category": "Space",
+      "prompt": "How many arcminutes wide does the Moon look from Earth, at its average distance?",
+      "unit": "arcminutes",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest arcminute.",
+      "factors": [
+        {
+          "key": "moon",
+          "label": "Moon’s mean diameter",
+          "unit": "km",
+          "value": 3474.8,
+          "source": "NASA Moon Fact Sheet"
+        },
+        {
+          "key": "d",
+          "label": "Average Earth–Moon distance",
+          "unit": "km",
+          "value": 384400,
+          "source": "NASA Moon Fact Sheet"
+        }
+      ],
+      "formula": "moon / d * 180 / 3.14159265 * 60"
+    }
+  ]
+}

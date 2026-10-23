@@ -1,0 +1,123 @@
+{
+  "id": "060",
+  "questions": [
+    {
+      "id": "nickels-stacked-to-a-foot",
+      "category": "Everyday",
+      "prompt": "How many nickels, stacked flat, make a column a foot tall?",
+      "unit": "nickels",
+      "rounding": "ceil",
+      "roundingNote": "Enough to reach the full foot (round up).",
+      "factors": [
+        {
+          "key": "t",
+          "label": "Nickel thickness",
+          "unit": "mm",
+          "value": 1.95,
+          "source": "US Mint specifications"
+        },
+        {
+          "key": "ft",
+          "label": "Foot",
+          "unit": "m",
+          "value": 0.3048,
+          "source": "International foot, 1959"
+        }
+      ],
+      "formula": "ft * 1000 / t"
+    },
+    {
+      "id": "kilobytes-of-a-novel",
+      "category": "Tech",
+      "prompt": "A 90,000-word novel averages 6 characters a word, spaces included, at one byte each. How many kilobytes is its text?",
+      "unit": "KB",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest kilobyte.",
+      "factors": [
+        {
+          "key": "cpw",
+          "label": "Characters per word",
+          "unit": "characters",
+          "value": 6,
+          "source": "Given in the question"
+        }
+      ],
+      "formula": "90000 * cpw / 1000"
+    },
+    {
+      "id": "water-frozen-into-an-nhl-rink",
+      "category": "Sport",
+      "prompt": "An NHL rink is 200 × 85 ft. Ignoring its rounded corners, how many liters of water make a sheet of ice 3/4 inch thick?",
+      "unit": "L",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest liter.",
+      "factors": [
+        {
+          "key": "l",
+          "label": "Rink length",
+          "unit": "ft",
+          "value": 200,
+          "source": "NHL Official Rules, Rule 1"
+        },
+        {
+          "key": "w",
+          "label": "Rink width",
+          "unit": "ft",
+          "value": 85,
+          "source": "NHL Official Rules, Rule 1"
+        },
+        {
+          "key": "ft",
+          "label": "Foot",
+          "unit": "m",
+          "value": 0.3048,
+          "source": "International foot, 1959"
+        }
+      ],
+      "formula": "l * w * (0.75 / 12) * (ft * 10) ^ 3"
+    },
+    {
+      "id": "pitch-range-of-a-piano",
+      "category": "Music",
+      "prompt": "A piano’s top key is 87 semitones above its bottom key. How many times higher is its pitch?",
+      "unit": "times",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest whole number.",
+      "factors": [
+        {
+          "key": "s",
+          "label": "Semitones in an octave",
+          "unit": "semitones",
+          "value": 12,
+          "source": "Equal temperament"
+        }
+      ],
+      "formula": "2 ^ (87 / s)"
+    },
+    {
+      "id": "moons-across-the-sun",
+      "category": "Space",
+      "prompt": "How many Moons, side by side, span the Sun’s diameter?",
+      "unit": "Moons",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest Moon.",
+      "factors": [
+        {
+          "key": "sun",
+          "label": "Sun’s diameter",
+          "unit": "km",
+          "value": 1392700,
+          "source": "IAU 2015 nominal solar radius × 2"
+        },
+        {
+          "key": "moon",
+          "label": "Moon’s mean diameter",
+          "unit": "km",
+          "value": 3474.8,
+          "source": "NASA Moon Fact Sheet"
+        }
+      ],
+      "formula": "sun / moon"
+    }
+  ]
+}

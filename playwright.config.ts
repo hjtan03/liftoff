@@ -12,6 +12,8 @@ export default defineConfig({
   use: {
     baseURL: PREVIEW_URL,
     trace: "retain-on-failure",
+    // Launches roll over at midnight Eastern, so the tests' fixed clock times are Eastern too.
+    timezoneId: "America/New_York",
   },
   projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
   webServer: {

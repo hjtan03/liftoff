@@ -1,5 +1,5 @@
 import { BAND_KEYS, scoreGuess, type BandKey } from "../game/scoring.js";
-import { FIRST_LAUNCH_DATE } from "../questions/schedule.js";
+import { launchNumberAt } from "../questions/schedule.js";
 import type { QuestionSet } from "../questions/schema.js";
 import { computeAnswer } from "../questions/source.js";
 import type {
@@ -57,32 +57,18 @@ export type ApiResult =
   | { status: 409; body: GuessConflict }
   | { status: 400 | 403 | 404 | 500; body: ApiError };
 
-const MILLISECONDS_PER_DAY = 86_400_000;
 const PLAYER_ID =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const MAX_GUESS = 1e15;
 const MAX_ASSUMPTIONS = 20;
 
 /**
- * Today's launch number on the UTC calendar. Players count launches on their
- * own calendar date, which is at most one day either side of UTC.
+ * A launch a player can be submitting right now: today's, in the launch time
+ * zone the game also uses, or the one either side of it, for a run started
+ * just before midnight and a device whose clock runs a little fast.
  */
-export function utcLaunchNumber(now: Date): number {
-  const utcDay = Date.UTC(
-    now.getUTCFullYear(),
-    now.getUTCMonth(),
-    now.getUTCDate(),
-  );
-  return (
-    Math.round(
-      (utcDay - Date.parse(FIRST_LAUNCH_DATE)) / MILLISECONDS_PER_DAY,
-    ) + 1
-  );
-}
-
-/** A launch someone somewhere can be playing right now: within a day of UTC's. */
 export function isPlayableLaunch(launch: number, now: Date): boolean {
-  const today = utcLaunchNumber(now);
+  const today = launchNumberAt(now);
   return launch >= 1 && launch >= today - 1 && launch <= today + 1;
 }
 
@@ -258,7 +244,7 @@ export async function handleCrowd(
   const launch = Number(input.launch);
   if (input.launch === null || !/^\d+$/.test(input.launch) || launch < 1)
     return error(400, "invalid-request", "launch must be a positive integer");
-  if (launch > utcLaunchNumber(input.now) + 1)
+  if (launch > launchNumberAt(input.now) + 1)
     return error(
       403,
       "launch-not-playable",

@@ -1,0 +1,123 @@
+{
+  "id": "048",
+  "questions": [
+    {
+      "id": "wavelength-in-a-microwave-oven",
+      "category": "Everyday",
+      "prompt": "A microwave oven runs at 2.45 GHz. How many millimeters long is one of its waves?",
+      "unit": "mm",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest millimeter.",
+      "factors": [
+        {
+          "key": "c",
+          "label": "Speed of light",
+          "unit": "m/s",
+          "value": 299792458,
+          "source": "SI definition of the meter"
+        },
+        {
+          "key": "f",
+          "label": "Oven frequency",
+          "unit": "GHz",
+          "value": 2.45,
+          "source": "Given in the question"
+        }
+      ],
+      "formula": "c / (f * 1000000000) * 1000"
+    },
+    {
+      "id": "characters-typed-in-an-hour",
+      "category": "Tech",
+      "prompt": "Typing 40 words a minute, how many characters do you type in an hour?",
+      "unit": "characters",
+      "rounding": "round",
+      "roundingNote": "Exact count.",
+      "factors": [
+        {
+          "key": "wpm",
+          "label": "Typing speed",
+          "unit": "words/min",
+          "value": 40,
+          "source": "Given in the question"
+        },
+        {
+          "key": "cpw",
+          "label": "Characters in a word",
+          "unit": "characters",
+          "value": 5,
+          "source": "Typing-test convention, spaces included"
+        }
+      ],
+      "formula": "wpm * cpw * 60"
+    },
+    {
+      "id": "deliveries-in-a-one-day-international",
+      "category": "Sport",
+      "prompt": "A one-day international is 50 overs a side, six balls an over. How many legal deliveries are bowled if both innings go the distance?",
+      "unit": "deliveries",
+      "rounding": "round",
+      "roundingNote": "Exact count.",
+      "factors": [
+        {
+          "key": "ov",
+          "label": "Overs per innings",
+          "unit": "overs",
+          "value": 50,
+          "source": "ICC playing conditions"
+        },
+        {
+          "key": "b",
+          "label": "Balls per over",
+          "unit": "balls",
+          "value": 6,
+          "source": "MCC Laws of Cricket"
+        }
+      ],
+      "formula": "2 * ov * b"
+    },
+    {
+      "id": "pitch-of-a-guitars-low-e",
+      "category": "Music",
+      "prompt": "A guitar’s low E string sounds 29 semitones below concert A. How many hertz is it?",
+      "unit": "Hz",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest hertz.",
+      "factors": [
+        {
+          "key": "a",
+          "label": "Concert A",
+          "unit": "Hz",
+          "value": 440,
+          "source": "ISO 16"
+        }
+      ],
+      "formula": "a / 2 ^ (29 / 12)"
+    },
+    {
+      "id": "earths-that-fit-inside-jupiter",
+      "category": "Space",
+      "prompt": "By volume, how many Earths would fit inside Jupiter?",
+      "unit": "Earths",
+      "rounding": "floor",
+      "roundingNote": "Complete Earths only (round down).",
+      "factors": [
+        {
+          "key": "rj",
+          "label": "Jupiter’s mean radius",
+          "unit": "km",
+          "value": 69911,
+          "source": "NASA Jupiter Fact Sheet"
+        },
+        {
+          "key": "r",
+          "label": "Earth’s mean radius",
+          "unit": "km",
+          "value": 6371,
+          "source": "IUGG mean radius"
+        }
+      ],
+      "formula": "(rj / r) ^ 3"
+    }
+  ]
+}

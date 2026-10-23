@@ -1,0 +1,116 @@
+{
+  "id": "057",
+  "questions": [
+    {
+      "id": "calories-in-an-egg",
+      "category": "Food",
+      "prompt": "A large egg has 6.3 g of protein and 4.8 g of fat. How many food Calories do they carry?",
+      "unit": "kcal",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest Calorie.",
+      "factors": [
+        {
+          "key": "p",
+          "label": "Protein",
+          "unit": "g",
+          "value": 6.3,
+          "source": "Given in the question"
+        },
+        {
+          "key": "f",
+          "label": "Fat",
+          "unit": "g",
+          "value": 4.8,
+          "source": "Given in the question"
+        },
+        {
+          "key": "pro",
+          "label": "Energy in protein",
+          "unit": "kcal/g",
+          "value": 4,
+          "source": "Atwater general factors"
+        },
+        {
+          "key": "fat",
+          "label": "Energy in fat",
+          "unit": "kcal/g",
+          "value": 9,
+          "source": "Atwater general factors"
+        }
+      ],
+      "formula": "p * pro + f * fat"
+    },
+    {
+      "id": "frames-in-a-two-hour-film",
+      "category": "Tech",
+      "prompt": "How many frames are in a two-hour film shot at 24 frames a second?",
+      "unit": "frames",
+      "rounding": "round",
+      "roundingNote": "Exact count.",
+      "factors": [
+        {
+          "key": "fps",
+          "label": "Frame rate",
+          "unit": "frames/s",
+          "value": 24,
+          "source": "Cinema standard, SMPTE"
+        }
+      ],
+      "formula": "2 * 3600 * fps"
+    },
+    {
+      "id": "turns-of-a-bike-wheel-in-a-km",
+      "category": "Sport",
+      "prompt": "A road bike wheel rolls 2.1 m each turn. How many turns does it make in one kilometer?",
+      "unit": "turns",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest turn.",
+      "factors": [
+        {
+          "key": "circ",
+          "label": "Wheel circumference",
+          "unit": "m",
+          "value": 2.1,
+          "source": "Given in the question"
+        }
+      ],
+      "formula": "1000 / circ"
+    },
+    {
+      "id": "heartbeats-in-a-marathon",
+      "category": "Body",
+      "prompt": "Running a 4-hour marathon at an average 150 beats a minute, how many times does your heart beat?",
+      "unit": "beats",
+      "rounding": "round",
+      "roundingNote": "Exact count.",
+      "factors": [
+        {
+          "key": "bpm",
+          "label": "Heart rate",
+          "unit": "beats/min",
+          "value": 150,
+          "source": "Given in the question"
+        }
+      ],
+      "formula": "4 * 60 * bpm"
+    },
+    {
+      "id": "astronauts-weight-on-the-moon",
+      "category": "Space",
+      "prompt": "How many newtons does a 70 kg astronaut weigh on the Moon?",
+      "unit": "N",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest newton.",
+      "factors": [
+        {
+          "key": "gm",
+          "label": "Surface gravity on the Moon",
+          "unit": "m/s²",
+          "value": 1.62,
+          "source": "NASA Moon Fact Sheet"
+        }
+      ],
+      "formula": "70 * gm"
+    }
+  ]
+}

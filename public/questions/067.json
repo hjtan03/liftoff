@@ -1,0 +1,123 @@
+{
+  "id": "067",
+  "questions": [
+    {
+      "id": "force-on-a-champagne-cork",
+      "category": "Food",
+      "prompt": "A champagne bottle holds 6 atmospheres pushing on a cork 1.8 cm across. How many kilograms of weight is that force equal to?",
+      "unit": "kg",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest kilogram.",
+      "factors": [
+        {
+          "key": "p",
+          "label": "Standard sea-level air pressure",
+          "unit": "Pa",
+          "value": 101325,
+          "source": "Standard atmosphere (ISO 2533)"
+        },
+        {
+          "key": "g",
+          "label": "Standard gravity",
+          "unit": "m/s²",
+          "value": 9.807,
+          "source": "CGPM, 1901, 9.80665 m/s²"
+        },
+        {
+          "key": "dia",
+          "label": "Cork diameter",
+          "unit": "cm",
+          "value": 1.8,
+          "source": "Given in the question"
+        }
+      ],
+      "formula": "6 * p * 3.14159265 * (dia / 200) ^ 2 / g"
+    },
+    {
+      "id": "podium-finishes-from-ten",
+      "category": "Games",
+      "prompt": "Ten runners race. How many different gold, silver and bronze finishes are possible?",
+      "unit": "finishes",
+      "rounding": "round",
+      "roundingNote": "Exact count.",
+      "factors": [
+        {
+          "key": "n",
+          "label": "Runners",
+          "unit": "runners",
+          "value": 10,
+          "source": "Given in the question"
+        }
+      ],
+      "formula": "n * (n - 1) * (n - 2)"
+    },
+    {
+      "id": "tennis-balls-in-a-kilogram",
+      "category": "Sport",
+      "prompt": "How many tennis balls does it take to weigh at least one kilogram?",
+      "unit": "balls",
+      "rounding": "ceil",
+      "roundingNote": "Enough to reach a kilogram (round up).",
+      "factors": [
+        {
+          "key": "m",
+          "label": "Tennis ball mass",
+          "unit": "g",
+          "value": 58,
+          "source": "ITF rules (56.0–59.4 g)"
+        }
+      ],
+      "formula": "1000 / m"
+    },
+    {
+      "id": "seconds-in-a-leap-year",
+      "category": "Calendar",
+      "prompt": "How many seconds are in a leap year?",
+      "unit": "seconds",
+      "rounding": "round",
+      "roundingNote": "Exact count.",
+      "factors": [
+        {
+          "key": "d",
+          "label": "Days in a leap year",
+          "unit": "days",
+          "value": 366,
+          "source": "Gregorian calendar"
+        }
+      ],
+      "formula": "d * 86400"
+    },
+    {
+      "id": "radio-delay-to-voyager-1",
+      "category": "Space",
+      "prompt": "Voyager 1 is about 170 AU from the Sun. How many hours does a radio message take to reach it?",
+      "unit": "hours",
+      "rounding": "round",
+      "roundingNote": "Rounded to the nearest hour.",
+      "factors": [
+        {
+          "key": "dist",
+          "label": "Voyager 1’s distance",
+          "unit": "AU",
+          "value": 170,
+          "source": "Given in the question"
+        },
+        {
+          "key": "au",
+          "label": "Astronomical unit",
+          "unit": "km",
+          "value": 149597870.7,
+          "source": "IAU 2012 Resolution B2"
+        },
+        {
+          "key": "c",
+          "label": "Speed of light",
+          "unit": "km/s",
+          "value": 299792.458,
+          "source": "SI definition of the meter"
+        }
+      ],
+      "formula": "dist * au / c / 3600"
+    }
+  ]
+}

@@ -13,9 +13,13 @@ import type { StageResult } from "../game/state";
 import { type LoadedQuestion, workedSolution } from "../questions/source";
 import { sfx } from "../sound";
 import type { Mood } from "../pixel/sprites";
-import { FuelScene } from "./FuelScene";
+import { type CrewStage, FuelScene } from "./FuelScene";
 import { RangeAxis } from "./RangeAxis";
 
+/** The crew runs the hose over and hooks it up before any fuel flows. */
+const RUN_MS = 1000;
+const HOOKUP_MS = 300;
+const STEP_MS = 140;
 const FILL_MS = 1300;
 const LIT_PAUSE_MS = 250;
 const SPUTTER_MS = 550;
@@ -32,13 +36,15 @@ const FUEL_TICKS = [
   ...[...BAND_KEYS].reverse().map((bandKey) => ({
     key: bandKey as string,
     points: CONFIDENCE_BANDS[bandKey].points,
-    label: bandKey === "lock" ? "Locked" : CONFIDENCE_BANDS[bandKey].name,
+    label: CONFIDENCE_BANDS[bandKey].name,
   })),
-  { key: "exact", points: MAX_POINTS_PER_STAGE, label: "Exact" },
+  { key: "exact", points: MAX_POINTS_PER_STAGE, label: "Docked" },
 ];
 
-/** Where the tank is in its reveal: a hit fills then lights; a misfire sputters up then drains. */
+/** Where the reveal is: the crew runs the hose over and hooks it up, then a hit fills and lights, a scrub sputters and drains. */
 type TankAnimation =
+  | { phase: "running"; progress: number }
+  | { phase: "hooking" }
   | { phase: "filling"; progress: number }
   | { phase: "lit" }
   | { phase: "sputtering"; progress: number }
@@ -52,15 +58,14 @@ function startingTankAnimation(
   if (!isAnimating || prefersReducedMotion()) {
     return hit ? { phase: "lit" } : { phase: "draining", progress: 1 };
   }
-  return hit
-    ? { phase: "filling", progress: 0 }
-    : { phase: "sputtering", progress: 0 };
+  return { phase: "running", progress: 0 };
 }
 
 type Props = {
   question: LoadedQuestion;
   result: StageResult;
   crowd: CrowdState;
+  isReplay: boolean;
   isLastStage: boolean;
   isAnimating: boolean;
   onAnimationFinished: () => void;
@@ -71,6 +76,7 @@ export function RevealStage({
   question,
   result,
   crowd,
+  isReplay,
   isLastStage,
   isAnimating,
   onAnimationFinished,
@@ -97,47 +103,69 @@ export function RevealStage({
     let cancelTween = () => {};
     let pauseHandle = 0;
     let bubblesPlayed = 0;
+    let stepsPlayed = 0;
     const bubbleAt = (progress: number, fillFraction: number) => {
       const due = Math.floor(progress * FILL_BUBBLES);
       if (due <= bubblesPlayed) return;
       bubblesPlayed = due;
       sfx.fuelBubble(fillFraction);
     };
-    if (result.hit) {
-      cancelTween = tween(
-        FILL_MS,
-        (progress) => {
-          setTank({ phase: "filling", progress });
-          bubbleAt(progress, (fullFillPercent / 100) * easeOutCubic(progress));
-        },
-        () => {
-          setTank({ phase: "lit" });
-          sfx.stageFired(soundLevel(result));
-          pauseHandle = window.setTimeout(finishAnimation, LIT_PAUSE_MS);
-        },
-      );
-    } else {
-      cancelTween = tween(
-        SPUTTER_MS,
-        (progress) => {
-          setTank({ phase: "sputtering", progress });
-          bubbleAt(progress, (MISFIRE_SPUTTER_PERCENT / 100) * progress);
-        },
-        () => {
-          sfx.misfire();
-          cancelTween = tween(
-            DRAIN_MS,
-            (progress) => setTank({ phase: "draining", progress }),
-            () => {
-              pauseHandle = window.setTimeout(
-                finishAnimation,
-                DRAINED_PAUSE_MS,
-              );
-            },
-          );
-        },
-      );
-    }
+    const pourFuel = () => {
+      if (result.hit) {
+        cancelTween = tween(
+          FILL_MS,
+          (progress) => {
+            setTank({ phase: "filling", progress });
+            bubbleAt(
+              progress,
+              (fullFillPercent / 100) * easeOutCubic(progress),
+            );
+          },
+          () => {
+            setTank({ phase: "lit" });
+            sfx.stageFired(soundLevel(result));
+            pauseHandle = window.setTimeout(finishAnimation, LIT_PAUSE_MS);
+          },
+        );
+      } else {
+        cancelTween = tween(
+          SPUTTER_MS,
+          (progress) => {
+            setTank({ phase: "sputtering", progress });
+            bubbleAt(progress, (MISFIRE_SPUTTER_PERCENT / 100) * progress);
+          },
+          () => {
+            sfx.misfire();
+            cancelTween = tween(
+              DRAIN_MS,
+              (progress) => setTank({ phase: "draining", progress }),
+              () => {
+                pauseHandle = window.setTimeout(
+                  finishAnimation,
+                  DRAINED_PAUSE_MS,
+                );
+              },
+            );
+          },
+        );
+      }
+    };
+    cancelTween = tween(
+      RUN_MS,
+      (progress) => {
+        setTank({ phase: "running", progress });
+        const due = Math.floor((progress * RUN_MS) / STEP_MS);
+        if (due > stepsPlayed) {
+          stepsPlayed = due;
+          sfx.step();
+        }
+      },
+      () => {
+        setTank({ phase: "hooking" });
+        sfx.hookUp();
+        pauseHandle = window.setTimeout(pourFuel, HOOKUP_MS);
+      },
+    );
     return () => {
       cancelTween();
       clearTimeout(pauseHandle);
@@ -145,29 +173,37 @@ export function RevealStage({
   }, [isAnimating, result, fullFillPercent]);
 
   const fillPercent =
-    tank.phase === "filling"
-      ? fullFillPercent * easeOutCubic(tank.progress)
-      : tank.phase === "lit"
-        ? fullFillPercent
-        : tank.phase === "sputtering"
-          ? MISFIRE_SPUTTER_PERCENT * easeOutCubic(tank.progress)
-          : MISFIRE_SPUTTER_PERCENT * (1 - tank.progress);
+    tank.phase === "running" || tank.phase === "hooking"
+      ? 0
+      : tank.phase === "filling"
+        ? fullFillPercent * easeOutCubic(tank.progress)
+        : tank.phase === "lit"
+          ? fullFillPercent
+          : tank.phase === "sputtering"
+            ? MISFIRE_SPUTTER_PERCENT * easeOutCubic(tank.progress)
+            : MISFIRE_SPUTTER_PERCENT * (1 - tank.progress);
   const shownPoints =
     tank.phase === "filling"
       ? result.points * easeOutCubic(tank.progress)
       : tank.phase === "lit"
         ? result.points
         : 0;
-  const mood: Mood =
-    tank.phase === "filling" || tank.phase === "sputtering"
-      ? "working"
-      : resultMood(result);
+  const isSettled = tank.phase === "lit" || tank.phase === "draining";
+  const mood: Mood = isSettled ? resultMood(result) : "working";
+  const crew: CrewStage =
+    tank.phase === "running"
+      ? { stage: "run", progress: tank.progress }
+      : tank.phase === "hooking"
+        ? { stage: "hookup" }
+        : isSettled
+          ? { stage: "settled" }
+          : { stage: "flow" };
 
   const verdict = result.exact
-    ? "Dead on."
+    ? "Docked."
     : result.hit
       ? "Stage fired."
-      : "Misfire.";
+      : "Scrubbed.";
   const assumedFactors = question.factors.filter(
     (factor) => result.assumedFactorValues[factor.key],
   );
@@ -177,7 +213,7 @@ export function RevealStage({
       <div className="rv-top">
         <FuelScene
           fillPercent={fillPercent}
-          isFlowing={tank.phase === "filling" || tank.phase === "sputtering"}
+          crew={crew}
           mood={mood}
           isSmoking={tank.phase === "draining"}
           isMisfire={!result.hit}
@@ -225,7 +261,7 @@ export function RevealStage({
         {result.exact
           ? `, and hit it exactly for a +${EXACT_ANSWER_BONUS_POINTS} bonus`
           : ""}
-        .<CrowdLine crowd={crowd} />
+        .<CrowdLine crowd={crowd} isReplay={isReplay} />
       </p>
       <div className="work">
         <h3>Debrief</h3>
@@ -283,16 +319,25 @@ export function RevealStage({
 const formatShare = (share: number) => `${Math.round(share * 100)}%`;
 
 /** The crowd sentence after the band line; nothing at all when the server could not answer. */
-function CrowdLine({ crowd }: { crowd: CrowdState }) {
+function CrowdLine({
+  crowd,
+  isReplay,
+}: {
+  crowd: CrowdState;
+  isReplay: boolean;
+}) {
   if (crowd.status === "unavailable") return null;
   if (crowd.status === "loading") return <> Checking the crowd…</>;
   const { players, lockHitShare, percentile } = crowd.crowd;
-  if (players <= 1) return <> You’re the first to fly this stage today.</>;
+  if (isReplay && players === 0) return null;
+  if (players <= 1 && !isReplay)
+    return <> You’re the first to fly this stage today.</>;
   return (
     <>
       {" "}
-      <b>{formatShare(lockHitShare)}</b> of {formatNumber(players)} players
-      locked in and hit this one
+      {isReplay ? "On launch day, " : ""}
+      <b>{formatShare(lockHitShare)}</b> of {formatNumber(players)}{" "}
+      {players === 1 ? "player" : "players"} went Moonshot and hit this one
       {percentile === null ? (
         "."
       ) : (
