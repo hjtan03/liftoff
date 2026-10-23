@@ -939,6 +939,7 @@ a {
 }
 .flight-name {
   font-size: 16px;
+  white-space: nowrap;
   color: var(--muted);
 }
 .flight-stop.passed .flight-name {

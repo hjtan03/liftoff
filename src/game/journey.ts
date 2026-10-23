@@ -14,7 +14,8 @@ export type Stop = {
 
 export const STOPS: readonly Stop[] = [
   { name: "the launch pad", distanceKm: 0 },
-  { name: "low Earth orbit", distanceKm: 400 },
+  // The edge of space, the Kármán line.
+  { name: "the atmosphere", distanceKm: 100 },
   { name: "the Moon", distanceKm: 384_400 },
   { name: "Mars", distanceKm: 225_000_000 },
   { name: "Jupiter", distanceKm: 778_000_000 },

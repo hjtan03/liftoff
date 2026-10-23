@@ -24,8 +24,8 @@ const TOTAL_MS = IGNITION_MS + CLIMB_MS + HOLD_MS + ZOOM_MS;
 export type FlightPhase = "ignition" | "climb" | "arrived" | "zoomed";
 
 type Props = {
-  /** How far the fuel carries the rocket: 0 at the pad, STOPS.length − 1 at Neptune. */
-  finalPosition: number;
+  /** The stop the fuel carries the rocket to: 0 at the pad, STOPS.length − 1 at Neptune. */
+  stopIndex: number;
   destinationName: string;
   onPhase: (phase: FlightPhase) => void;
 };
@@ -35,6 +35,11 @@ const easeInOutCubic = (t: number) =>
 const clamp = (value: number, low: number, high: number) =>
   Math.min(high, Math.max(low, value));
 const stopY = (position: number) => PAD_BOTTOM + position * SPACING;
+/** A stop's label on the map: "Launch pad", "Atmosphere", "Moon", "Mars". */
+const mapLabel = (name: string) => {
+  const bare = name.replace(/^the /, "");
+  return bare.charAt(0).toUpperCase() + bare.slice(1);
+};
 
 /** The rocket's flame in two flickers, swapped every few frames while the engine burns. */
 const FLAMES = [
@@ -47,7 +52,9 @@ const FLAMES = [
  * Moon and the planets it reaches, then pulls back until the whole route,
  * pad to Neptune, fits the frame, with the trail showing how far it got.
  */
-export function Flight({ finalPosition, destinationName, onPhase }: Props) {
+export function Flight({ stopIndex, destinationName, onPhase }: Props) {
+  // The rocket parks beside the stop it reached, so the map agrees with the headline.
+  const finalPosition = stopIndex;
   const viewRef = useRef<HTMLDivElement>(null);
   const [viewHeight, setViewHeight] = useState(420);
   // With reduced motion the flight is already over: the route, zoomed out.
@@ -162,7 +169,7 @@ export function Flight({ finalPosition, destinationName, onPhase }: Props) {
                   pixelSize={6}
                 />
               ) : null}
-              <span className="flight-name">{stop.name}</span>
+              <span className="flight-name">{mapLabel(stop.name)}</span>
             </div>
           );
         })}

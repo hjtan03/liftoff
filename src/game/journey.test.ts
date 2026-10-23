@@ -7,7 +7,7 @@ describe("stopReached", () => {
   it.each([
     [0, "the launch pad"],
     [500, "the launch pad"],
-    [1000, "low Earth orbit"],
+    [1000, "the atmosphere"],
     [2500, "Mars"],
     [5000, "Saturn"],
     [6000, "Uranus"],

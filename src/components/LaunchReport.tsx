@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { GAME_NAME } from "../brand";
-import { formatDistance, routePosition, stopReached } from "../game/journey";
+import { formatDistance, STOPS, stopReached } from "../game/journey";
 import { formatNumber } from "../game/numbers";
 import type { Streak } from "../game/progress";
 import { maxTotalPoints } from "../game/scoring";
@@ -35,7 +35,6 @@ export function LaunchReport({
     0,
   );
   const maxPoints = maxTotalPoints(questions.length);
-  const finalPosition = routePosition(totalPoints, maxPoints);
   const destination = stopReached(totalPoints, maxPoints);
   const emojiGrid = stageResults.map((result) => result.emoji).join("");
   const shareText = `🚀 ${GAME_NAME} #${launchNumber} ${emojiGrid}\nReached ${destination.name} · ${formatNumber(totalPoints)} / ${formatNumber(maxPoints)} fuel`;
@@ -126,7 +125,7 @@ export function LaunchReport({
         </p>
       </section>
       <Flight
-        finalPosition={finalPosition}
+        stopIndex={STOPS.indexOf(destination)}
         destinationName={capitalize(destination.name)}
         onPhase={setFlightPhase}
       />
