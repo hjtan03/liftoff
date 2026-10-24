@@ -9,7 +9,7 @@ import {
 } from "../game/progress";
 import { formatQuestionSetId, launchDateLabel } from "../questions/schedule";
 import { hrefFor } from "../route";
-import { Shell } from "./Shell";
+import { BrandLink, IdlePadScreen, Shell } from "./Shell";
 
 type Props = { today: number };
 
@@ -31,50 +31,55 @@ export function Archive({ today }: Props) {
   });
 
   return (
-    <Shell metaText="Archive" screen="archive">
-      <section className="archive">
-        <h1 className="archive-title">Past launches</h1>
-        <p className="note">
-          Fly any launch you missed. Replays don’t count toward your streak.
-        </p>
-        {rows.length === 0 ? (
+    <Shell readout={<BrandLink />} status="Archive" screen="archive">
+      <IdlePadScreen>
+        <section className="card archive">
+          <h1 className="archive-title">Past launches</h1>
           <p className="note">
-            The archive opens tomorrow, after the first launch.
+            Fly any launch you missed. Replays don’t count toward your streak.
           </p>
-        ) : (
-          <ol className="archive-list">
-            {rows.map((row) => {
-              const result = row.onTheDay ?? row.replay;
-              const status = row.onTheDay
-                ? "Flown on the day"
-                : row.replay?.isFinished
-                  ? "Replayed"
-                  : row.replay
-                    ? "In progress"
-                    : "Not flown yet";
-              return (
-                <li key={row.launch}>
-                  <a className="archive-row" href={hrefFor.launch(row.launch)}>
-                    <span className="archive-id num">#{row.id}</span>
-                    <span className="archive-date">{row.date}</span>
-                    <span className="archive-result">
-                      {result ? (
-                        <>
-                          <span className="archive-grid">{result.grid}</span>{" "}
-                          <span className="num">
-                            {formatNumber(result.points)}
-                          </span>
-                        </>
-                      ) : null}
-                      <span className="archive-status">{status}</span>
-                    </span>
-                  </a>
-                </li>
-              );
-            })}
-          </ol>
-        )}
-      </section>
+          {rows.length === 0 ? (
+            <p className="note">
+              The archive opens tomorrow, after the first launch.
+            </p>
+          ) : (
+            <ol className="archive-list">
+              {rows.map((row) => {
+                const result = row.onTheDay ?? row.replay;
+                const status = row.onTheDay
+                  ? "Flown on the day"
+                  : row.replay?.isFinished
+                    ? "Replayed"
+                    : row.replay
+                      ? "In progress"
+                      : "Not flown yet";
+                return (
+                  <li key={row.launch}>
+                    <a
+                      className="archive-row"
+                      href={hrefFor.launch(row.launch)}
+                    >
+                      <span className="archive-id num">#{row.id}</span>
+                      <span className="archive-date">{row.date}</span>
+                      <span className="archive-result">
+                        {result ? (
+                          <>
+                            <span className="archive-grid">{result.grid}</span>{" "}
+                            <span className="num">
+                              {formatNumber(result.points)}
+                            </span>
+                          </>
+                        ) : null}
+                        <span className="archive-status">{status}</span>
+                      </span>
+                    </a>
+                  </li>
+                );
+              })}
+            </ol>
+          )}
+        </section>
+      </IdlePadScreen>
     </Shell>
   );
 }

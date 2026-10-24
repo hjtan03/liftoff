@@ -1,24 +1,5 @@
 import { memo } from "react";
-import type { Palette, SpriteGrid } from "./sprites";
-
-type Run = { x: number; y: number; width: number; color: string };
-
-/** Merges each row's same-colored pixels into runs, so a sprite is a few dozen rects, not hundreds. */
-function toRuns(grid: SpriteGrid, palette: Palette): Run[] {
-  const runs: Run[] = [];
-  grid.forEach((row, y) => {
-    let x = 0;
-    while (x < row.length) {
-      const key = row[x];
-      let end = x + 1;
-      while (end < row.length && row[end] === key) end += 1;
-      const color = palette[key];
-      if (color) runs.push({ x, y, width: end - x, color });
-      x = end;
-    }
-  });
-  return runs;
-}
+import { gridRects, type Palette, type SpriteGrid } from "./sprites";
 
 type GroupProps = {
   grid: SpriteGrid;
@@ -40,14 +21,14 @@ export const PixelGroup = memo(function PixelGroup({
     // The position lives on the outer group so a CSS animation on the inner one can't override it.
     <g transform={`translate(${x} ${y})`}>
       <g className={className}>
-        {toRuns(grid, palette).map((run) => (
+        {gridRects(grid, palette).map((rect) => (
           <rect
-            key={`${run.x},${run.y}`}
-            x={run.x}
-            y={run.y}
-            width={run.width}
-            height={1}
-            fill={run.color}
+            key={`${rect.x},${rect.y}`}
+            x={rect.x}
+            y={rect.y}
+            width={rect.w}
+            height={rect.h}
+            fill={rect.fill}
           />
         ))}
       </g>

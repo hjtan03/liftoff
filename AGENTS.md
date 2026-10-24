@@ -41,22 +41,57 @@ docs/archive/.
 - The name lives in `src/brand.ts`; change it there, and in `index.html`'s
   title and meta tags.
 - Pixel art is drawn in code: `src/pixel/sprites.ts` holds sprites as rows
-  of palette characters and generates the crew and planets;
-  `src/pixel/Sprite.tsx` renders them as crisp SVG. Sprite colors and the
-  stylesheet tokens use the same values.
+  of palette characters and generates the spectators, planets and clouds;
+  `src/pixel/Sprite.tsx` renders them as crisp SVG, and `src/pixel/sky.ts`
+  paints the dithered sky onto a canvas. Sprite colors and the stylesheet
+  tokens use the same values.
+- One art pixel is a whole number of screen pixels: on the pad, the
+  `--art-pixel-size` set in `src/app.css` (3 where the window is tall
+  enough for the rocket to stand there whole, 2 on phones and shorter
+  windows, 1 on the shortest), and in flight one fewer (down to 1), the
+  camera pulling back a whole step as the rocket lifts off. Dithering stays crisp at both; never
+  rest the scene at a fraction. The one exception is the camera pulling
+  back over the whole route at the end of a launch, which no whole number
+  fits; the sky canvas is repainted at that zoom rather than scaled.
 - Two pixel faces: Jersey 15 for headings, numbers and buttons, DotGothic16
-  for reading. Both have one weight, so nothing is set bold.
+  for reading. Both have one weight, so nothing is set bold. Small labels
+  are tracked capitals; panels are deep violet-navy with a thin light edge.
+- Every screen sits in one full-window scene at dusk,
+  `src/components/MissionScene.tsx`: the dithered sky painted by
+  `src/pixel/sky.ts`, pink at the horizon through violet into starry space,
+  with the life drifting over the pad (`src/components/Sky.tsx`); the
+  launch pad (`src/components/PadScene.tsx`) inside its launch site
+  (`src/components/LaunchSite.tsx`), standing on the soil under the band
+  that holds the controls; the heads-up bar from
+  `src/components/Shell.tsx` across the top, and the cards over the sky.
+  Screens between launches show the rocket waiting on the pad.
 - Sound is synthesized in `src/sound.ts` (Web Audio, no files), quiet, and
-  only ever starts from a player's action. The header switch mutes it and is
-  remembered.
-- The score maps onto stops from the launch pad to Neptune in
-  `src/game/journey.ts`; only a perfect launch reaches Neptune. The flight
-  report (`src/components/Flight.tsx`) follows the rocket up past each stop,
-  then zooms out to the whole route.
-- The reveal (`src/components/FuelScene.tsx`) is choreographed: one crew
-  member pumps at the cart, the other runs the hose to the tank and hooks it
-  up, the fuel flows, then both react to the result. Crew frames come from
-  `astronaut(mood, pose, frame)`; reduced motion skips straight to the end.
+  only ever starts from a player's action. The switch in the heads-up bar
+  mutes it and is remembered.
+- The rocket stands fully built on the pad: a capsule and one stage per
+  question, drawn finely enough in `src/pixel/rocket.ts` to hold up close,
+  beside the service tower, with a crowd of small spectators behind a rope
+  to the side that waits, cheers it off, or puts its hands on its head at a
+  scrub. Every reveal burns the lowest
+  stage, and the rocket flies on along one long route,
+  `src/pixel/arc.ts`: straight up through the cloud bank, then a gravity
+  turn to the right, the planets big beside it on the outside of the bend.
+  Where it rests is `routePosition` of the fuel revealed so far, from
+  `src/game/journey.ts`, on the same curve as the final score; only a
+  perfect launch reaches Neptune. A hit's burn travels further the more
+  fuel it carries, its plume bending with the arc, and the spent stage
+  tumbles away at the end. The first burn off the pad is liftoff, with no
+  countdown: a flash, a shaking camera, and a bank of smoke rolling out
+  from the flame trench until it spans the screen, lit pink by the engine;
+  the rocket climbs out of it, and the camera pulls back to flight scale as
+  it does. A scrub coughs, lurches, and drops its stage scorched. Only
+  then does the result come up. The camera rides with the rocket between
+  questions, a ruler down the side shows how far along the route it is,
+  and once the launch is over the camera pulls back over the whole route
+  from the pad to where the rocket got to, and the report comes up over
+  it. The rocket is derived from the run, never stored, so a refresh shows
+  it where it was. Spectators come from `spectator(look, pose, frame)`.
+  Reduced motion skips the burns and the pull-back.
 - Bands show as Moonshot (±5%), Orbit (±20%) and Suborbital (2×), an exact
   hit as Docked and a miss as Scrubbed. The API keeps the keys `lock`,
   `solid` and `rough`; only the names in `src/game/scoring.ts` changed.

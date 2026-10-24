@@ -29,6 +29,18 @@ describe("routePosition", () => {
   it("climbs with the score", () => {
     expect(routePosition(3000, MAX)).toBeGreaterThan(routePosition(2000, MAX));
   });
+  it("carries the rocket stage by stage to where the whole score does", () => {
+    const stagePoints = [1000, 0, 500, 1250, 200];
+    let fuel = 0;
+    let position = 0;
+    for (const points of stagePoints) {
+      fuel += points;
+      const next = routePosition(fuel, MAX);
+      expect(next).toBeGreaterThanOrEqual(position);
+      position = next;
+    }
+    expect(Math.floor(position)).toBe(STOPS.indexOf(stopReached(fuel, MAX)));
+  });
 });
 
 describe("formatDistance", () => {

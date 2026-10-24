@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useReducer, useState } from "react";
+import { useEffect, useMemo, useReducer, useRef, useState } from "react";
+import { easeOutCubic, prefersReducedMotion, tween } from "../animation";
 import { fetchCrowd, submitGuess, type CrowdState } from "../api/client";
 import { readStorage, writeStorage } from "../browserStorage";
 import { Calculator } from "../calculator/Calculator";
@@ -12,12 +13,18 @@ import {
   RUN_STORAGE_KEY,
   serializeRun,
 } from "../game/progress";
-import { gameReducer } from "../game/state";
+import { routePosition } from "../game/journey";
+import { formatNumber } from "../game/numbers";
+import { maxTotalPoints } from "../game/scoring";
+import { gameReducer, shownStageResults } from "../game/state";
 import type { FactorValues } from "../questions/factors";
 import type { LoadedQuestionSet } from "../questions/source";
 import { LaunchReport } from "./LaunchReport";
+import { MissionScene } from "./MissionScene";
 import { Shell } from "./Shell";
 import { StageScreen } from "./StageScreen";
+
+const FUEL_COUNT_UP_MS = 700;
 
 type Props = {
   questionSet: LoadedQuestionSet;
@@ -37,6 +44,8 @@ export function Game({ questionSet, isToday }: Props) {
   );
   const [game, dispatch] = useReducer(gameReducer, restoredGame);
   const [isCalculatorOpen, setCalculatorOpen] = useState(false);
+  /** Whether the camera has pulled back over the finished flight, so the report can come up over it. */
+  const [hasPulledBack, setHasPulledBack] = useState(false);
   /** The crowd for each stage of this run, by stage index, filled in as the server answers. */
   const [crowdByStage, setCrowdByStage] = useState<Record<number, CrowdState>>(
     () =>
@@ -139,21 +148,97 @@ export function Game({ questionSet, isToday }: Props) {
     game.phase === "done"
       ? `${launchLabel} · Flight report`
       : `${launchLabel} · Stage ${game.stageIndex + 1} of ${game.questions.length}`;
+  const shownResults = shownStageResults(game);
+  // How each stage stands for the pips: revealed, or the one being asked, or still to come.
+  const stageStatuses = shownResults.map((result, index) =>
+    result
+      ? result.hit
+        ? "fired"
+        : "misfire"
+      : index === game.stageIndex && game.phase !== "done"
+        ? "current"
+        : "pending",
+  );
+  const fuelBanked = shownResults.reduce(
+    (sum, result) => sum + (result?.points ?? 0),
+    0,
+  );
+  // The rocket rests where the fuel shown so far carries it, and a burning stage carries it on from there.
+  const maxPoints = maxTotalPoints(game.questions.length);
+  const restingPosition = routePosition(fuelBanked, maxPoints);
+  const burningIndex = game.animatingStageIndex;
+  const burn =
+    burningIndex === null
+      ? null
+      : {
+          stageIndex: burningIndex,
+          from: restingPosition,
+          to: routePosition(
+            fuelBanked + game.stageResults[burningIndex].points,
+            maxPoints,
+          ),
+          isScrub: !game.stageResults[burningIndex].hit,
+          onFinished: () => dispatch({ type: "reveal-animation-finished" }),
+        };
+  const shownFuel = useTweenedNumber(fuelBanked, FUEL_COUNT_UP_MS);
+  const stagesDescription = stageStatuses
+    .map(
+      (status, index) =>
+        `Stage ${index + 1}: ${status === "misfire" ? "scrubbed" : status}`,
+    )
+    .join(", ");
 
   return (
     <>
-      <Shell metaText={metaText} screen={isToday ? "today" : "replay"}>
+      <Shell
+        readout={
+          <>
+            <span className="hud-label">Fuel</span>
+            <span className="hud-number num">{formatNumber(shownFuel)}</span>
+          </>
+        }
+        status={
+          <>
+            <span className="pips" role="img" aria-label={stagesDescription}>
+              {stageStatuses.map((status, index) => (
+                <span key={index} className={`pip ${status}`} />
+              ))}
+            </span>
+            <span className="meta">{metaText}</span>
+          </>
+        }
+        screen={isToday ? "today" : "replay"}
+        scene={
+          <MissionScene
+            position={restingPosition}
+            stagesLeft={
+              game.questions.length - shownResults.filter(Boolean).length
+            }
+            burn={burn}
+            pullBack={
+              game.phase === "done"
+                ? {
+                    hasPulledBack,
+                    onPulledBack: () => setHasPulledBack(true),
+                  }
+                : null
+            }
+            showsRoute
+          />
+        }
+      >
         {game.phase === "done" ? (
           <LaunchReport
             launchNumber={game.launchNumber}
             questions={game.questions}
             stageResults={game.stageResults}
             streak={isToday ? streak : null}
+            hasPulledBack={hasPulledBack}
             onRestart={() => {
               dispatch({ type: "game-restarted" });
+              setHasPulledBack(false);
               // A replay keeps its launch-day crowd; today's run starts over.
               if (isToday) setCrowdByStage({});
-              window.scrollTo({ top: 0 });
             }}
           />
         ) : (
@@ -174,4 +259,20 @@ export function Game({ questionSet, isToday }: Props) {
       />
     </>
   );
+}
+
+/** Counts from the value shown to the new target over durationMs; jumps when motion is reduced. */
+function useTweenedNumber(target: number, durationMs: number): number {
+  const [shown, setShown] = useState(target);
+  const shownRef = useRef(target);
+  useEffect(() => {
+    const from = shownRef.current;
+    if (from === target) return;
+    return tween(prefersReducedMotion() ? 0 : durationMs, (progress) => {
+      const value = Math.round(from + (target - from) * easeOutCubic(progress));
+      shownRef.current = value;
+      setShown(value);
+    });
+  }, [target, durationMs]);
+  return shown;
 }

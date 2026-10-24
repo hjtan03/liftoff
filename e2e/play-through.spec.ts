@@ -3,6 +3,8 @@ import { FIRST_LAUNCH_DATE } from "../src/questions/schedule.ts";
 
 // The five answers follow from the questions' own constants; see public/questions/001.json.
 const EXACT_ANSWERS = ["506", "328", "2343", "4011", "448"];
+// A stage's result comes up once its burn has played, up to a few seconds for liftoff.
+const AFTER_THE_BURN = { timeout: 10_000 };
 
 test.beforeEach(async ({ page }) => {
   await page.clock.setFixedTime(new Date(`${FIRST_LAUNCH_DATE}T12:00:00`));
@@ -11,6 +13,8 @@ test.beforeEach(async ({ page }) => {
 test("five docked Moonshot answers reach Neptune with a full share string", async ({
   page,
 }) => {
+  // Each stage burns for a few seconds before its result, and the camera pulls back at the end: about 25 s in all.
+  test.setTimeout(60_000);
   await page.goto("./");
   for (const [stage, answer] of EXACT_ANSWERS.entries()) {
     await expect(
@@ -20,16 +24,16 @@ test("five docked Moonshot answers reach Neptune with a full share string", asyn
     await page.getByRole("button", { name: "Moonshot" }).click();
     await page.getByRole("button", { name: `Fire stage ${stage + 1}` }).click();
     await page.getByRole("button", { name: "Reveal" }).click();
-    await expect(page.getByRole("heading", { name: "Docked." })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Docked." })).toBeVisible(
+      AFTER_THE_BURN,
+    );
     await page
       .getByRole("button", {
-        name: stage === 4 ? "Launch the rocket" : "Next stage",
+        name: stage === 4 ? "Flight report" : "Next stage",
       })
       .click();
   }
-  await expect(page.locator(".dest")).toHaveText("Reached Neptune", {
-    timeout: 10_000,
-  });
+  await expect(page.locator(".dest")).toHaveText("Reached Neptune");
   await expect(page.locator(".share")).toHaveText(
     "🚀 Liftoff #001 🎯🎯🎯🎯🎯\nReached Neptune · 6,250 / 6,250 fuel",
   );
@@ -40,7 +44,9 @@ test("a guess outside the range is scrubbed for no fuel", async ({ page }) => {
   await page.getByLabel("Your answer").fill("1");
   await page.getByRole("button", { name: "Fire stage 1" }).click();
   await page.getByRole("button", { name: "Skip" }).click();
-  await expect(page.getByRole("heading", { name: "Scrubbed." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Scrubbed." })).toBeVisible(
+    AFTER_THE_BURN,
+  );
   await expect(page.locator(".stats")).toContainText("+0");
 });
 
@@ -95,6 +101,7 @@ test("a revealed stage is recorded and shows the crowd the server returns", asyn
   await page.getByRole("button", { name: "Reveal" }).click();
   await expect(page.locator(".crowd")).toContainText(
     "25% of 40 players went Moonshot and hit this one, and you were closer than 90% of them.",
+    AFTER_THE_BURN,
   );
   expect(recorded).toEqual([{ launch: 1, stage: 1, guess: 506, band: "lock" }]);
 });
@@ -107,6 +114,9 @@ test("without the server the reveal still plays, with no crowd line", async ({
   await page.getByLabel("Your answer").fill(EXACT_ANSWERS[0]);
   await page.getByRole("button", { name: "Fire stage 1" }).click();
   await page.getByRole("button", { name: "Skip" }).click();
+  await expect(page.getByRole("heading", { name: "Docked." })).toBeVisible(
+    AFTER_THE_BURN,
+  );
   await expect(page.locator(".crowd")).not.toContainText("players");
   await expect(page.locator(".crowd")).not.toContainText("Checking");
 });
@@ -160,7 +170,9 @@ test.describe("the archive", () => {
     await page.getByLabel("Your answer").fill(EXACT_ANSWERS[0]);
     await page.getByRole("button", { name: "Fire stage 1" }).click();
     await page.getByRole("button", { name: "Skip" }).click();
-    await expect(page.getByRole("heading", { name: "Docked." })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Docked." })).toBeVisible(
+      AFTER_THE_BURN,
+    );
     // A replay never records its guesses with the server.
     expect(recorded).toEqual([]);
 

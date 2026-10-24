@@ -39,9 +39,14 @@ export function routePosition(score: number, maxPoints: number): number {
   return progress * (STOPS.length - 1);
 }
 
+/** The index of the farthest stop a route position has reached. */
+export function stopIndexAt(position: number): number {
+  return Math.floor(position + EPSILON);
+}
+
 /** The farthest stop the rocket reaches. */
 export function stopReached(score: number, maxPoints: number): Stop {
-  return STOPS[Math.floor(routePosition(score, maxPoints) + EPSILON)];
+  return STOPS[stopIndexAt(routePosition(score, maxPoints))];
 }
 
 /** "384,400 km", "225 million km", "4.5 billion km". */
