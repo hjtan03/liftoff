@@ -16,7 +16,7 @@ export type GameState = {
   stageResults: StageResult[];
   /** The scored guess between firing and the reveal, before assumptions are known. */
   pendingResult: ScoredGuess | null;
-  /** The stage whose reveal animation is running; its result stays hidden on the stack until it finishes. */
+  /** The stage whose burn is playing; its result stays hidden until the burn finishes. */
   animatingStageIndex: number | null;
 };
 
@@ -93,4 +93,13 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         questions: state.questions,
       });
   }
+}
+
+/** Each stage's result as the player has seen it: undefined until revealed, and while its reveal is still animating. */
+export function shownStageResults(
+  state: GameState,
+): (StageResult | undefined)[] {
+  return state.questions.map((_, index) =>
+    index === state.animatingStageIndex ? undefined : state.stageResults[index],
+  );
 }

@@ -109,23 +109,19 @@ export const sfx = {
     noise(0, 0.25, { volume: 0.6, from: 3000, to: 400 });
     tone(220, 0, 0.12, { type: "triangle", slideTo: 440, volume: 0.6 });
   },
-  /** A footstep as the crew runs the hose over: a soft, low tap. */
-  step() {
-    tone(196, 0, 0.03, { type: "triangle", volume: 0.3 });
-  },
-  /** The hose clicks onto the tank's valve. */
-  hookUp() {
+  /** A spent stage lets go: a clank and a puff. */
+  separate() {
     tone(1319, 0, 0.03, { volume: 0.35 });
     tone(880, 0.04, 0.05, { volume: 0.35 });
-    noise(0, 0.08, { volume: 0.3, from: 4000, to: 1500 });
+    noise(0, 0.12, { volume: 0.3, from: 4000, to: 900 });
   },
-  /** One bubble of fuel; called as the tank fills, pitch rising with the level. */
-  fuelBubble(fillFraction: number) {
-    const note =
-      NOTES[Math.min(NOTES.length - 1, Math.floor(fillFraction * 8))];
-    tone(note, 0, 0.05, { type: "triangle", volume: 0.45 });
+  /** A scrubbed stage's engine coughing: a few short bursts that won't catch. */
+  sputter() {
+    [0, 0.22, 0.5].forEach((startIn, index) =>
+      noise(startIn, 0.12, { volume: 0.45 - index * 0.1, from: 900, to: 200 }),
+    );
   },
-  /** The tank settles: one note for a rough hit, up to a little fanfare for dead on. */
+  /** The result comes up: one note for a rough hit, up to a little fanfare for dead on. */
   stageFired(level: 1 | 2 | 3 | 4) {
     const run = [0, 2, 4, 7].slice(0, level);
     run.forEach((index, step) =>
@@ -150,10 +146,15 @@ export const sfx = {
     tone(NOTES[3], 0, 0.05, { volume: 0.4 });
     tone(NOTES[5], 0.05, 0.07, { volume: 0.4 });
   },
-  /** Lift-off: an engine rumble under a rising sweep. */
-  launch() {
-    noise(0, 1.6, { volume: 0.7, from: 600, to: 120 });
-    tone(110, 0, 1.4, { type: "sawtooth", slideTo: 330, volume: 0.25 });
+  /** Lift-off: a heavy engine rumble under a rising sweep, for as long as the first burn lasts. */
+  liftoff(seconds: number) {
+    noise(0, seconds, { volume: 0.7, from: 600, to: 120 });
+    tone(110, 0, seconds, { type: "sawtooth", slideTo: 330, volume: 0.25 });
+  },
+  /** A stage burning in flight, for as long as it burns. */
+  burn(seconds: number) {
+    noise(0, seconds, { volume: 0.5, from: 900, to: 160 });
+    tone(165, 0, seconds, { type: "sawtooth", slideTo: 262, volume: 0.18 });
   },
   /** The rocket passes a stop on its way out. */
   passStop(stopIndex: number) {

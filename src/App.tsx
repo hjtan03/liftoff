@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Archive } from "./components/Archive";
 import { Game } from "./components/Game";
-import { Shell } from "./components/Shell";
+import { BrandLink, IdlePadScreen, Shell } from "./components/Shell";
 import { formatQuestionSetId } from "./questions/schedule";
 import { fetchQuestionSet, type LoadedQuestionSet } from "./questions/source";
 import { hrefFor, routeFor } from "./route";
@@ -38,31 +38,38 @@ export function App() {
 
   if (route.screen === "countdown") {
     return (
-      <Shell metaText="Countdown" screen="other">
-        <div className="countdown">
-          <p className="label">Launch #001</p>
-          <p className="countdown-days num">
-            T−{route.days} {route.days === 1 ? "day" : "days"}
-          </p>
-          <p className="note">
-            The first daily launch lifts off at midnight Eastern on Saturday,
-            October 24. Five questions, one rocket, a new flight every day.
-          </p>
-        </div>
+      <Shell readout={<BrandLink />} status="Countdown" screen="other">
+        <IdlePadScreen>
+          <div className="card countdown">
+            <p className="label">Launch #001</p>
+            <p className="countdown-days num">
+              T−{route.days} {route.days === 1 ? "day" : "days"}
+            </p>
+            <p className="note">
+              The first daily launch lifts off at midnight Eastern on Saturday,
+              October 24. Five questions, one rocket, a new flight every day.
+            </p>
+          </div>
+        </IdlePadScreen>
       </Shell>
     );
   }
   if (route.screen === "archive") return <Archive today={route.today} />;
   if (route.screen === "not-yet") {
     return (
-      <Shell metaText={`Launch #${formatQuestionSetId(route.launch)}`}>
-        <div className="countdown">
-          <p className="countdown-days num">Still on the pad.</p>
-          <p className="note">
-            Launch #{formatQuestionSetId(route.launch)} hasn’t lifted off yet.{" "}
-            <a href={hrefFor.today()}>Fly today’s launch</a> instead.
-          </p>
-        </div>
+      <Shell
+        readout={<BrandLink />}
+        status={`Launch #${formatQuestionSetId(route.launch)}`}
+      >
+        <IdlePadScreen>
+          <div className="card countdown">
+            <p className="countdown-days num">Still on the pad.</p>
+            <p className="note">
+              Launch #{formatQuestionSetId(route.launch)} hasn’t lifted off yet.{" "}
+              <a href={hrefFor.today()}>Fly today’s launch</a> instead.
+            </p>
+          </div>
+        </IdlePadScreen>
       </Shell>
     );
   }
@@ -70,15 +77,19 @@ export function App() {
   const screen = route.screen === "today" ? "today" : "replay";
   if (load.status === "loading") {
     return (
-      <Shell metaText="Loading" screen={screen}>
-        <p className="note">Loading the day’s questions…</p>
+      <Shell readout={<BrandLink />} status="Loading" screen={screen}>
+        <IdlePadScreen>
+          <p className="card countdown note">Loading the day’s questions…</p>
+        </IdlePadScreen>
       </Shell>
     );
   }
   if (load.status === "failed") {
     return (
-      <Shell metaText="Could not load" screen={screen}>
-        <p className="err">{load.message}</p>
+      <Shell readout={<BrandLink />} status="Could not load" screen={screen}>
+        <IdlePadScreen>
+          <p className="card countdown err">{load.message}</p>
+        </IdlePadScreen>
       </Shell>
     );
   }

@@ -2,11 +2,9 @@ import type { Dispatch } from "react";
 import type { CrowdState } from "../api/client";
 import type { GameAction, GameState } from "../game/state";
 import type { FactorValues } from "../questions/factors";
-import { sfx } from "../sound";
 import { AskStage } from "./AskStage";
-import { AssumptionsForm } from "./AssumptionsForm";
+import { AssumptionsBar, AssumptionsCard } from "./AssumptionsForm";
 import { RevealStage } from "./RevealStage";
-import { RocketStack } from "./RocketStack";
 
 type Props = {
   game: GameState;
@@ -20,6 +18,7 @@ type Props = {
   onToggleCalculator: () => void;
 };
 
+/** One stage: the question over the rocket wherever it has got to, the controls in the band below, then the reveal. */
 export function StageScreen({
   game,
   dispatch,
@@ -33,24 +32,47 @@ export function StageScreen({
   const stageNumber = game.stageIndex + 1;
   const stageResult = game.stageResults[game.stageIndex];
 
+  if (game.phase === "reveal" && stageResult) {
+    return (
+      <RevealStage
+        key={game.stageIndex}
+        question={question}
+        stageNumber={stageNumber}
+        result={stageResult}
+        crowd={crowd}
+        isReplay={isReplay}
+        isLastStage={game.stageIndex === game.questions.length - 1}
+        isAnimating={game.animatingStageIndex === game.stageIndex}
+        onNext={() => dispatch({ type: "next-stage" })}
+      />
+    );
+  }
+
+  const pendingResult = game.phase === "assume" ? game.pendingResult : null;
   return (
-    <div className="grid">
-      <section
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: 20,
-          minWidth: 0,
-        }}
-      >
-        <div className="qhead">
-          <div className="qrow">
-            <span className="stage-tag">Stage {stageNumber}</span>
-            <span className="chip">{question.category}</span>
+    <>
+      <div className="sky-area">
+        <div className="overlay-area top">
+          <div className="overlay-stack">
+            <section className="card prompt">
+              <p className="qrow">
+                <span className="stage-tag">Stage {stageNumber}</span>
+                <span className="chip">{question.category}</span>
+              </p>
+              <h1 className="q">{question.prompt}</h1>
+              <p className="round-note">{question.roundingNote}</p>
+            </section>
+            {pendingResult && (
+              <AssumptionsCard
+                question={question}
+                pendingResult={pendingResult}
+                onSubmit={onAssumptionsSubmitted}
+              />
+            )}
           </div>
-          <h1 className="q">{question.prompt}</h1>
-          <p className="round-note">{question.roundingNote}</p>
         </div>
+      </div>
+      <div className="ground">
         {game.phase === "ask" && (
           <AskStage
             question={question}
@@ -66,40 +88,10 @@ export function StageScreen({
             onToggleCalculator={onToggleCalculator}
           />
         )}
-        {game.phase === "assume" && game.pendingResult && (
-          <AssumptionsForm
-            question={question}
-            pendingResult={game.pendingResult}
-            onSubmit={onAssumptionsSubmitted}
-          />
+        {pendingResult && (
+          <AssumptionsBar onSkip={() => onAssumptionsSubmitted({})} />
         )}
-        {game.phase === "reveal" && stageResult && (
-          <RevealStage
-            key={game.stageIndex}
-            question={question}
-            result={stageResult}
-            crowd={crowd}
-            isReplay={isReplay}
-            isLastStage={game.stageIndex === game.questions.length - 1}
-            isAnimating={game.animatingStageIndex === game.stageIndex}
-            onAnimationFinished={() =>
-              dispatch({ type: "reveal-animation-finished" })
-            }
-            onNext={() => {
-              sfx.next();
-              dispatch({ type: "next-stage" });
-              window.scrollTo({ top: 0 });
-            }}
-          />
-        )}
-      </section>
-      <RocketStack
-        stageCount={game.questions.length}
-        stageResults={game.stageResults}
-        stageIndex={game.stageIndex}
-        phase={game.phase}
-        animatingStageIndex={game.animatingStageIndex}
-      />
-    </div>
+      </div>
+    </>
   );
 }
