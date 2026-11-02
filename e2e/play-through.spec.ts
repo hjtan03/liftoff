@@ -35,7 +35,7 @@ test("five docked Moonshot answers reach Neptune with a full share string", asyn
   }
   await expect(page.locator(".dest")).toHaveText("Reached Neptune");
   await expect(page.locator(".share")).toHaveText(
-    "🚀 Liftoff #001 🎯🎯🎯🎯🎯\nReached Neptune · 6,250 / 6,250 fuel",
+    "🚀 Liftoff #001 🎯🎯🎯🎯🎯\nReached Neptune · 6,250 / 6,250 fuel\nhttps://dailyliftoff.app",
   );
 });
 
