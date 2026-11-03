@@ -111,8 +111,8 @@ export function LaunchReport({
               </div>
             </div>
             <p className="note">
-              🎯 docked · 🟢 moonshot · 🟡 orbit · 🟠 suborbital · 🔴 scrubbed.
-              A new launch arrives at midnight Eastern.
+              🎯 exact · 🟢 within 10% · 🟡 within 50% · 🟠 within 3× · 🔴
+              further. A new launch arrives at midnight Eastern.
               {streak && launchNumberAt(new Date()) >= 2 ? (
                 <>
                   {" "}

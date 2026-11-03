@@ -1,4 +1,3 @@
-import type { BandKey } from "../game/scoring.js";
 import {
   PLAYER_ID_HEADER,
   type Crowd,
@@ -42,8 +41,6 @@ export async function submitGuess(
     launch: number;
     stage: number;
     guess: number;
-    band: BandKey;
-    assumptions: Record<string, number>;
   },
   fetchImpl: typeof fetch = fetch,
 ): Promise<Crowd | null> {
@@ -51,10 +48,6 @@ export async function submitGuess(
     launch: request.launch,
     stage: request.stage,
     guess: request.guess,
-    band: request.band,
-    ...(Object.keys(request.assumptions).length > 0
-      ? { assumptions: request.assumptions }
-      : {}),
   };
   try {
     const response = await fetchImpl("/api/guess", {
@@ -85,10 +78,9 @@ export async function fetchCrowd(
     const response = await fetchImpl(`/api/crowd?launch=${launch}`);
     if (!response.ok) return null;
     const { stages } = (await response.json()) as CrowdResponse;
-    return stages.map(({ players, hitRate, lockHitShare }) => ({
+    return stages.map(({ players, closeShare }) => ({
       players,
-      hitRate,
-      lockHitShare,
+      closeShare,
       percentile: null,
     }));
   } catch {

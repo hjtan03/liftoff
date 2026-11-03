@@ -1,5 +1,4 @@
 import type { LoadedQuestionSet } from "../questions/source";
-import { BAND_KEYS } from "./scoring";
 import { initialGameState, type GameState } from "./state";
 
 /**
@@ -16,7 +15,8 @@ export const HISTORY_STORAGE_KEY = "liftoff.history";
 export function archiveRunKey(launchNumber: string): string {
   return `liftoff.archive.${launchNumber}`;
 }
-const RUN_FORMAT_VERSION = 1;
+/** Version 2 dropped the confidence band and the assumptions step; a version 1 run in progress starts over. */
+const RUN_FORMAT_VERSION = 2;
 
 type SavedRun = {
   version: typeof RUN_FORMAT_VERSION;
@@ -24,12 +24,7 @@ type SavedRun = {
   stageCount: number;
   state: Pick<
     GameState,
-    | "stageIndex"
-    | "phase"
-    | "selectedBand"
-    | "guessText"
-    | "stageResults"
-    | "pendingResult"
+    "stageIndex" | "phase" | "guessText" | "notes" | "stageResults"
   >;
 };
 
@@ -49,10 +44,9 @@ export function serializeRun(state: GameState): string {
     state: {
       stageIndex: state.stageIndex,
       phase: state.phase,
-      selectedBand: state.selectedBand,
       guessText: state.guessText,
+      notes: state.notes,
       stageResults: state.stageResults,
-      pendingResult: state.pendingResult,
     },
   };
   return JSON.stringify(saved);
@@ -101,12 +95,11 @@ function isSavedRunFor(
     Number.isInteger(state.stageIndex) &&
     state.stageIndex >= 0 &&
     state.stageIndex < stageCount &&
-    ["ask", "assume", "reveal", "done"].includes(state.phase) &&
-    BAND_KEYS.includes(state.selectedBand) &&
+    ["ask", "reveal", "done"].includes(state.phase) &&
     typeof state.guessText === "string" &&
+    typeof state.notes === "string" &&
     Array.isArray(state.stageResults) &&
     state.stageResults.length <= stageCount &&
-    (state.phase !== "assume" || state.pendingResult !== null) &&
     (state.phase !== "reveal" || state.stageResults[state.stageIndex] != null)
   );
 }
@@ -120,7 +113,12 @@ export function summarizeSavedRun(saved: string | null): RunSummary | null {
   try {
     const run = JSON.parse(saved) as Partial<SavedRun>;
     const results = run.state?.stageResults;
-    if (run.version !== RUN_FORMAT_VERSION || !Array.isArray(results))
+    // Version 1 runs read the same way here: only their grids and points are shown.
+    const version = run.version as number | undefined;
+    if (
+      (version !== 1 && version !== RUN_FORMAT_VERSION) ||
+      !Array.isArray(results)
+    )
       return null;
     const revealed = results.filter(
       (result) =>

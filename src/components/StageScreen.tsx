@@ -1,9 +1,7 @@
-import type { Dispatch } from "react";
+import { type Dispatch, useState } from "react";
 import type { CrowdState } from "../api/client";
 import type { GameAction, GameState } from "../game/state";
-import type { FactorValues } from "../questions/factors";
 import { AskStage } from "./AskStage";
-import { AssumptionsBar, AssumptionsCard } from "./AssumptionsForm";
 import { RevealStage } from "./RevealStage";
 
 type Props = {
@@ -13,7 +11,7 @@ type Props = {
   crowd: CrowdState;
   /** A replay of a past launch shows its launch-day crowd. */
   isReplay: boolean;
-  onAssumptionsSubmitted: (assumedFactorValues: FactorValues) => void;
+  onFire: (guess: number) => void;
   isCalculatorOpen: boolean;
   onToggleCalculator: () => void;
 };
@@ -24,13 +22,17 @@ export function StageScreen({
   dispatch,
   crowd,
   isReplay,
-  onAssumptionsSubmitted,
+  onFire,
   isCalculatorOpen,
   onToggleCalculator,
 }: Props) {
   const question = game.questions[game.stageIndex];
   const stageNumber = game.stageIndex + 1;
   const stageResult = game.stageResults[game.stageIndex];
+  // The pad opens by itself when a refresh brings back notes already written.
+  const [isScratchPadOpen, setScratchPadOpen] = useState(
+    () => game.notes.trim() !== "",
+  );
 
   if (game.phase === "reveal" && stageResult) {
     return (
@@ -48,7 +50,6 @@ export function StageScreen({
     );
   }
 
-  const pendingResult = game.phase === "assume" ? game.pendingResult : null;
   return (
     <>
       <div className="sky-area">
@@ -62,35 +63,49 @@ export function StageScreen({
               <h1 className="q">{question.prompt}</h1>
               <p className="round-note">{question.roundingNote}</p>
             </section>
-            {pendingResult && (
-              <AssumptionsCard
-                question={question}
-                pendingResult={pendingResult}
-                onSubmit={onAssumptionsSubmitted}
-              />
+            {isScratchPadOpen && (
+              <section className="card scratch" id="scratch-pad">
+                <label className="label" htmlFor="scratch-pad-text">
+                  Scratch pad
+                </label>
+                <textarea
+                  id="scratch-pad-text"
+                  className="scratch-text"
+                  rows={4}
+                  placeholder={
+                    "Jot down the numbers you're assuming, e.g.\nmarathon ≈ 42 km, walking ≈ 5 km/h"
+                  }
+                  value={game.notes}
+                  onChange={(event) =>
+                    dispatch({
+                      type: "notes-changed",
+                      text: event.target.value,
+                    })
+                  }
+                />
+                <p className="note">
+                  Your notes show again next to the real numbers after the
+                  reveal.
+                </p>
+              </section>
             )}
           </div>
         </div>
       </div>
       <div className="ground">
-        {game.phase === "ask" && (
-          <AskStage
-            question={question}
-            stageNumber={stageNumber}
-            guessText={game.guessText}
-            selectedBand={game.selectedBand}
-            isCalculatorOpen={isCalculatorOpen}
-            onGuessTextChange={(text) =>
-              dispatch({ type: "guess-text-changed", text })
-            }
-            onBandSelect={(band) => dispatch({ type: "band-selected", band })}
-            onFire={(guess) => dispatch({ type: "stage-fired", guess })}
-            onToggleCalculator={onToggleCalculator}
-          />
-        )}
-        {pendingResult && (
-          <AssumptionsBar onSkip={() => onAssumptionsSubmitted({})} />
-        )}
+        <AskStage
+          question={question}
+          stageNumber={stageNumber}
+          guessText={game.guessText}
+          isCalculatorOpen={isCalculatorOpen}
+          isScratchPadOpen={isScratchPadOpen}
+          onGuessTextChange={(text) =>
+            dispatch({ type: "guess-text-changed", text })
+          }
+          onFire={onFire}
+          onToggleCalculator={onToggleCalculator}
+          onToggleScratchPad={() => setScratchPadOpen((open) => !open)}
+        />
       </div>
     </>
   );

@@ -1,4 +1,4 @@
-import { BAND_KEYS, scoreGuess, type BandKey } from "../game/scoring.js";
+import { scoreGuess } from "../game/scoring.js";
 import { launchNumberAt } from "../questions/schedule.js";
 import type { QuestionSet } from "../questions/schema.js";
 import { computeAnswer } from "../questions/source.js";
@@ -23,12 +23,10 @@ export type StoredGuess = {
   stage: number;
   questionId: string;
   guess: number;
-  band: BandKey;
   hit: boolean;
   exact: boolean;
   points: number;
   logError: number;
-  assumptions: Record<string, number> | null;
 };
 
 export interface GuessStore {
@@ -60,7 +58,6 @@ export type ApiResult =
 const PLAYER_ID =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const MAX_GUESS = 1e15;
-const MAX_ASSUMPTIONS = 20;
 
 /**
  * A launch a player can be submitting right now: today's, in the launch time
@@ -79,14 +76,15 @@ export function logError(guess: number, answer: number): number {
   return Math.abs(Math.log(guess / answer));
 }
 
-/** The request body if it is a valid guess, otherwise a message saying what is wrong. */
+/**
+ * The request body if it is a valid guess, otherwise a message saying what is
+ * wrong. Fields the game no longer sends (a confidence band, assumed factor
+ * values) are ignored, so an older page still open in a tab keeps working.
+ */
 export function parseGuessRequest(body: unknown): GuessRequest | string {
   if (typeof body !== "object" || body === null || Array.isArray(body))
     return "the body must be a JSON object";
-  const { launch, stage, guess, band, assumptions } = body as Record<
-    string,
-    unknown
-  >;
+  const { launch, stage, guess } = body as Record<string, unknown>;
   if (!Number.isInteger(launch) || (launch as number) < 1)
     return "launch must be a positive integer";
   if (
@@ -102,37 +100,7 @@ export function parseGuessRequest(body: unknown): GuessRequest | string {
     guess >= MAX_GUESS
   )
     return `guess must be a number above 0 and below ${MAX_GUESS}`;
-  if (!BAND_KEYS.includes(band as BandKey))
-    return `band must be one of ${BAND_KEYS.join(", ")}`;
-  const parsed: GuessRequest = {
-    launch: launch as number,
-    stage: stage as number,
-    guess,
-    band: band as BandKey,
-  };
-  if (assumptions !== undefined) {
-    if (
-      typeof assumptions !== "object" ||
-      assumptions === null ||
-      Array.isArray(assumptions)
-    )
-      return "assumptions must be an object of factor keys to numbers";
-    const entries = Object.entries(assumptions);
-    if (entries.length > MAX_ASSUMPTIONS)
-      return `assumptions can name at most ${MAX_ASSUMPTIONS} factors`;
-    if (
-      !entries.every(
-        ([key, value]) =>
-          key.length > 0 &&
-          key.length <= 64 &&
-          typeof value === "number" &&
-          Number.isFinite(value),
-      )
-    )
-      return "assumptions must map factor keys to finite numbers";
-    parsed.assumptions = Object.fromEntries(entries) as Record<string, number>;
-  }
-  return parsed;
+  return { launch: launch as number, stage: stage as number, guess };
 }
 
 function error(
@@ -175,23 +143,17 @@ export async function handleGuess(
     );
 
   const answer = computeAnswer(question);
-  const scored = scoreGuess({
-    answer,
-    guess: request.guess,
-    band: request.band,
-  });
+  const scored = scoreGuess({ answer, guess: request.guess });
   const stored: StoredGuess = {
     playerId,
     launch: request.launch,
     stage: request.stage,
     questionId: question.id,
     guess: request.guess,
-    band: request.band,
     hit: scored.hit,
     exact: scored.exact,
     points: scored.points,
     logError: logError(request.guess, answer),
-    assumptions: request.assumptions ?? null,
   };
 
   const outcome = await dependencies.store.insertGuess(stored);
@@ -254,9 +216,12 @@ export async function handleCrowd(
   if (!set) return error(404, "not-found", `launch ${launch} has no set`);
   const stages = await Promise.all(
     set.questions.map(async (_, index) => {
-      const { players, hitRate, lockHitShare } =
-        await dependencies.store.crowdStats(launch, index + 1, null);
-      return { stage: index + 1, players, hitRate, lockHitShare };
+      const { players, closeShare } = await dependencies.store.crowdStats(
+        launch,
+        index + 1,
+        null,
+      );
+      return { stage: index + 1, players, closeShare };
     }),
   );
   return { status: 200, body: { launch, stages } };

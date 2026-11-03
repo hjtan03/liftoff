@@ -100,10 +100,6 @@ function noise(
 const NOTES = [523, 587, 659, 784, 880, 1047, 1175, 1319, 1568, 1760];
 
 export const sfx = {
-  /** Choosing a confidence band: higher pitch for a tighter band. */
-  select(bandIndex: number) {
-    tone(NOTES[4 - bandIndex], 0, 0.06, { volume: 0.5 });
-  },
   /** Firing a stage: a short hiss as the guess locks in. */
   fire() {
     noise(0, 0.25, { volume: 0.6, from: 3000, to: 400 });

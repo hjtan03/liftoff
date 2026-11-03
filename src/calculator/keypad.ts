@@ -24,6 +24,23 @@ export function calculatorDisplayText(state: CalculatorState): string {
   return state.expression || "0";
 }
 
+/**
+ * The number the calculator shows or would show on =, rounded to 12
+ * significant digits as = rounds it; null for an empty, unfinished or
+ * non-positive expression, which can't be an answer.
+ */
+export function calculatorValue(state: CalculatorState): number | null {
+  if (state.status === "error" || !state.expression) return null;
+  try {
+    const value = Number(
+      evaluateExpression(state.expression, NO_VARIABLES).toPrecision(12),
+    );
+    return Number.isFinite(value) && value > 0 ? value : null;
+  } catch {
+    return null;
+  }
+}
+
 export function calculatorHistoryText(state: CalculatorState): string {
   if (state.status === "result") return `${state.evaluatedExpression} =`;
   if (state.status === "error") return "Check the expression";

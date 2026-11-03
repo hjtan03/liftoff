@@ -4,8 +4,7 @@ import { fetchCrowd, playerId, submitGuess } from "./client.js";
 
 const CROWD: Crowd = {
   players: 3,
-  hitRate: { lock: 0.5, solid: 1, rough: null },
-  lockHitShare: 0.3333,
+  closeShare: 0.3333,
   percentile: 0.6667,
 };
 
@@ -27,8 +26,6 @@ const request = {
   launch: 6,
   stage: 1,
   guess: 459,
-  band: "lock" as const,
-  assumptions: {},
 };
 
 describe("playerId", () => {
@@ -59,20 +56,10 @@ describe("submitGuess", () => {
       launch: 6,
       stage: 1,
       guess: 459,
-      band: "lock",
     });
     expect(new Headers(init.headers).get("x-player-id")).toMatch(
       /^[0-9a-f-]{36}$/,
     );
-  });
-
-  it("sends assumptions only when the player gave some", async () => {
-    const fetchImpl = vi.fn(async () => Response.json({ crowd: CROWD }));
-    await submitGuess({ ...request, assumptions: { d: 42 } }, fetchImpl);
-    const init = (
-      fetchImpl.mock.calls[0] as unknown as [string, RequestInit]
-    )[1];
-    expect(JSON.parse(init.body as string).assumptions).toEqual({ d: 42 });
   });
 
   it("uses the crowd from a 409 for a stage already recorded", async () => {
@@ -106,8 +93,7 @@ describe("fetchCrowd", () => {
           {
             stage: 1,
             players: 3,
-            hitRate: CROWD.hitRate,
-            lockHitShare: 0.5,
+            closeShare: 0.5,
           },
         ],
       }),
@@ -115,8 +101,7 @@ describe("fetchCrowd", () => {
     await expect(fetchCrowd(6, fetchImpl)).resolves.toEqual([
       {
         players: 3,
-        hitRate: CROWD.hitRate,
-        lockHitShare: 0.5,
+        closeShare: 0.5,
         percentile: null,
       },
     ]);

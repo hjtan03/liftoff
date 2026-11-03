@@ -17,8 +17,8 @@ import { routePosition } from "../game/journey";
 import { formatNumber } from "../game/numbers";
 import { maxTotalPoints } from "../game/scoring";
 import { gameReducer, shownStageResults } from "../game/state";
-import type { FactorValues } from "../questions/factors";
 import type { LoadedQuestionSet } from "../questions/source";
+import { ANSWER_INPUT_ID } from "./AskStage";
 import { LaunchReport } from "./LaunchReport";
 import { MissionScene } from "./MissionScene";
 import { Shell } from "./Shell";
@@ -113,12 +113,10 @@ export function Game({ questionSet, isToday }: Props) {
 
   const streak = computeStreak(history, Number(game.launchNumber));
 
-  /** Reveals the fired stage and records it with the server, which answers with the crowd. */
-  const revealStage = (assumedFactorValues: FactorValues) => {
-    const pending = game.pendingResult;
-    if (!pending) return;
+  /** Fires the stage, which scores and reveals it, and records it with the server, which answers with the crowd. */
+  const fireStage = (guess: number) => {
     const stageIndex = game.stageIndex;
-    dispatch({ type: "assumptions-submitted", assumedFactorValues });
+    dispatch({ type: "stage-fired", guess });
     // A replay's guesses are its own; the crowd it shows is from launch day.
     if (!isToday) return;
     setCrowdByStage((crowds) => ({
@@ -128,9 +126,7 @@ export function Game({ questionSet, isToday }: Props) {
     void submitGuess({
       launch: Number(game.launchNumber),
       stage: stageIndex + 1,
-      guess: pending.guess,
-      band: pending.band,
-      assumptions: assumedFactorValues,
+      guess,
     }).then((crowd) =>
       setCrowdByStage((crowds) => ({
         ...crowds,
@@ -247,7 +243,7 @@ export function Game({ questionSet, isToday }: Props) {
             dispatch={dispatch}
             crowd={crowdByStage[game.stageIndex] ?? { status: "unavailable" }}
             isReplay={!isToday}
-            onAssumptionsSubmitted={revealStage}
+            onFire={fireStage}
             isCalculatorOpen={isCalculatorOpen}
             onToggleCalculator={() => setCalculatorOpen((open) => !open)}
           />
@@ -256,6 +252,15 @@ export function Game({ questionSet, isToday }: Props) {
       <Calculator
         isOpen={isCalculatorOpen}
         onClose={() => setCalculatorOpen(false)}
+        canUseResult={game.phase === "ask"}
+        onUseResult={(text) => {
+          dispatch({ type: "guess-text-changed", text });
+          setCalculatorOpen(false);
+          // The answer field is in the dock; focus it so Enter fires right away.
+          requestAnimationFrame(() =>
+            document.getElementById(ANSWER_INPUT_ID)?.focus(),
+          );
+        }}
       />
     </>
   );

@@ -26,12 +26,10 @@ type GuessRow = {
   stage: number;
   question_id: string;
   guess: number;
-  band: StoredGuess["band"];
   hit: boolean;
   exact: boolean;
   points: number;
   log_error: number;
-  assumptions: Record<string, number> | null;
 };
 
 function toRow(guess: StoredGuess): GuessRow {
@@ -41,12 +39,10 @@ function toRow(guess: StoredGuess): GuessRow {
     stage: guess.stage,
     question_id: guess.questionId,
     guess: guess.guess,
-    band: guess.band,
     hit: guess.hit,
     exact: guess.exact,
     points: guess.points,
     log_error: guess.logError,
-    assumptions: guess.assumptions,
   };
 }
 
@@ -57,16 +53,18 @@ function fromRow(row: GuessRow): StoredGuess {
     stage: row.stage,
     questionId: row.question_id,
     guess: row.guess,
-    band: row.band,
     hit: row.hit,
     exact: row.exact,
     points: row.points,
     logError: row.log_error,
-    assumptions: row.assumptions,
   };
 }
 
-/** The guess store backed by the Supabase tables and crowd_stats() in supabase/migrations/. */
+/**
+ * The guess store backed by the Supabase tables and crowd_stats() in
+ * supabase/migrations/. New rows leave band and assumptions empty: the game
+ * stopped asking for either in the 2026-11-03 migration.
+ */
 export const supabaseStore: GuessStore = {
   async insertGuess(guess) {
     const db = supabase();
@@ -89,7 +87,7 @@ export const supabaseStore: GuessStore = {
     const { data, error } = await supabase()
       .from("guesses")
       .select(
-        "player_id, launch, stage, question_id, guess, band, hit, exact, points, log_error, assumptions",
+        "player_id, launch, stage, question_id, guess, hit, exact, points, log_error",
       )
       .eq("player_id", playerId)
       .eq("launch", launch)

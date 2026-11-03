@@ -49,57 +49,48 @@ const TWO_QUESTIONS: LoadedQuestionSet = {
 const START = initialGameState(TWO_QUESTIONS);
 
 function playToReveal(state: GameState, guess: number): GameState {
-  const fired = gameReducer(state, { type: "stage-fired", guess });
-  return gameReducer(fired, {
-    type: "assumptions-submitted",
-    assumedFactorValues: {},
-  });
+  return gameReducer(state, { type: "stage-fired", guess });
 }
 
 describe("gameReducer", () => {
-  it("starts the loaded set at stage one, asking, with the solid band selected", () => {
+  it("starts the loaded set at stage one, asking, with an empty scratch pad", () => {
     expect(START).toEqual({
       launchNumber: "042",
       questions: TWO_QUESTIONS.questions,
       stageIndex: 0,
       phase: "ask",
-      selectedBand: "solid",
       guessText: "",
+      notes: "",
       stageResults: [],
-      pendingResult: null,
       animatingStageIndex: null,
     });
   });
-  it("records the typed guess and the selected band", () => {
+  it("records the typed guess and the scratch pad", () => {
     const typed = gameReducer(START, {
       type: "guess-text-changed",
       text: "4.2k",
     });
     expect(typed.guessText).toBe("4.2k");
-    const banded = gameReducer(typed, { type: "band-selected", band: "lock" });
-    expect(banded.selectedBand).toBe("lock");
+    const noted = gameReducer(typed, { type: "notes-changed", text: "10 ft" });
+    expect(noted.notes).toBe("10 ft");
   });
-  it("firing a stage scores the guess against the loaded answer, clears the text, and moves to the assumptions", () => {
-    const locked = gameReducer(START, { type: "band-selected", band: "lock" });
-    const typed = gameReducer(locked, {
+  it("firing a stage scores the guess, keeps the notes with it, and starts the reveal", () => {
+    const noted = gameReducer(START, { type: "notes-changed", text: "10 ft" });
+    const typed = gameReducer(noted, {
       type: "guess-text-changed",
       text: "4011",
     });
     const fired = gameReducer(typed, { type: "stage-fired", guess: 4011 });
-    expect(fired.phase).toBe("assume");
+    expect(fired.phase).toBe("reveal");
     expect(fired.guessText).toBe("");
-    expect(fired.pendingResult?.points).toBe(1250);
+    expect(fired.stageResults[0]?.points).toBe(1250);
+    expect(fired.stageResults[0]?.notes).toBe("10 ft");
+    expect(fired.animatingStageIndex).toBe(0);
   });
-  it("submitting assumptions stores the stage result and starts the reveal animation", () => {
-    const fired = gameReducer(START, { type: "stage-fired", guess: 4011 });
-    const revealed = gameReducer(fired, {
-      type: "assumptions-submitted",
-      assumedFactorValues: { ft: 9 },
-    });
-    expect(revealed.phase).toBe("reveal");
-    expect(revealed.pendingResult).toBeNull();
-    expect(revealed.stageResults[0]?.assumedFactorValues).toEqual({ ft: 9 });
-    expect(revealed.animatingStageIndex).toBe(0);
+  it("a miss still earns fuel for how close it was", () => {
+    const fired = playToReveal(START, 2000);
+    expect(fired.stageResults[0]?.points).toBeGreaterThan(0);
+    expect(fired.stageResults[0]?.tier).toBe("suborbital");
   });
   it("finishing the reveal animation clears the animating stage", () => {
     const settled = gameReducer(playToReveal(START, 4011), {
@@ -107,14 +98,14 @@ describe("gameReducer", () => {
     });
     expect(settled.animatingStageIndex).toBeNull();
   });
-  it("the next stage resets the band to solid and asks again", () => {
-    const locked = gameReducer(START, { type: "band-selected", band: "lock" });
-    const next = gameReducer(playToReveal(locked, 4011), {
+  it("the next stage clears the scratch pad and asks again", () => {
+    const noted = gameReducer(START, { type: "notes-changed", text: "10 ft" });
+    const next = gameReducer(playToReveal(noted, 4011), {
       type: "next-stage",
     });
     expect(next.stageIndex).toBe(1);
     expect(next.phase).toBe("ask");
-    expect(next.selectedBand).toBe("solid");
+    expect(next.notes).toBe("");
   });
   it("the last stage's next step launches the rocket", () => {
     const afterFirst = gameReducer(playToReveal(START, 1), {

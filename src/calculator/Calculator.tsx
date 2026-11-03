@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useEffectEvent, useRef, useState } from "react";
 import { sfx } from "../sound";
 import {
   calculatorDisplayText,
   calculatorHistoryText,
+  calculatorValue,
   INITIAL_CALCULATOR_STATE,
   pressCalculatorKey,
 } from "./keypad";
@@ -47,32 +48,55 @@ const KEYBOARD_TO_KEYPAD: Record<string, string> = {
   ".": ".",
 };
 
-type Props = { isOpen: boolean; onClose: () => void };
+type Props = {
+  isOpen: boolean;
+  onClose: () => void;
+  /** Whether there is an answer field to hand a result to: only while a stage is being asked. */
+  canUseResult: boolean;
+  /** Puts the calculator's value in the answer field, as plain digits. */
+  onUseResult: (text: string) => void;
+};
 
-export function Calculator({ isOpen, onClose }: Props) {
+export function Calculator({
+  isOpen,
+  onClose,
+  canUseResult,
+  onUseResult,
+}: Props) {
   const [state, setState] = useState(INITIAL_CALCULATOR_STATE);
+  const panelRef = useRef<HTMLDivElement>(null);
   const equalsRef = useRef<HTMLButtonElement>(null);
+  const value = calculatorValue(state);
   const press = (key: string) =>
     setState((current) => pressCalculatorKey(current, key));
 
+  const close = useEffectEvent(() => onClose());
+
+  // Focus moves to the keypad once, when it opens. Re-running this on every
+  // render pulled focus back out of the answer field after each keystroke.
+  useEffect(() => {
+    if (isOpen) equalsRef.current?.focus();
+  }, [isOpen]);
+
   useEffect(() => {
     if (!isOpen) return;
-    equalsRef.current?.focus();
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.metaKey || event.ctrlKey || event.altKey) return;
-      const target = event.target as HTMLElement;
-      if (target.tagName === "INPUT" || target.tagName === "TEXTAREA") return;
+      // Keys reach the calculator only while focus is on it: click the answer
+      // field or the scratch pad and typing goes there, calculator open or not.
+      const target = event.target as Node | null;
+      if (!target || !panelRef.current?.contains(target)) return;
       const key = /^[0-9]$/.test(event.key)
         ? event.key
         : KEYBOARD_TO_KEYPAD[event.key];
       if (!key) return;
       event.preventDefault();
-      if (key === CLOSE_KEY) onClose();
+      if (key === CLOSE_KEY) close();
       else press(key);
     };
     document.addEventListener("keydown", onKeyDown);
     return () => document.removeEventListener("keydown", onKeyDown);
-  }, [isOpen, onClose]);
+  }, [isOpen]);
 
   const historyText = calculatorHistoryText(state);
 
@@ -80,6 +104,7 @@ export function Calculator({ isOpen, onClose }: Props) {
     <div
       className="calc"
       id="calc"
+      ref={panelRef}
       role="dialog"
       aria-label="Calculator"
       hidden={!isOpen}
@@ -120,6 +145,20 @@ export function Calculator({ isOpen, onClose }: Props) {
           </button>
         ))}
       </div>
+      {canUseResult && (
+        <button
+          type="button"
+          className="calc-use"
+          disabled={value === null}
+          onClick={() => {
+            if (value === null) return;
+            sfx.tick();
+            onUseResult(String(value));
+          }}
+        >
+          Use as answer
+        </button>
+      )}
     </div>
   );
 }

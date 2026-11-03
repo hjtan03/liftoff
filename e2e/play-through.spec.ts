@@ -10,7 +10,7 @@ test.beforeEach(async ({ page }) => {
   await page.clock.setFixedTime(new Date(`${FIRST_LAUNCH_DATE}T12:00:00`));
 });
 
-test("five docked Moonshot answers reach Neptune with a full share string", async ({
+test("five exact answers reach Neptune with a full share string", async ({
   page,
 }) => {
   // Each stage burns for a few seconds before its result, and the camera pulls back at the end: about 25 s in all.
@@ -21,9 +21,7 @@ test("five docked Moonshot answers reach Neptune with a full share string", asyn
       page.getByText(`Stage ${stage + 1}`, { exact: true }),
     ).toBeVisible();
     await page.getByLabel("Your answer").fill(answer);
-    await page.getByRole("button", { name: "Moonshot" }).click();
     await page.getByRole("button", { name: `Fire stage ${stage + 1}` }).click();
-    await page.getByRole("button", { name: "Reveal" }).click();
     await expect(page.getByRole("heading", { name: "Docked." })).toBeVisible(
       AFTER_THE_BURN,
     );
@@ -39,11 +37,10 @@ test("five docked Moonshot answers reach Neptune with a full share string", asyn
   );
 });
 
-test("a guess outside the range is scrubbed for no fuel", async ({ page }) => {
+test("a guess hundreds of times off is scrubbed", async ({ page }) => {
   await page.goto("./");
   await page.getByLabel("Your answer").fill("1");
   await page.getByRole("button", { name: "Fire stage 1" }).click();
-  await page.getByRole("button", { name: "Skip" }).click();
   await expect(page.getByRole("heading", { name: "Scrubbed." })).toBeVisible(
     AFTER_THE_BURN,
   );
@@ -61,6 +58,56 @@ test("the fire button waits for a positive number", async ({ page }) => {
   await expect(fire).toBeDisabled();
   await page.getByLabel("Your answer").fill("4.2k");
   await expect(fire).toBeEnabled();
+});
+
+test("a guess that misses by a lot still earns some fuel", async ({ page }) => {
+  await page.goto("./");
+  // 1,012 minutes for a 506-minute walk: twice the answer.
+  await page.getByLabel("Your answer").fill("1012");
+  await page.getByRole("button", { name: "Fire stage 1" }).click();
+  await expect(page.getByRole("heading", { name: "Suborbital." })).toBeVisible(
+    AFTER_THE_BURN,
+  );
+  await expect(page.locator(".crowd")).toContainText("2.0× too high");
+  await expect(page.locator(".stats")).toContainText("+315");
+});
+
+test("the calculator's result can be used as the answer, and the answer field takes typing while it is open", async ({
+  page,
+}) => {
+  await page.goto("./");
+  await page.getByRole("button", { name: "Calculator" }).click();
+  for (const key of ["4", "2", "×", "1", "2"])
+    await page
+      .locator(".keys")
+      .getByRole("button", { name: key, exact: true })
+      .click();
+  await page.getByRole("button", { name: "Use as answer" }).click();
+  await expect(page.getByLabel("Your answer")).toHaveValue("504");
+  await expect(page.getByLabel("Your answer")).toBeFocused();
+
+  // With the calculator open again, typing in the answer field goes to the answer, not the calculator.
+  await page.getByRole("button", { name: "Calculator" }).click();
+  await page.getByLabel("Your answer").fill("");
+  await page.getByLabel("Your answer").pressSequentially("506");
+  await expect(page.getByLabel("Your answer")).toHaveValue("506");
+  await expect(page.locator(".calc-main")).toHaveText("42×12");
+});
+
+test("the scratch pad's notes come back beside the real numbers", async ({
+  page,
+}) => {
+  await page.goto("./");
+  await page.getByRole("button", { name: "Scratch pad" }).click();
+  await page
+    .getByRole("textbox", { name: "Scratch pad" })
+    .fill("marathon 42 km, 5 km/h");
+  await page.getByLabel("Your answer").fill(EXACT_ANSWERS[0]);
+  await page.getByRole("button", { name: "Fire stage 1" }).click();
+  await expect(page.locator(".notes")).toContainText(
+    "marathon 42 km, 5 km/h",
+    AFTER_THE_BURN,
+  );
 });
 
 test("a question set the server cannot return shows the error instead of a game", async ({
@@ -87,8 +134,7 @@ test("a revealed stage is recorded and shows the crowd the server returns", asyn
         points: 1250,
         crowd: {
           players: 40,
-          hitRate: { lock: 0.5, solid: 0.8, rough: 1 },
-          lockHitShare: 0.25,
+          closeShare: 0.25,
           percentile: 0.9,
         },
       },
@@ -96,14 +142,12 @@ test("a revealed stage is recorded and shows the crowd the server returns", asyn
   });
   await page.goto("./");
   await page.getByLabel("Your answer").fill(EXACT_ANSWERS[0]);
-  await page.getByRole("button", { name: "Moonshot" }).click();
   await page.getByRole("button", { name: "Fire stage 1" }).click();
-  await page.getByRole("button", { name: "Reveal" }).click();
   await expect(page.locator(".crowd")).toContainText(
-    "25% of 40 players went Moonshot and hit this one, and you were closer than 90% of them.",
+    "25% of 40 players got within 10%, and you were closer than 90% of them.",
     AFTER_THE_BURN,
   );
-  expect(recorded).toEqual([{ launch: 1, stage: 1, guess: 506, band: "lock" }]);
+  expect(recorded).toEqual([{ launch: 1, stage: 1, guess: 506 }]);
 });
 
 test("without the server the reveal still plays, with no crowd line", async ({
@@ -113,7 +157,6 @@ test("without the server the reveal still plays, with no crowd line", async ({
   await page.goto("./");
   await page.getByLabel("Your answer").fill(EXACT_ANSWERS[0]);
   await page.getByRole("button", { name: "Fire stage 1" }).click();
-  await page.getByRole("button", { name: "Skip" }).click();
   await expect(page.getByRole("heading", { name: "Docked." })).toBeVisible(
     AFTER_THE_BURN,
   );
@@ -124,9 +167,7 @@ test("without the server the reveal still plays, with no crowd line", async ({
 test("a refresh resumes the run where it left off", async ({ page }) => {
   await page.goto("./");
   await page.getByLabel("Your answer").fill(EXACT_ANSWERS[0]);
-  await page.getByRole("button", { name: "Moonshot" }).click();
   await page.getByRole("button", { name: "Fire stage 1" }).click();
-  await page.getByRole("button", { name: "Reveal" }).click();
   await page.getByRole("button", { name: "Next stage" }).click();
   await page.getByLabel("Your answer").fill("42");
 
@@ -169,7 +210,6 @@ test.describe("the archive", () => {
     await expect(page.locator(".meta")).toContainText("Replay #001");
     await page.getByLabel("Your answer").fill(EXACT_ANSWERS[0]);
     await page.getByRole("button", { name: "Fire stage 1" }).click();
-    await page.getByRole("button", { name: "Skip" }).click();
     await expect(page.getByRole("heading", { name: "Docked." })).toBeVisible(
       AFTER_THE_BURN,
     );

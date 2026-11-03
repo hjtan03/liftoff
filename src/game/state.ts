@@ -1,35 +1,31 @@
-import type { FactorValues } from "../questions/factors";
 import type { LoadedQuestion, LoadedQuestionSet } from "../questions/source";
-import { type BandKey, type ScoredGuess, scoreGuess } from "./scoring";
+import { type ScoredGuess, scoreGuess } from "./scoring";
 
-export type GamePhase = "ask" | "assume" | "reveal" | "done";
+export type GamePhase = "ask" | "reveal" | "done";
 
-export type StageResult = ScoredGuess & { assumedFactorValues: FactorValues };
+/** A revealed stage: the scored guess and whatever the player jotted on the scratch pad for it. */
+export type StageResult = ScoredGuess & { notes: string };
 
 export type GameState = {
   launchNumber: string;
   questions: LoadedQuestion[];
   stageIndex: number;
   phase: GamePhase;
-  selectedBand: BandKey;
   guessText: string;
+  /** The scratch pad for the stage being asked; it travels with the stage's result once fired. */
+  notes: string;
   stageResults: StageResult[];
-  /** The scored guess between firing and the reveal, before assumptions are known. */
-  pendingResult: ScoredGuess | null;
   /** The stage whose burn is playing; its result stays hidden until the burn finishes. */
   animatingStageIndex: number | null;
 };
 
 export type GameAction =
   | { type: "guess-text-changed"; text: string }
-  | { type: "band-selected"; band: BandKey }
+  | { type: "notes-changed"; text: string }
   | { type: "stage-fired"; guess: number }
-  | { type: "assumptions-submitted"; assumedFactorValues: FactorValues }
   | { type: "reveal-animation-finished" }
   | { type: "next-stage" }
   | { type: "game-restarted" };
-
-const DEFAULT_BAND: BandKey = "solid";
 
 export function initialGameState(questionSet: LoadedQuestionSet): GameState {
   return {
@@ -37,10 +33,9 @@ export function initialGameState(questionSet: LoadedQuestionSet): GameState {
     questions: questionSet.questions,
     stageIndex: 0,
     phase: "ask",
-    selectedBand: DEFAULT_BAND,
     guessText: "",
+    notes: "",
     stageResults: [],
-    pendingResult: null,
     animatingStageIndex: null,
   };
 }
@@ -49,29 +44,20 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
   switch (action.type) {
     case "guess-text-changed":
       return { ...state, guessText: action.text };
-    case "band-selected":
-      return { ...state, selectedBand: action.band };
+    case "notes-changed":
+      return { ...state, notes: action.text };
     case "stage-fired": {
       const answer = state.questions[state.stageIndex].answer;
-      const pendingResult = scoreGuess({
-        answer,
-        guess: action.guess,
-        band: state.selectedBand,
-      });
-      return { ...state, phase: "assume", guessText: "", pendingResult };
-    }
-    case "assumptions-submitted": {
-      if (!state.pendingResult) return state;
       const stageResults = [...state.stageResults];
       stageResults[state.stageIndex] = {
-        ...state.pendingResult,
-        assumedFactorValues: action.assumedFactorValues,
+        ...scoreGuess({ answer, guess: action.guess }),
+        notes: state.notes,
       };
       return {
         ...state,
         phase: "reveal",
+        guessText: "",
         stageResults,
-        pendingResult: null,
         animatingStageIndex: state.stageIndex,
       };
     }
@@ -84,7 +70,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         ...state,
         stageIndex: state.stageIndex + 1,
         phase: "ask",
-        selectedBand: DEFAULT_BAND,
+        notes: "",
       };
     }
     case "game-restarted":
