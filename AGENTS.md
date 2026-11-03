@@ -104,6 +104,9 @@ docs/archive/.
   kept with the stage and shown again in the debrief; the calculator hands
   its value to the answer with "Use as answer", and only takes keys while
   focus is inside it.
+- The whole launch plays from the keyboard: the answer field takes focus as
+  each stage comes up (with a mouse, not on touch screens), Enter fires, and
+  Enter on the result goes on.
 
 ## Analytics
 

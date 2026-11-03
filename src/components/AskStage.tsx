@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { parseNumberInput } from "../game/numbers";
 import { EXACT_ANSWER_BONUS_POINTS } from "../game/scoring";
 import type { Question } from "../questions/schema";
@@ -32,6 +33,14 @@ export function AskStage({
   onToggleCalculator,
   onToggleScratchPad,
 }: Props) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  // With a mouse and keyboard, the answer field is ready to type in as each
+  // stage comes up: type, Enter to fire, Enter to go on. A touch screen waits
+  // for a tap, so its keyboard doesn't cover the question.
+  useEffect(() => {
+    if (matchMedia("(hover: hover) and (pointer: fine)").matches)
+      inputRef.current?.focus({ preventScroll: true });
+  }, [stageNumber]);
   const guess = parseNumberInput(guessText);
   const isGuessValid = guess > 0;
   const errorText =
@@ -70,6 +79,7 @@ export function AskStage({
         <label className="guess">
           <input
             id={ANSWER_INPUT_ID}
+            ref={inputRef}
             inputMode="decimal"
             autoComplete="off"
             placeholder="Your answer"

@@ -577,6 +577,18 @@ a {
 }
 .answer-bar.center {
   justify-content: center;
+  align-items: center;
+}
+/* The keyboard shortcut, shown only where there is likely a keyboard. */
+.key-hint {
+  display: none;
+  font-size: 14px;
+  color: var(--muted);
+}
+@media (hover: hover) and (pointer: fine) {
+  .key-hint {
+    display: inline;
+  }
 }
 .answer-bar > button,
 .answer-bar > .tools {
