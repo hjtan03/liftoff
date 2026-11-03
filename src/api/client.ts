@@ -1,8 +1,9 @@
-import type { BandKey } from "../game/scoring.js";
 import {
   PLAYER_ID_HEADER,
   type Crowd,
   type CrowdResponse,
+  type EventName,
+  type EventRequest,
   type GuessConflict,
   type GuessRequest,
   type GuessResponse,
@@ -42,8 +43,6 @@ export async function submitGuess(
     launch: number;
     stage: number;
     guess: number;
-    band: BandKey;
-    assumptions: Record<string, number>;
   },
   fetchImpl: typeof fetch = fetch,
 ): Promise<Crowd | null> {
@@ -51,10 +50,6 @@ export async function submitGuess(
     launch: request.launch,
     stage: request.stage,
     guess: request.guess,
-    band: request.band,
-    ...(Object.keys(request.assumptions).length > 0
-      ? { assumptions: request.assumptions }
-      : {}),
   };
   try {
     const response = await fetchImpl("/api/guess", {
@@ -85,14 +80,44 @@ export async function fetchCrowd(
     const response = await fetchImpl(`/api/crowd?launch=${launch}`);
     if (!response.ok) return null;
     const { stages } = (await response.json()) as CrowdResponse;
-    return stages.map(({ players, hitRate, lockHitShare }) => ({
+    return stages.map(({ players, closeShare }) => ({
       players,
-      hitRate,
-      lockHitShare,
+      closeShare,
       percentile: null,
     }));
   } catch {
     return null;
+  }
+}
+
+/** Events already sent this page load; the server keeps one per player per launch anyway. */
+const sentEvents = new Set<string>();
+
+/**
+ * Reports one analytics event, fire and forget: it never throws or waits,
+ * and keepalive lets it finish even if the page is closing.
+ */
+export function trackEvent(
+  launch: number,
+  name: EventName,
+  fetchImpl: typeof fetch = fetch,
+): void {
+  const key = `${launch}:${name}`;
+  if (sentEvents.has(key)) return;
+  sentEvents.add(key);
+  const body: EventRequest = { launch, name };
+  try {
+    void fetchImpl("/api/event", {
+      method: "POST",
+      keepalive: true,
+      headers: {
+        "content-type": "application/json",
+        [PLAYER_ID_HEADER]: playerId(),
+      },
+      body: JSON.stringify(body),
+    }).catch(() => {});
+  } catch {
+    // No network: analytics are best-effort.
   }
 }
 

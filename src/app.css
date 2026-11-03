@@ -97,8 +97,6 @@ a {
 .next,
 .ghost,
 .calcbtn,
-.cbtn .t,
-.locked,
 .dest,
 .countdown-days,
 .calc-main,
@@ -427,7 +425,7 @@ a {
 }
 /* A card that scrolls keeps each piece at its own height. */
 .overlay-area > .card > *,
-.assume > *,
+.scratch > *,
 .report > * {
   flex-shrink: 0;
 }
@@ -468,7 +466,7 @@ a {
   gap: 8px;
 }
 .dock > .answer-bar,
-.dock > .conf {
+.dock > .ask-hint {
   flex-shrink: 0;
 }
 
@@ -580,7 +578,8 @@ a {
 .answer-bar.center {
   justify-content: center;
 }
-.answer-bar > button {
+.answer-bar > button,
+.answer-bar > .tools {
   align-self: stretch;
 }
 /* A narrow bar gives the answer its own row, so a long unit can't squeeze it shut. */
@@ -652,8 +651,7 @@ a {
 .guess input:focus {
   outline: none;
 }
-.guess .u,
-.fin .u {
+.guess .u {
   color: var(--muted);
   white-space: nowrap;
 }
@@ -666,113 +664,56 @@ a {
   background: var(--night);
 }
 
-/* Confidence bands. */
-.conf {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+/* The tool buttons beside the answer: calculator and scratch pad. */
+.tools {
+  display: flex;
   gap: 8px;
 }
-.cbtn {
-  text-align: left;
-  background-color: var(--panel);
-  background-image: var(--scanlines);
-  border: 2px solid var(--line);
-  border-radius: 4px;
-  padding: 8px 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
+.tools > button {
+  align-self: stretch;
 }
-.cbtn .t {
-  font-size: 22px;
-  line-height: 1.1;
+.calcbtn[aria-expanded="true"] {
+  color: var(--cyan);
+  box-shadow:
+    inset 0 0 0 2px var(--cyan),
+    inset 0 -4px 0 rgba(0, 0, 0, 0.22),
+    0 3px 0 rgba(10, 6, 30, 0.45);
 }
-.cbtn .p {
+.ask-hint {
+  margin: 0;
+  font-size: 14px;
   color: var(--muted);
-  font-size: 14px;
-}
-.cbtn .r {
-  font-size: 14px;
-  min-height: 1.4em;
-  font-variant-numeric: tabular-nums;
-}
-.cbtn[aria-pressed="true"] {
-  border-color: var(--cyan);
-  background-color: rgba(58, 46, 124, 0.92);
-}
-@media (max-width: 560px) {
-  .cbtn {
-    padding: 5px 8px;
-  }
-  .cbtn .t {
-    font-size: 19px;
-  }
-  .cbtn .p,
-  .cbtn .r {
-    font-size: 11px;
-  }
+  text-align: center;
 }
 
-/* After firing: your assumptions, under the question. */
-.assume {
-  padding: 14px 18px;
-  gap: 10px;
-  min-height: 0;
-  overflow-y: auto;
+/* The scratch pad, under the question. */
+.scratch {
+  padding: 12px 16px;
+  gap: 8px;
 }
-.assume-ask {
+.scratch .label {
   margin: 0;
-  font-size: 15px;
 }
-.locked {
-  margin: 0;
-  font-size: clamp(22px, 3.6vw, 28px);
-}
-.locked .label {
-  margin-right: 6px;
-}
-.locked span:last-child {
-  font-size: 16px;
-  color: var(--muted);
-}
-.sp-body {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-.frow {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 170px;
-  gap: 12px;
-  align-items: center;
-}
-@media (max-width: 460px) {
-  .frow {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 4px;
-  }
-}
-.fin {
-  display: flex;
-  align-items: center;
-  border-bottom: 2px solid var(--cyan);
-}
-.fin:focus-within {
-  border-color: var(--gold);
-}
-.fin input {
+.scratch-text {
   width: 100%;
-  min-width: 0;
-  border: 0;
-  background: transparent;
-  padding: 4px 2px;
-  font-size: 18px;
+  min-height: 84px;
+  resize: vertical;
+  border: 2px solid var(--line);
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.28);
+  color: var(--ink);
+  font-family: var(--f-body);
+  font-size: 16px;
+  line-height: 1.4;
+  padding: 8px 10px;
 }
-.fin input:focus {
+.scratch-text:focus {
   outline: none;
+  border-color: var(--cyan);
 }
-.fin .u {
-  font-size: 15px;
+.scratch .note {
+  margin: 0;
+  font-size: 13px;
 }
 
 /* The reveal: the result card over the sky. */
@@ -805,10 +746,18 @@ a {
   line-height: 1;
   margin: 0;
 }
-.verdict.ok {
+/* The verdict and the gap on the axis take the tier's colour, as in the share grid. */
+.verdict.docked,
+.verdict.moonshot {
   color: var(--fuel);
 }
-.verdict.bad {
+.verdict.orbit {
+  color: var(--gold);
+}
+.verdict.suborbital {
+  color: var(--rocket);
+}
+.verdict.scrubbed {
   color: var(--miss);
 }
 .verdict:focus {
@@ -941,11 +890,23 @@ a {
   top: 18px;
   height: 20px;
 }
-.axis .band.ok {
+.axis .band {
+  min-width: var(--px);
+}
+.axis .band.docked,
+.axis .band.moonshot {
   background: rgba(99, 230, 168, 0.3);
   border: 3px solid var(--fuel);
 }
-.axis .band.bad {
+.axis .band.orbit {
+  background: rgba(255, 211, 92, 0.22);
+  border: 3px solid var(--gold);
+}
+.axis .band.suborbital {
+  background: rgba(255, 139, 77, 0.22);
+  border: 3px solid var(--rocket);
+}
+.axis .band.scrubbed {
   background: rgba(255, 107, 129, 0.2);
   border: 3px solid var(--miss);
 }
@@ -996,18 +957,20 @@ a {
   margin: 0;
   font-size: 24px;
 }
-.diff,
+.notes,
 .wline {
   font-size: 16px;
   padding: 8px 10px;
   border-radius: 4px;
   background: rgba(0, 0, 0, 0.28);
 }
-.diff b.on {
-  color: var(--fuel);
+.notes .label {
+  margin: 0 0 4px;
 }
-.diff b.off {
-  color: var(--miss);
+.notes-text {
+  margin: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
 .facts {
   display: flex;
@@ -1455,7 +1418,8 @@ a {
 /* The calculator: opens above the answer bar, next to its button. */
 .calc {
   position: fixed;
-  left: max(12px, calc(50% - 380px));
+  /* Beside the 680 px question column when the window is wide enough, so the question and scratch pad stay readable. */
+  left: max(12px, calc(50% - 340px - 280px - 16px));
   bottom: calc(200px + env(safe-area-inset-bottom, 0px));
   width: 280px;
   max-width: calc(100vw - 40px);
@@ -1543,6 +1507,28 @@ a {
 .k.eq {
   background: var(--rocket);
   color: var(--night);
+}
+.calc-use {
+  border: 0;
+  border-radius: 4px;
+  padding: 8px 12px;
+  background: var(--fuel);
+  color: var(--night);
+  font-family: var(--f-display);
+  font-size: 20px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  box-shadow:
+    inset 0 -4px 0 rgba(0, 0, 0, 0.22),
+    0 3px 0 rgba(10, 6, 30, 0.45);
+}
+.calc-use:disabled {
+  background: #7a72a6;
+  color: #d6d0ee;
+  cursor: default;
+}
+.calc-use:not(:disabled):active {
+  transform: translateY(2px);
 }
 /* A short window has no room above the bar, so the calculator sits over it instead, with shorter keys. */
 @media (max-height: 700px) {

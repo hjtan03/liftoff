@@ -4,6 +4,7 @@ import type { QuestionSet } from "../questions/schema.js";
 import type { Crowd } from "./contract.js";
 import {
   handleCrowd,
+  handleEvent,
   handleGuess,
   isPlayableLaunch,
   logError,
@@ -44,12 +45,20 @@ const SET: QuestionSet = {
 };
 
 /** An in-memory store whose crowd stats follow the same definitions as the SQL function. */
-function memoryStore(): GuessStore & { rows: StoredGuess[] } {
+function memoryStore(): GuessStore & {
+  rows: StoredGuess[];
+  events: Set<string>;
+} {
   const rows: StoredGuess[] = [];
+  const events = new Set<string>();
   const share = (list: StoredGuess[], test: (row: StoredGuess) => boolean) =>
     list.length === 0 ? null : list.filter(test).length / list.length;
   return {
     rows,
+    events,
+    async insertEvent(playerId, launch, name) {
+      events.add(`${playerId}:${launch}:${name}`);
+    },
     async insertGuess(guess) {
       const taken = rows.some(
         (row) =>
@@ -75,17 +84,11 @@ function memoryStore(): GuessStore & { rows: StoredGuess[] } {
       const onStage = rows.filter(
         (row) => row.launch === launch && row.stage === stage,
       );
-      const inBand = (band: StoredGuess["band"]) =>
-        onStage.filter((row) => row.band === band);
       return {
         players: onStage.length,
-        hitRate: {
-          lock: share(inBand("lock"), (row) => row.hit),
-          solid: share(inBand("solid"), (row) => row.hit),
-          rough: share(inBand("rough"), (row) => row.hit),
-        },
-        lockHitShare:
-          share(onStage, (row) => row.band === "lock" && row.hit) ?? 0,
+        closeShare:
+          share(onStage, (row) => row.exact || row.logError <= Math.log(1.1)) ??
+          0,
         percentile:
           logErrorOfGuess === null
             ? null
@@ -133,13 +136,14 @@ describe("logError", () => {
 });
 
 describe("parseGuessRequest", () => {
-  const valid = { launch: 3, stage: 1, guess: 500, band: "solid" };
-  it("accepts a valid guess, with or without assumptions", () => {
+  const valid = { launch: 3, stage: 1, guess: 500 };
+  it("accepts a valid guess", () => {
     expect(parseGuessRequest(valid)).toEqual(valid);
-    expect(parseGuessRequest({ ...valid, assumptions: { d: 42 } })).toEqual({
-      ...valid,
-      assumptions: { d: 42 },
-    });
+  });
+  it("ignores the band and assumptions an older page may still send", () => {
+    expect(parseGuessRequest({ ...valid, assumptions: { d: 42 } })).toEqual(
+      valid,
+    );
   });
   it.each([
     ["a non-object", "nope"],
@@ -148,8 +152,6 @@ describe("parseGuessRequest", () => {
     ["a zero guess", { ...valid, guess: 0 }],
     ["an infinite guess", { ...valid, guess: Infinity }],
     ["a string guess", { ...valid, guess: "500" }],
-    ["an unknown band", { ...valid, band: "yolo" }],
-    ["non-numeric assumptions", { ...valid, assumptions: { d: "42" } }],
   ])("rejects %s", (_, body) => {
     expect(typeof parseGuessRequest(body)).toBe("string");
   });
@@ -157,51 +159,41 @@ describe("parseGuessRequest", () => {
 
 describe("POST /api/guess", () => {
   it("scores on the server and returns the crowd including this guess", async () => {
-    const result = await guess({ guess: 506, band: "lock" });
+    const result = await guess({ guess: 506 });
     expect(result).toEqual({
       status: 200,
       body: {
         hit: true,
         exact: true,
         points: 1250,
-        crowd: {
-          players: 1,
-          hitRate: { lock: 1, solid: null, rough: null },
-          lockHitShare: 1,
-          percentile: 0,
-        },
+        crowd: { players: 1, closeShare: 1, percentile: 0 },
       },
     });
     expect(store.rows[0]).toMatchObject({
       questionId: "marathon-walk",
       hit: true,
       points: 1250,
-      assumptions: null,
     });
   });
 
   it("ignores any score the client claims", async () => {
-    const result = await guess({
-      guess: 100,
-      band: "lock",
-      points: 1250,
-      hit: true,
-    });
+    const result = await guess({ guess: 100, points: 1250, hit: true });
     expect(result.status).toBe(200);
-    expect(result.body).toMatchObject({ hit: false, points: 0 });
+    // 100 for an answer of 506 is 5× low: scrubbed, with a little fuel for trying.
+    expect(result.body).toMatchObject({ hit: false, exact: false, points: 67 });
   });
 
   it("ranks a guess against the crowd", async () => {
-    await guess({ guess: 300, band: "rough" }, OTHER_PLAYER);
-    const result = await guess({ guess: 500, band: "solid" });
+    await guess({ guess: 300 }, OTHER_PLAYER);
+    const result = await guess({ guess: 500 });
     expect(result.body).toMatchObject({
       crowd: { players: 2, percentile: 0.5 },
     });
   });
 
   it("refuses a second submission and returns what was stored", async () => {
-    await guess({ guess: 506, band: "lock" });
-    const second = await guess({ guess: 100, band: "rough" });
+    await guess({ guess: 506 });
+    const second = await guess({ guess: 100 });
     expect(second.status).toBe(409);
     expect(second.body).toMatchObject({
       error: "already-submitted",
@@ -212,12 +204,12 @@ describe("POST /api/guess", () => {
   });
 
   it("needs a UUID player id", async () => {
-    expect((await guess({ guess: 1, band: "lock" }, null)).status).toBe(400);
-    expect((await guess({ guess: 1, band: "lock" }, "me")).status).toBe(400);
+    expect((await guess({ guess: 1 }, null)).status).toBe(400);
+    expect((await guess({ guess: 1 }, "me")).status).toBe(400);
   });
 
   it("rejects an invalid body", async () => {
-    const result = await guess({ guess: -1, band: "lock" });
+    const result = await guess({ guess: -1 });
     expect(result).toMatchObject({
       status: 400,
       body: { error: "invalid-request" },
@@ -228,7 +220,7 @@ describe("POST /api/guess", () => {
     const result = await handleGuess(
       {
         playerId: PLAYER,
-        body: { launch: 9, stage: 1, guess: 1, band: "lock" },
+        body: { launch: 9, stage: 1, guess: 1 },
         now: NOW,
       },
       dependencies,
@@ -240,14 +232,14 @@ describe("POST /api/guess", () => {
   });
 
   it("answers 404 for a stage the set does not have", async () => {
-    const result = await guess({ stage: 2, guess: 1, band: "lock" });
+    const result = await guess({ stage: 2, guess: 1 });
     expect(result).toMatchObject({ status: 404, body: { error: "not-found" } });
   });
 });
 
 describe("GET /api/crowd", () => {
   it("returns every stage's crowd without a percentile", async () => {
-    await guess({ guess: 506, band: "lock" });
+    await guess({ guess: 506 });
     const result = await handleCrowd({ launch: "3", now: NOW }, dependencies);
     expect(result).toEqual({
       status: 200,
@@ -257,8 +249,7 @@ describe("GET /api/crowd", () => {
           {
             stage: 1,
             players: 1,
-            hitRate: { lock: 1, solid: null, rough: null },
-            lockHitShare: 1,
+            closeShare: 1,
           },
         ],
       },
@@ -284,5 +275,43 @@ describe("GET /api/crowd", () => {
     expect(
       (await handleCrowd({ launch: "2", now: NOW }, dependencies)).status,
     ).toBe(404);
+  });
+});
+
+describe("POST /api/event", () => {
+  const event = (body: unknown, playerId: string | null = PLAYER) =>
+    handleEvent({ playerId, body, now: NOW }, dependencies);
+
+  it("records an event once per player and launch", async () => {
+    expect(await event({ launch: 3, name: "launch_opened" })).toEqual({
+      status: 200,
+      body: { recorded: true },
+    });
+    await event({ launch: 3, name: "launch_opened" });
+    await event({ launch: 1, name: "replay_opened" });
+    expect([...store.events]).toEqual([
+      `${PLAYER}:3:launch_opened`,
+      `${PLAYER}:1:replay_opened`,
+    ]);
+  });
+
+  it.each([
+    ["an unknown name", { launch: 3, name: "clicked_everything" }],
+    ["a missing launch", { name: "launch_opened" }],
+    ["a non-object", "launch_opened"],
+  ])("rejects %s", async (_, body) => {
+    expect((await event(body)).status).toBe(400);
+  });
+
+  it("needs a UUID player id", async () => {
+    expect(
+      (await event({ launch: 3, name: "launch_opened" }, null)).status,
+    ).toBe(400);
+  });
+
+  it("refuses a launch that has not started", async () => {
+    expect((await event({ launch: 9, name: "launch_opened" })).status).toBe(
+      403,
+    );
   });
 });

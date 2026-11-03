@@ -1,82 +1,112 @@
-export type BandKey = "lock" | "solid" | "rough";
+/**
+ * How a guess is scored: by how close it lands, with no bet to place first.
+ * Fuel falls off smoothly with the log of the miss, so 2× too high and 2×
+ * too low earn the same, every guess earns something, and an exact answer
+ * earns a bonus on top. The tier only names how close it was, for the
+ * verdict and the share grid.
+ */
 
-export type ConfidenceBand = {
+export type Tier = "docked" | "moonshot" | "orbit" | "suborbital" | "scrubbed";
+
+export type TierInfo = {
   name: string;
+  /** How close the tier is, in words, for the legend and the verdict. */
   rule: string;
-  points: number;
-  lowBound: (guess: number) => number;
-  highBound: (guess: number) => number;
+  emoji: string;
 };
 
-export const CONFIDENCE_BANDS: Record<BandKey, ConfidenceBand> = {
-  lock: {
-    name: "Moonshot",
-    rule: "±5%",
-    points: 1000,
-    lowBound: (guess) => guess * 0.95,
-    highBound: (guess) => guess * 1.05,
-  },
-  solid: {
-    name: "Orbit",
-    rule: "±20%",
-    points: 500,
-    lowBound: (guess) => guess * 0.8,
-    highBound: (guess) => guess * 1.2,
-  },
-  rough: {
-    name: "Suborbital",
-    rule: "within 2×",
-    points: 200,
-    lowBound: (guess) => guess / 2,
-    highBound: (guess) => guess * 2,
-  },
+export const TIERS: Record<Tier, TierInfo> = {
+  docked: { name: "Docked", rule: "exact", emoji: "🎯" },
+  moonshot: { name: "Moonshot", rule: "within 10%", emoji: "🟢" },
+  orbit: { name: "Orbit", rule: "within 50%", emoji: "🟡" },
+  suborbital: { name: "Suborbital", rule: "within 3×", emoji: "🟠" },
+  scrubbed: { name: "Scrubbed", rule: "more than 3× off", emoji: "🔴" },
 };
 
-/** Display order, tightest band first. */
-export const BAND_KEYS: readonly BandKey[] = ["lock", "solid", "rough"];
+/** Closest first. */
+export const TIER_KEYS: readonly Tier[] = [
+  "docked",
+  "moonshot",
+  "orbit",
+  "suborbital",
+  "scrubbed",
+];
 
+/** Fuel for a guess that is right but not exact, before the falloff. */
+export const CLOSENESS_POINTS = 1000;
 export const EXACT_ANSWER_BONUS_POINTS = 250;
 export const MAX_POINTS_PER_STAGE =
-  CONFIDENCE_BANDS.lock.points + EXACT_ANSWER_BONUS_POINTS;
+  CLOSENESS_POINTS + EXACT_ANSWER_BONUS_POINTS;
+/**
+ * How fast fuel falls off with the miss: points = 1000 × e^(−|ln(guess ÷ answer)| ÷ 0.6).
+ * 10% off keeps about 850, 50% about 500, 2× about 300, 3× about 160, 10× about 20.
+ * An exact answer earns the whole stage: 1000 plus the 250 bonus.
+ */
+const FALLOFF = 0.6;
+const MOONSHOT_SHARE = 0.1;
+const ORBIT_SHARE = 0.5;
+const SUBORBITAL_RATIO = 3;
 
 export function maxTotalPoints(questionCount: number): number {
   return questionCount * MAX_POINTS_PER_STAGE;
 }
 
-const HIT_EMOJI: Record<BandKey, string> = {
-  lock: "🟢",
-  solid: "🟡",
-  rough: "🟠",
-};
-export const EXACT_EMOJI = "🎯";
-export const MISFIRE_EMOJI = "🔴";
-
 export type ScoredGuess = {
   guess: number;
-  band: BandKey;
-  lowBound: number;
-  highBound: number;
+  tier: Tier;
+  /** Anything closer than scrubbed: the stage fires. */
   hit: boolean;
   exact: boolean;
   points: number;
   emoji: string;
+  /** How far off, as a share of the answer: 0.12 for 12% high or 12% low. */
+  shareOff: number;
+  /** The larger of guess ÷ answer and answer ÷ guess: 1 when right on. */
+  ratio: number;
+  isHigh: boolean;
 };
 
-/** A hit is the answer inside the band's range, edges included; exact is the guess rounding to the answer. */
+/** Exact is the guess rounding to the answer. */
 export function scoreGuess(input: {
   answer: number;
   guess: number;
-  band: BandKey;
 }): ScoredGuess {
-  const { answer, guess, band } = input;
-  const bandRules = CONFIDENCE_BANDS[band];
-  const lowBound = bandRules.lowBound(guess);
-  const highBound = bandRules.highBound(guess);
-  const hit = answer >= lowBound && answer <= highBound;
+  const { answer, guess } = input;
   const exact = Math.round(guess) === answer;
-  const points = hit
-    ? bandRules.points + (exact ? EXACT_ANSWER_BONUS_POINTS : 0)
-    : 0;
-  const emoji = !hit ? MISFIRE_EMOJI : exact ? EXACT_EMOJI : HIT_EMOJI[band];
-  return { guess, band, lowBound, highBound, hit, exact, points, emoji };
+  const logMiss = Math.abs(Math.log(guess / answer));
+  const ratio = Math.exp(logMiss);
+  const shareOff = Math.abs(guess - answer) / answer;
+  const tier: Tier = exact
+    ? "docked"
+    : shareOff <= MOONSHOT_SHARE
+      ? "moonshot"
+      : shareOff <= ORBIT_SHARE
+        ? "orbit"
+        : ratio <= SUBORBITAL_RATIO
+          ? "suborbital"
+          : "scrubbed";
+  // Exact counts as right on, so it always earns the whole stage.
+  const points = exact
+    ? MAX_POINTS_PER_STAGE
+    : Math.round(CLOSENESS_POINTS * Math.exp(-logMiss / FALLOFF));
+  return {
+    guess,
+    tier,
+    hit: tier !== "scrubbed",
+    exact,
+    points,
+    emoji: TIERS[tier].emoji,
+    shareOff,
+    ratio,
+    isHigh: guess > answer,
+  };
+}
+
+/** "12% low", "35% high", "2.4× too high", "right on". */
+export function describeMiss(result: ScoredGuess): string {
+  if (result.exact || result.shareOff < 0.005) return "right on";
+  const direction = result.isHigh ? "high" : "low";
+  if (result.ratio < 2)
+    return `${Math.max(1, Math.round(result.shareOff * 100))}% ${direction}`;
+  return `${result.ratio.toFixed(1)}× too ${direction}`;
 }

@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   calculatorDisplayText,
   calculatorHistoryText,
+  calculatorValue,
   INITIAL_CALCULATOR_STATE,
   pressCalculatorKey,
   type CalculatorState,
@@ -68,5 +69,19 @@ describe("pressCalculatorKey", () => {
   it("stops accepting keys at sixty-four characters", () => {
     const full = press("1".repeat(64));
     expect(press("2", full).expression).toBe(full.expression);
+  });
+});
+
+describe("calculatorValue", () => {
+  const typed = (keys: string[]) =>
+    keys.reduce(pressCalculatorKey, INITIAL_CALCULATOR_STATE);
+  it("is the expression's value, before or after =", () => {
+    expect(calculatorValue(typed(["4", "2", "×", "6", "0"]))).toBe(2520);
+    expect(calculatorValue(typed(["4", "2", "×", "6", "0", "="]))).toBe(2520);
+  });
+  it("is null when there is nothing usable as an answer", () => {
+    expect(calculatorValue(INITIAL_CALCULATOR_STATE)).toBeNull();
+    expect(calculatorValue(typed(["4", "×"]))).toBeNull();
+    expect(calculatorValue(typed(["2", "−", "5"]))).toBeNull();
   });
 });

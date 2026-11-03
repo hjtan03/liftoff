@@ -1,54 +1,75 @@
-import { formatNumber, parseNumberInput } from "../game/numbers";
+import { parseNumberInput } from "../game/numbers";
+import { EXACT_ANSWER_BONUS_POINTS } from "../game/scoring";
 import type { Question } from "../questions/schema";
-import { BAND_KEYS, type BandKey, CONFIDENCE_BANDS } from "../game/scoring";
 import { sfx } from "../sound";
 
 type Props = {
   question: Question;
   stageNumber: number;
   guessText: string;
-  selectedBand: BandKey;
   isCalculatorOpen: boolean;
+  isScratchPadOpen: boolean;
   onGuessTextChange: (text: string) => void;
-  onBandSelect: (band: BandKey) => void;
   onFire: (guess: number) => void;
   onToggleCalculator: () => void;
+  onToggleScratchPad: () => void;
 };
 
 const INVALID_GUESS_MESSAGE = "Enter a positive number, like 4200 or 4.2k.";
 
+/** The id of the answer field, so the calculator can hand its result over and move focus here. */
+export const ANSWER_INPUT_ID = "answer";
+
+/** The controls docked in the ground: the calculator and scratch pad, the answer, and the fire button. */
 export function AskStage({
   question,
   stageNumber,
   guessText,
-  selectedBand,
   isCalculatorOpen,
+  isScratchPadOpen,
   onGuessTextChange,
-  onBandSelect,
   onFire,
   onToggleCalculator,
+  onToggleScratchPad,
 }: Props) {
   const guess = parseNumberInput(guessText);
   const isGuessValid = guess > 0;
   const errorText =
     guessText.trim() && !isGuessValid ? INVALID_GUESS_MESSAGE : "";
+  const fire = () => {
+    sfx.fire();
+    onFire(guess);
+  };
 
   return (
     <div className="dock">
       {errorText && <p className="err">{errorText}</p>}
       <div className="answer-bar">
-        <button
-          className="calcbtn"
-          type="button"
-          aria-label="Calculator"
-          aria-controls="calc"
-          aria-expanded={isCalculatorOpen}
-          onClick={onToggleCalculator}
-        >
-          ▦<span className="calcbtn-word"> Calculator</span>
-        </button>
+        <div className="tools">
+          <button
+            className="calcbtn"
+            type="button"
+            aria-label="Calculator"
+            aria-controls="calc"
+            aria-expanded={isCalculatorOpen}
+            onClick={onToggleCalculator}
+          >
+            ▦<span className="calcbtn-word"> Calculator</span>
+          </button>
+          <button
+            className="calcbtn"
+            type="button"
+            aria-label="Scratch pad"
+            aria-controls="scratch-pad"
+            aria-expanded={isScratchPadOpen}
+            onClick={onToggleScratchPad}
+          >
+            ✎<span className="calcbtn-word"> Notes</span>
+          </button>
+        </div>
         <label className="guess">
           <input
+            id={ANSWER_INPUT_ID}
             inputMode="decimal"
             autoComplete="off"
             placeholder="Your answer"
@@ -56,10 +77,7 @@ export function AskStage({
             aria-label="Your answer"
             onChange={(event) => onGuessTextChange(event.target.value)}
             onKeyDown={(event) => {
-              if (event.key === "Enter" && isGuessValid) {
-                sfx.fire();
-                onFire(guess);
-              }
+              if (event.key === "Enter" && isGuessValid) fire();
             }}
           />
           <span className="u">{question.unit}</span>
@@ -68,40 +86,15 @@ export function AskStage({
           className="fire"
           type="button"
           disabled={!isGuessValid}
-          onClick={() => {
-            sfx.fire();
-            onFire(guess);
-          }}
+          onClick={fire}
         >
           Fire stage {stageNumber}
         </button>
       </div>
-      <div className="conf" role="group" aria-label="Confidence">
-        {BAND_KEYS.map((bandKey) => {
-          const band = CONFIDENCE_BANDS[bandKey];
-          const rangeText = isGuessValid
-            ? `${formatNumber(band.lowBound(guess))} – ${formatNumber(band.highBound(guess))}`
-            : "";
-          return (
-            <button
-              key={bandKey}
-              type="button"
-              className="cbtn"
-              aria-pressed={selectedBand === bandKey}
-              onClick={() => {
-                sfx.select(BAND_KEYS.indexOf(bandKey));
-                onBandSelect(bandKey);
-              }}
-            >
-              <span className="t">{band.name}</span>
-              <span className="p">
-                {band.rule} · {band.points} pts
-              </span>
-              <span className="r">{rangeText}</span>
-            </button>
-          );
-        })}
-      </div>
+      <p className="ask-hint">
+        The closer you land, the more fuel. Exact earns +
+        {EXACT_ANSWER_BONUS_POINTS}.
+      </p>
     </div>
   );
 }

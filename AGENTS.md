@@ -1,7 +1,7 @@
 # Liftoff
 
 A daily estimation game: five questions, each answered by reasoning from
-sourced constants; a confidence band per answer; hits fuel a rocket, and how
+sourced constants; the closer each guess, the more fuel for a rocket, and how
 far into the solar system it flies is the score. A Vite + React + TypeScript
 single-page app with a small crowd-stats API. Commands and layout are in README.md. Direction is in
 docs/roadmap.md and how a question is defined in docs/questions.md;
@@ -95,9 +95,23 @@ docs/archive/.
   it. The rocket is derived from the run, never stored, so a refresh shows
   it where it was. Spectators come from `spectator(look, pose, frame)`.
   Reduced motion skips the burns and the pull-back.
-- Bands show as Moonshot (±5%), Orbit (±20%) and Suborbital (2×), an exact
-  hit as Docked and a miss as Scrubbed. The API keeps the keys `lock`,
-  `solid` and `rough`; only the names in `src/game/scoring.ts` changed.
+- Scoring is by closeness alone (`src/game/scoring.ts`): fuel falls off
+  smoothly with |ln(guess ÷ answer)|, so every guess earns some, and an exact
+  answer earns the whole 1,250. Tiers name how close it was, for the verdict
+  and the grid: Docked (exact), Moonshot (within 10%), Orbit (within 50%),
+  Suborbital (within 3×), Scrubbed (further).
+- A stage fires straight from the answer bar. The scratch pad is free text
+  kept with the stage and shown again in the debrief; the calculator hands
+  its value to the answer with "Use as answer", and only takes keys while
+  focus is inside it.
+
+## Analytics
+
+Vercel Web Analytics (`<Analytics />` in `src/main.tsx`) counts visits and
+where they come from. Game events go to `/api/event` through `trackEvent`,
+fire-and-forget, once per player per launch; the names are `EVENT_NAMES` in
+`src/api/contract.ts`, and a new one needs the check constraint in a new
+migration too. `docs/analytics.sql` holds the queries that read them.
 
 ## Progress
 

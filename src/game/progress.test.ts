@@ -27,12 +27,8 @@ const SET: LoadedQuestionSet = { id: "007", questions: [QUESTION, QUESTION] };
 
 function playedFirstStage() {
   let state = initialGameState(SET);
-  state = gameReducer(state, { type: "band-selected", band: "lock" });
+  state = gameReducer(state, { type: "notes-changed", text: "1 km" });
   state = gameReducer(state, { type: "stage-fired", guess: 100 });
-  state = gameReducer(state, {
-    type: "assumptions-submitted",
-    assumedFactorValues: {},
-  });
   return state;
 }
 
@@ -45,14 +41,20 @@ describe("restoreRun", () => {
     expect(restored.animatingStageIndex).toBeNull();
   });
 
-  it("resumes between firing and the reveal", () => {
-    const fired = gameReducer(initialGameState(SET), {
-      type: "stage-fired",
-      guess: 90,
+  it("resumes the scratch pad of a stage still being asked", () => {
+    const noted = gameReducer(initialGameState(SET), {
+      type: "notes-changed",
+      text: "about 90",
     });
-    const restored = restoreRun(SET, serializeRun(fired));
-    expect(restored.phase).toBe("assume");
-    expect(restored.pendingResult?.guess).toBe(90);
+    const restored = restoreRun(SET, serializeRun(noted));
+    expect(restored.phase).toBe("ask");
+    expect(restored.notes).toBe("about 90");
+  });
+
+  it("starts over a run saved in the old format, with its confidence band", () => {
+    const old = JSON.parse(serializeRun(playedFirstStage()));
+    old.version = 1;
+    expect(restoreRun(SET, JSON.stringify(old))).toEqual(initialGameState(SET));
   });
 
   it("starts fresh for another launch's run", () => {

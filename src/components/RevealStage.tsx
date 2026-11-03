@@ -1,14 +1,25 @@
-import { Fragment, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import type { CrowdState } from "../api/client";
 import { formatNumber } from "../game/numbers";
-import { CONFIDENCE_BANDS, EXACT_ANSWER_BONUS_POINTS } from "../game/scoring";
+import {
+  describeMiss,
+  EXACT_ANSWER_BONUS_POINTS,
+  type Tier,
+  TIERS,
+} from "../game/scoring";
 import type { StageResult } from "../game/state";
 import { type LoadedQuestion, workedSolution } from "../questions/source";
 import { sfx } from "../sound";
 import { RangeAxis } from "./RangeAxis";
 
-/** An assumed constant within this fraction of the real one reads as spot on. */
-const SPOT_ON_TOLERANCE = 0.02;
+/** The headline for each tier. */
+const VERDICTS: Record<Tier, string> = {
+  docked: "Docked.",
+  moonshot: "Moonshot!",
+  orbit: "In orbit.",
+  suborbital: "Suborbital.",
+  scrubbed: "Scrubbed.",
+};
 
 type Props = {
   question: LoadedQuestion;
@@ -37,7 +48,7 @@ export function RevealStage({
   isAnimating,
   onNext,
 }: Props) {
-  const band = CONFIDENCE_BANDS[result.band];
+  const tier = TIERS[result.tier];
   const verdictRef = useRef<HTMLHeadingElement>(null);
   // Only a burn the player just set off ends in a sound; a reveal restored from a refresh comes up quietly.
   const wasAnimatingRef = useRef(isAnimating);
@@ -51,14 +62,8 @@ export function RevealStage({
     else sfx.misfire();
   }, [isAnimating, result]);
 
-  const verdict = result.exact
-    ? "Docked."
-    : result.hit
-      ? "Stage fired."
-      : "Scrubbed.";
-  const assumedFactors = question.factors.filter(
-    (factor) => result.assumedFactorValues[factor.key],
-  );
+  const verdict = VERDICTS[result.tier];
+  const notes = result.notes.trim();
 
   return (
     <>
@@ -72,7 +77,7 @@ export function RevealStage({
               </h1>
               <div className="rv-main">
                 <h2
-                  className={`verdict ${result.hit ? "ok" : "bad"}`}
+                  className={`verdict ${result.tier}`}
                   ref={verdictRef}
                   tabIndex={-1}
                 >
@@ -80,11 +85,8 @@ export function RevealStage({
                 </h2>
                 <div className="stats">
                   <div>
-                    <p className="label">Your range</p>
-                    <div className="v">
-                      {formatNumber(result.lowBound, 0)}–
-                      {formatNumber(result.highBound, 0)}
-                    </div>
+                    <p className="label">Your guess</p>
+                    <div className="v">{formatNumber(result.guess)}</div>
                   </div>
                   <div>
                     <p className="label">Answer</p>
@@ -100,39 +102,25 @@ export function RevealStage({
               </div>
               <RangeAxis result={result} answer={question.answer} />
               <p className="crowd">
-                You played <b>{band.name}</b> ({band.rule})
-                {result.exact
-                  ? `, and hit it exactly for a +${EXACT_ANSWER_BONUS_POINTS} bonus`
-                  : ""}
-                .<CrowdLine crowd={crowd} isReplay={isReplay} />
+                {result.exact ? (
+                  <>
+                    Right on: <b>{tier.name}</b>, with the +
+                    {EXACT_ANSWER_BONUS_POINTS} exact bonus.
+                  </>
+                ) : (
+                  <>
+                    You were <b>{describeMiss(result)}</b>: {tier.name} (
+                    {tier.rule}).
+                  </>
+                )}
+                <CrowdLine crowd={crowd} isReplay={isReplay} />
               </p>
               <div className="work">
                 <h3>Debrief</h3>
-                {assumedFactors.length > 0 && (
-                  <div className="diff">
-                    {assumedFactors.map((factor, index) => {
-                      const assumed = result.assumedFactorValues[factor.key];
-                      const relativeError = assumed / factor.value - 1;
-                      const isSpotOn =
-                        Math.abs(relativeError) < SPOT_ON_TOLERANCE;
-                      const errorPercent = Math.abs(relativeError * 100);
-                      const verdictText = isSpotOn
-                        ? "spot on"
-                        : `${errorPercent < 1 ? "<1" : formatNumber(errorPercent, 0)}% ${relativeError > 0 ? "high" : "low"}`;
-                      return (
-                        <Fragment key={factor.key}>
-                          {index > 0 && <br />}
-                          {factor.label}: you used{" "}
-                          <span className="num">
-                            {formatNumber(assumed)} {factor.unit}
-                          </span>{" "}
-                          →{" "}
-                          <b className={isSpotOn ? "on" : "off"}>
-                            {verdictText}
-                          </b>
-                        </Fragment>
-                      );
-                    })}
+                {notes && (
+                  <div className="notes">
+                    <p className="label">Your scratch pad</p>
+                    <p className="notes-text">{notes}</p>
                   </div>
                 )}
                 <ul className="facts">
@@ -194,7 +182,7 @@ function CrowdLine({
 }) {
   if (crowd.status === "unavailable") return null;
   if (crowd.status === "loading") return <> Checking the crowd…</>;
-  const { players, lockHitShare, percentile } = crowd.crowd;
+  const { players, closeShare, percentile } = crowd.crowd;
   if (isReplay && players === 0) return null;
   if (players <= 1 && !isReplay)
     return <> You’re the first to fly this stage today.</>;
@@ -202,8 +190,18 @@ function CrowdLine({
     <>
       {" "}
       {isReplay ? "On launch day, " : ""}
-      <b>{formatShare(lockHitShare)}</b> of {formatNumber(players)}{" "}
-      {players === 1 ? "player" : "players"} went Moonshot and hit this one
+      {/* closeShare is missing from a server still on the old crowd stats; the line then just counts players. */}
+      {typeof closeShare === "number" ? (
+        <>
+          <b>{formatShare(closeShare)}</b> of {formatNumber(players)}{" "}
+          {players === 1 ? "player" : "players"} got within 10%
+        </>
+      ) : (
+        <>
+          {formatNumber(players)} {players === 1 ? "player" : "players"} flew
+          this stage
+        </>
+      )}
       {percentile === null ? (
         "."
       ) : (
@@ -215,10 +213,10 @@ function CrowdLine({
   );
 }
 
-/** How big the result's chime is: one note for rough up to a fanfare for dead on. */
+/** How big the result's chime is: one note for suborbital up to a fanfare for docked. */
 function soundLevel(result: StageResult): 1 | 2 | 3 | 4 {
-  if (result.exact) return 4;
-  if (result.band === "lock") return 3;
-  if (result.band === "solid") return 2;
+  if (result.tier === "docked") return 4;
+  if (result.tier === "moonshot") return 3;
+  if (result.tier === "orbit") return 2;
   return 1;
 }
