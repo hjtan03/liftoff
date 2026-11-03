@@ -97,6 +97,24 @@ export const supabaseStore: GuessStore = {
     return data ? fromRow(data) : null;
   },
 
+  async insertEvent(playerId, launch, name) {
+    const db = supabase();
+    const player = await db
+      .from("players")
+      .upsert(
+        { player_id: playerId },
+        { onConflict: "player_id", ignoreDuplicates: true },
+      );
+    if (player.error) throw new Error(player.error.message);
+    const inserted = await db
+      .from("events")
+      .upsert(
+        { player_id: playerId, launch, name },
+        { onConflict: "player_id,launch,name", ignoreDuplicates: true },
+      );
+    if (inserted.error) throw new Error(inserted.error.message);
+  },
+
   async crowdStats(launch, stage, logError) {
     const { data, error } = await supabase().rpc("crowd_stats", {
       p_launch: launch,

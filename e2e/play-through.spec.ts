@@ -231,3 +231,40 @@ test.describe("the archive", () => {
     await expect(page.getByLabel("Your answer")).toHaveCount(0);
   });
 });
+
+test("the game reports opening the launch, the tools and the share, once each", async ({
+  page,
+}) => {
+  test.setTimeout(60_000);
+  const events: unknown[] = [];
+  await page.route("**/api/event", async (route) => {
+    events.push(route.request().postDataJSON());
+    await route.fulfill({ json: { recorded: true } });
+  });
+  await page.goto("./");
+  await page.getByRole("button", { name: "Calculator", exact: true }).click();
+  await page.getByRole("button", { name: "Calculator", exact: true }).click();
+  await page.getByRole("button", { name: "Calculator", exact: true }).click();
+  await page.getByRole("button", { name: "Scratch pad" }).click();
+  await page.getByRole("textbox", { name: "Scratch pad" }).fill("42 km");
+  for (const [stage, answer] of EXACT_ANSWERS.entries()) {
+    await page.getByLabel("Your answer").fill(answer);
+    await page.getByRole("button", { name: `Fire stage ${stage + 1}` }).click();
+    await page
+      .getByRole("button", {
+        name: stage === 4 ? "Flight report" : "Next stage",
+      })
+      .click(AFTER_THE_BURN);
+  }
+  await page.getByRole("button", { name: "Copy result" }).click(AFTER_THE_BURN);
+  await expect.poll(() => events.length).toBe(5);
+  expect(events).toEqual(
+    expect.arrayContaining([
+      { launch: 1, name: "launch_opened" },
+      { launch: 1, name: "calculator_used" },
+      { launch: 1, name: "notes_used" },
+      { launch: 1, name: "launch_finished" },
+      { launch: 1, name: "result_shared" },
+    ]),
+  );
+});

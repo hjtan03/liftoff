@@ -18,6 +18,8 @@ type Props = {
   /** Whether the camera has pulled back over the whole flight; the report waits for it. */
   hasPulledBack: boolean;
   onRestart: () => void;
+  /** Copy result was pressed, for the analytics. */
+  onShared: () => void;
 };
 
 /** The flight report: where the rocket got to, then, once the camera has pulled back over the route, the stage-by-stage tally and the share text. */
@@ -28,6 +30,7 @@ export function LaunchReport({
   streak,
   hasPulledBack,
   onRestart,
+  onShared,
 }: Props) {
   const totalPoints = stageResults.reduce(
     (sum, result) => sum + result.points,
@@ -46,6 +49,7 @@ export function LaunchReport({
   useEffect(() => destinationRef.current?.focus(), []);
 
   const copyShareText = () => {
+    onShared();
     navigator.clipboard
       .writeText(shareText)
       .then(() => setCopyStatus("Copied."))

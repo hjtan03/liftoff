@@ -5,11 +5,14 @@ import { computeAnswer } from "../questions/source.js";
 import type {
   ApiError,
   Crowd,
+  EventName,
+  EventResponse,
   CrowdResponse,
   GuessConflict,
   GuessRequest,
   GuessResponse,
 } from "./contract.js";
+import { EVENT_NAMES } from "./contract.js";
 
 /**
  * The API's rules as plain functions: data in, a status and a body out. They
@@ -42,6 +45,8 @@ export interface GuessStore {
     stage: number,
     logError: number | null,
   ): Promise<Crowd>;
+  /** Records the player (if new) and the event; a repeat of the same event for the same launch is ignored. */
+  insertEvent(playerId: string, launch: number, name: EventName): Promise<void>;
 }
 
 export type Dependencies = {
@@ -51,7 +56,7 @@ export type Dependencies = {
 };
 
 export type ApiResult =
-  | { status: 200; body: GuessResponse | CrowdResponse }
+  | { status: 200; body: GuessResponse | CrowdResponse | EventResponse }
   | { status: 409; body: GuessConflict }
   | { status: 400 | 403 | 404 | 500; body: ApiError };
 
@@ -225,4 +230,42 @@ export async function handleCrowd(
     }),
   );
   return { status: 200, body: { launch, stages } };
+}
+
+/** POST /api/event: one thing the game saw a player do, for the analytics. */
+export async function handleEvent(
+  input: { playerId: string | null; body: unknown; now: Date },
+  dependencies: Pick<Dependencies, "store">,
+): Promise<ApiResult> {
+  const { playerId, body, now } = input;
+  if (playerId === null || !PLAYER_ID.test(playerId))
+    return error(
+      400,
+      "invalid-player",
+      "the x-player-id header must be a UUID",
+    );
+  if (typeof body !== "object" || body === null || Array.isArray(body))
+    return error(400, "invalid-request", "the body must be a JSON object");
+  const { launch, name } = body as Record<string, unknown>;
+  if (!Number.isInteger(launch) || (launch as number) < 1)
+    return error(400, "invalid-request", "launch must be a positive integer");
+  if (!EVENT_NAMES.includes(name as EventName))
+    return error(
+      400,
+      "invalid-request",
+      `name must be one of ${EVENT_NAMES.join(", ")}`,
+    );
+  // Past launches are replayed from the archive; a launch not yet started can't have happened.
+  if ((launch as number) > launchNumberAt(now) + 1)
+    return error(
+      403,
+      "launch-not-playable",
+      `launch ${launch} has not started`,
+    );
+  await dependencies.store.insertEvent(
+    playerId,
+    launch as number,
+    name as EventName,
+  );
+  return { status: 200, body: { recorded: true } };
 }

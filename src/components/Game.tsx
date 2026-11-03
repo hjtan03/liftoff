@@ -1,6 +1,11 @@
 import { useEffect, useMemo, useReducer, useRef, useState } from "react";
 import { easeOutCubic, prefersReducedMotion, tween } from "../animation";
-import { fetchCrowd, submitGuess, type CrowdState } from "../api/client";
+import {
+  fetchCrowd,
+  submitGuess,
+  trackEvent,
+  type CrowdState,
+} from "../api/client";
 import { readStorage, writeStorage } from "../browserStorage";
 import { Calculator } from "../calculator/Calculator";
 import {
@@ -59,6 +64,17 @@ export function Game({ questionSet, isToday }: Props) {
     parseHistory(readStorage(HISTORY_STORAGE_KEY)),
   );
 
+  const launch = Number(questionSet.id);
+
+  // Analytics: who opens a launch, today's or a replay, and who flies it to the end.
+  useEffect(() => {
+    trackEvent(launch, isToday ? "launch_opened" : "replay_opened");
+  }, [launch, isToday]);
+  useEffect(() => {
+    if (game.phase === "done")
+      trackEvent(launch, isToday ? "launch_finished" : "replay_finished");
+  }, [launch, isToday, game.phase]);
+
   // Every change to the run is saved, so a refresh resumes where it left off.
   useEffect(() => {
     writeStorage(runKey, serializeRun(game));
@@ -116,6 +132,7 @@ export function Game({ questionSet, isToday }: Props) {
   /** Fires the stage, which scores and reveals it, and records it with the server, which answers with the crowd. */
   const fireStage = (guess: number) => {
     const stageIndex = game.stageIndex;
+    if (game.notes.trim()) trackEvent(launch, "notes_used");
     dispatch({ type: "stage-fired", guess });
     // A replay's guesses are its own; the crowd it shows is from launch day.
     if (!isToday) return;
@@ -230,6 +247,7 @@ export function Game({ questionSet, isToday }: Props) {
             stageResults={game.stageResults}
             streak={isToday ? streak : null}
             hasPulledBack={hasPulledBack}
+            onShared={() => trackEvent(launch, "result_shared")}
             onRestart={() => {
               dispatch({ type: "game-restarted" });
               setHasPulledBack(false);
@@ -245,7 +263,10 @@ export function Game({ questionSet, isToday }: Props) {
             isReplay={!isToday}
             onFire={fireStage}
             isCalculatorOpen={isCalculatorOpen}
-            onToggleCalculator={() => setCalculatorOpen((open) => !open)}
+            onToggleCalculator={() => {
+              if (!isCalculatorOpen) trackEvent(launch, "calculator_used");
+              setCalculatorOpen((open) => !open);
+            }}
           />
         )}
       </Shell>

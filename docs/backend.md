@@ -116,9 +116,19 @@ Crowd stats for every stage of a launch, without a player's percentile. The clie
 }
 ```
 
+### `POST /api/event`
+
+One thing the game saw a player do, for the analytics: `{ "launch": 11, "name": "result_shared" }` with the same `X-Player-Id` header. `name` is one of `launch_opened`, `replay_opened`, `launch_finished`, `replay_finished`, `result_shared`, `calculator_used`, `notes_used` (`EVENT_NAMES` in `src/api/contract.ts`). Each is kept once per player per launch, so a refresh or a second share doesn't count twice. Answers `{ "recorded": true }`; `400` for a bad body or player id, `403` for a launch that hasn't started. The game sends these fire-and-forget (`trackEvent` in `src/api/client.ts`) and never waits on them.
+
+## Analytics
+
+Traffic (visitors, page views, referrers, countries, devices) is Vercel Web Analytics, from `<Analytics />` in `src/main.tsx`; enable it once in the project's Analytics tab. The Hobby plan counts page views only, up to 50,000 a month, and keeps a month of history.
+
+What players do is in Supabase: `guesses` for every stage of today's launch, and `events` for the rest. The queries in `docs/analytics.sql` turn them into the daily funnel (opened, played, finished, shared), new and returning players, next-day and within-a-week retention, the hardest questions, scores per launch, and calculator, scratch pad and archive use. Paste them into the SQL Editor and save each as a snippet.
+
 ## Database
 
-The schema is `supabase/migrations/20261015000000_init.sql`, changed by `20261103000000_scoring_by_closeness.sql` (`band` optional, `crowd_stats` reporting `closeShare`):
+The schema is `supabase/migrations/20261015000000_init.sql`, changed by `20261103000000_scoring_by_closeness.sql` (`band` optional, `crowd_stats` reporting `closeShare`) and `20261103010000_events.sql` (the `events` table):
 
 - `players`: one row per anonymous player ID.
 - `guesses`: one row per player per launch per stage, with the primary key `(player_id, launch, stage)` enforcing one submission. `hit`, `exact` and `points` are whatever the API computed.

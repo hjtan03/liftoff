@@ -2,6 +2,8 @@ import {
   PLAYER_ID_HEADER,
   type Crowd,
   type CrowdResponse,
+  type EventName,
+  type EventRequest,
   type GuessConflict,
   type GuessRequest,
   type GuessResponse,
@@ -85,6 +87,37 @@ export async function fetchCrowd(
     }));
   } catch {
     return null;
+  }
+}
+
+/** Events already sent this page load; the server keeps one per player per launch anyway. */
+const sentEvents = new Set<string>();
+
+/**
+ * Reports one analytics event, fire and forget: it never throws or waits,
+ * and keepalive lets it finish even if the page is closing.
+ */
+export function trackEvent(
+  launch: number,
+  name: EventName,
+  fetchImpl: typeof fetch = fetch,
+): void {
+  const key = `${launch}:${name}`;
+  if (sentEvents.has(key)) return;
+  sentEvents.add(key);
+  const body: EventRequest = { launch, name };
+  try {
+    void fetchImpl("/api/event", {
+      method: "POST",
+      keepalive: true,
+      headers: {
+        "content-type": "application/json",
+        [PLAYER_ID_HEADER]: playerId(),
+      },
+      body: JSON.stringify(body),
+    }).catch(() => {});
+  } catch {
+    // No network: analytics are best-effort.
   }
 }
 

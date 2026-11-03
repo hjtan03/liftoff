@@ -4,6 +4,7 @@ import type { QuestionSet } from "../questions/schema.js";
 import type { Crowd } from "./contract.js";
 import {
   handleCrowd,
+  handleEvent,
   handleGuess,
   isPlayableLaunch,
   logError,
@@ -44,12 +45,20 @@ const SET: QuestionSet = {
 };
 
 /** An in-memory store whose crowd stats follow the same definitions as the SQL function. */
-function memoryStore(): GuessStore & { rows: StoredGuess[] } {
+function memoryStore(): GuessStore & {
+  rows: StoredGuess[];
+  events: Set<string>;
+} {
   const rows: StoredGuess[] = [];
+  const events = new Set<string>();
   const share = (list: StoredGuess[], test: (row: StoredGuess) => boolean) =>
     list.length === 0 ? null : list.filter(test).length / list.length;
   return {
     rows,
+    events,
+    async insertEvent(playerId, launch, name) {
+      events.add(`${playerId}:${launch}:${name}`);
+    },
     async insertGuess(guess) {
       const taken = rows.some(
         (row) =>
@@ -266,5 +275,43 @@ describe("GET /api/crowd", () => {
     expect(
       (await handleCrowd({ launch: "2", now: NOW }, dependencies)).status,
     ).toBe(404);
+  });
+});
+
+describe("POST /api/event", () => {
+  const event = (body: unknown, playerId: string | null = PLAYER) =>
+    handleEvent({ playerId, body, now: NOW }, dependencies);
+
+  it("records an event once per player and launch", async () => {
+    expect(await event({ launch: 3, name: "launch_opened" })).toEqual({
+      status: 200,
+      body: { recorded: true },
+    });
+    await event({ launch: 3, name: "launch_opened" });
+    await event({ launch: 1, name: "replay_opened" });
+    expect([...store.events]).toEqual([
+      `${PLAYER}:3:launch_opened`,
+      `${PLAYER}:1:replay_opened`,
+    ]);
+  });
+
+  it.each([
+    ["an unknown name", { launch: 3, name: "clicked_everything" }],
+    ["a missing launch", { name: "launch_opened" }],
+    ["a non-object", "launch_opened"],
+  ])("rejects %s", async (_, body) => {
+    expect((await event(body)).status).toBe(400);
+  });
+
+  it("needs a UUID player id", async () => {
+    expect(
+      (await event({ launch: 3, name: "launch_opened" }, null)).status,
+    ).toBe(400);
+  });
+
+  it("refuses a launch that has not started", async () => {
+    expect((await event({ launch: 9, name: "launch_opened" })).status).toBe(
+      403,
+    );
   });
 });

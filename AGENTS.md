@@ -105,6 +105,14 @@ docs/archive/.
   its value to the answer with "Use as answer", and only takes keys while
   focus is inside it.
 
+## Analytics
+
+Vercel Web Analytics (`<Analytics />` in `src/main.tsx`) counts visits and
+where they come from. Game events go to `/api/event` through `trackEvent`,
+fire-and-forget, once per player per launch; the names are `EVENT_NAMES` in
+`src/api/contract.ts`, and a new one needs the check constraint in a new
+migration too. `docs/analytics.sql` holds the queries that read them.
+
 ## Progress
 
 The run in progress and the history of finished launches live in

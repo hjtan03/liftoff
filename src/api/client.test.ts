@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import type { Crowd } from "./contract.js";
-import { fetchCrowd, playerId, submitGuess } from "./client.js";
+import { fetchCrowd, playerId, submitGuess, trackEvent } from "./client.js";
 
 const CROWD: Crowd = {
   players: 3,
@@ -112,5 +112,30 @@ describe("fetchCrowd", () => {
     await expect(
       fetchCrowd(6, async () => new Response("", { status: 503 })),
     ).resolves.toBeNull();
+  });
+});
+
+describe("trackEvent", () => {
+  it("posts the event once per page load, without waiting or throwing", () => {
+    const fetchImpl = vi.fn(async () => Response.json({ recorded: true }));
+    trackEvent(4, "result_shared", fetchImpl);
+    trackEvent(4, "result_shared", fetchImpl);
+    expect(fetchImpl).toHaveBeenCalledTimes(1);
+    const [url, init] = fetchImpl.mock.calls[0] as unknown as [
+      string,
+      RequestInit,
+    ];
+    expect(url).toBe("/api/event");
+    expect(init.keepalive).toBe(true);
+    expect(JSON.parse(init.body as string)).toEqual({
+      launch: 4,
+      name: "result_shared",
+    });
+  });
+
+  it("swallows a failing network", () => {
+    expect(() =>
+      trackEvent(5, "launch_opened", () => Promise.reject(new TypeError())),
+    ).not.toThrow();
   });
 });
