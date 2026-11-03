@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useEffectEvent, useRef } from "react";
 import type { CrowdState } from "../api/client";
 import { formatNumber } from "../game/numbers";
 import {
@@ -61,6 +61,31 @@ export function RevealStage({
     if (result.hit) sfx.stageFired(soundLevel(result));
     else sfx.misfire();
   }, [isAnimating, result]);
+
+  const goOn = () => {
+    sfx.next();
+    onNext();
+  };
+  const goOnFromKey = useEffectEvent(goOn);
+
+  // Enter moves on once the result is up, wherever focus is, except where
+  // Enter already does something: a button or link (which would go on twice)
+  // or a text field. A held key's repeats are ignored, so the Enter that
+  // fired the stage can't skip its result.
+  useEffect(() => {
+    if (isAnimating) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== "Enter" || event.repeat) return;
+      if (event.metaKey || event.ctrlKey || event.altKey || event.shiftKey)
+        return;
+      const target = event.target as HTMLElement | null;
+      if (target?.closest("button, a, input, textarea, select")) return;
+      event.preventDefault();
+      goOnFromKey();
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [isAnimating]);
 
   const verdict = VERDICTS[result.tier];
   const notes = result.notes.trim();
@@ -155,13 +180,14 @@ export function RevealStage({
               <button
                 className="next"
                 type="button"
-                onClick={() => {
-                  sfx.next();
-                  onNext();
-                }}
+                aria-keyshortcuts="Enter"
+                onClick={goOn}
               >
                 {isLastStage ? "Flight report" : "Next stage"}
               </button>
+              <span className="key-hint" aria-hidden="true">
+                or press Enter
+              </span>
             </div>
           </div>
         )}

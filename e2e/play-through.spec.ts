@@ -268,3 +268,20 @@ test("the game reports opening the launch, the tools and the share, once each", 
     ]),
   );
 });
+
+test("Enter moves on to the next stage once the result is up", async ({
+  page,
+}) => {
+  await page.goto("./");
+  await page.getByLabel("Your answer").fill(EXACT_ANSWERS[0]);
+  await page.getByLabel("Your answer").press("Enter");
+  await expect(page.getByRole("heading", { name: "Docked." })).toBeVisible(
+    AFTER_THE_BURN,
+  );
+  await page.keyboard.press("Enter");
+  await expect(page.getByText("Stage 2", { exact: true })).toBeVisible();
+  // The answer field is ready for the next guess without a click.
+  await expect(page.getByLabel("Your answer")).toBeFocused();
+  await page.keyboard.type("328");
+  await expect(page.getByLabel("Your answer")).toHaveValue("328");
+});
