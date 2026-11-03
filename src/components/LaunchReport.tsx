@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { GAME_NAME } from "../brand";
+import { GAME_NAME, SITE_URL } from "../brand";
 import { formatDistance, stopReached } from "../game/journey";
 import { formatNumber } from "../game/numbers";
 import type { Streak } from "../game/progress";
@@ -36,7 +36,7 @@ export function LaunchReport({
   const maxPoints = maxTotalPoints(questions.length);
   const destination = stopReached(totalPoints, maxPoints);
   const emojiGrid = stageResults.map((result) => result.emoji).join("");
-  const shareText = `🚀 ${GAME_NAME} #${launchNumber} ${emojiGrid}\nReached ${destination.name} · ${formatNumber(totalPoints)} / ${formatNumber(maxPoints)} fuel`;
+  const shareText = `🚀 ${GAME_NAME} #${launchNumber} ${emojiGrid}\nReached ${destination.name} · ${formatNumber(totalPoints)} / ${formatNumber(maxPoints)} fuel\n${SITE_URL}`;
 
   const [copyStatus, setCopyStatus] = useState("");
   const shareRef = useRef<HTMLPreElement>(null);

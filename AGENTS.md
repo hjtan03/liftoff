@@ -38,8 +38,11 @@ docs/archive/.
 
 ## Look and sound
 
-- The name lives in `src/brand.ts`; change it there, and in `index.html`'s
-  title and meta tags.
+- The name and the site's address (`https://dailyliftoff.app`) live in
+  `src/brand.ts`; change them there, and in `index.html`'s title, canonical
+  link and meta tags. The share text ends with the address so every shared
+  result links back. `public/og.png` (1200 × 630) is the link preview card:
+  the pad scene at dusk with the name; regenerate it if the scene changes.
 - Pixel art is drawn in code: `src/pixel/sprites.ts` holds sprites as rows
   of palette characters and generates the spectators, planets and clouds;
   `src/pixel/Sprite.tsx` renders them as crisp SVG, and `src/pixel/sky.ts`
