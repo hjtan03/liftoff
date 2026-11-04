@@ -8,6 +8,7 @@ import {
   type GuessRequest,
   type GuessResponse,
 } from "./contract.js";
+import { pageStorage, readStorage, writeStorage } from "../browserStorage.js";
 
 /**
  * The game's side of the API. Every call degrades to null instead of
@@ -23,17 +24,21 @@ export type CrowdState =
   | { status: "loaded"; crowd: Crowd }
   | { status: "unavailable" };
 
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 let sessionPlayerId: string | undefined;
 
 /**
  * The anonymous id this browser plays under, created once and kept in
- * localStorage. Where storage is blocked it lasts for the page's lifetime.
+ * localStorage. Where storage is blocked it lasts for the page's lifetime. A
+ * stored value that isn't a UUID, which the API would refuse on every call,
+ * is replaced.
  */
-export function playerId(storage: Storage | null = safeLocalStorage()): string {
-  const stored = readStorage(storage, PLAYER_ID_STORAGE_KEY);
-  if (stored) return stored;
+export function playerId(storage: Storage | null = pageStorage()): string {
+  const stored = readStorage(PLAYER_ID_STORAGE_KEY, storage);
+  if (stored && UUID.test(stored)) return stored;
   sessionPlayerId ??= crypto.randomUUID();
-  writeStorage(storage, PLAYER_ID_STORAGE_KEY, sessionPlayerId);
+  writeStorage(PLAYER_ID_STORAGE_KEY, sessionPlayerId, storage);
   return sessionPlayerId;
 }
 
@@ -118,29 +123,5 @@ export function trackEvent(
     }).catch(() => {});
   } catch {
     // No network: analytics are best-effort.
-  }
-}
-
-function safeLocalStorage(): Storage | null {
-  try {
-    return globalThis.localStorage ?? null;
-  } catch {
-    return null;
-  }
-}
-
-function readStorage(storage: Storage | null, key: string): string | null {
-  try {
-    return storage?.getItem(key) ?? null;
-  } catch {
-    return null;
-  }
-}
-
-function writeStorage(storage: Storage | null, key: string, value: string) {
-  try {
-    storage?.setItem(key, value);
-  } catch {
-    // Blocked storage: the id lasts for this page only.
   }
 }

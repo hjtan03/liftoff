@@ -108,6 +108,27 @@ docs/archive/.
   each stage comes up (with a mouse, not on touch screens), Enter fires, and
   Enter on the result goes on.
 
+## Safety
+
+- `CrashScreen` (`src/main.tsx`) catches anything that throws while
+  drawing and offers Reload or Start the run over, which forgets only runs
+  in progress, never history or streaks.
+- Everything read back from localStorage is checked before use (saved runs
+  stage by stage, the history, the player id); what fails the check is
+  dropped, not trusted.
+- `vercel.json` sets security headers on every response. There is no
+  Content-Security-Policy: Google Fonts, Vercel Analytics and, later,
+  AdSense would all need allowing, and AdSense's list changes.
+- Abuse of `/api/*` is limited by a Vercel Firewall rate-limit rule, set in
+  the dashboard rather than in code (docs/backend.md).
+
+## Tips and ads
+
+Both are off until environment variables turn them on (docs/monetization.md,
+`src/monetization.ts`). Ads only ever go below the flight report and the
+archive. The privacy policy is the static `public/privacy.html`; update it
+whenever what the game stores or sends changes.
+
 ## Analytics
 
 Vercel Web Analytics (`<Analytics />` in `src/main.tsx`) counts visits and

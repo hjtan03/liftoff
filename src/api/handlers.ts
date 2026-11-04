@@ -2,17 +2,17 @@ import { scoreGuess } from "../game/scoring.js";
 import { launchNumberAt } from "../questions/schedule.js";
 import type { QuestionSet } from "../questions/schema.js";
 import { computeAnswer } from "../questions/source.js";
-import type {
-  ApiError,
-  Crowd,
-  EventName,
-  EventResponse,
-  CrowdResponse,
-  GuessConflict,
-  GuessRequest,
-  GuessResponse,
+import {
+  EVENT_NAMES,
+  type ApiError,
+  type Crowd,
+  type EventName,
+  type EventResponse,
+  type CrowdResponse,
+  type GuessConflict,
+  type GuessRequest,
+  type GuessResponse,
 } from "./contract.js";
-import { EVENT_NAMES } from "./contract.js";
 
 /**
  * The API's rules as plain functions: data in, a status and a body out. They

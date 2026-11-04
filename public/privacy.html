@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Privacy · Liftoff</title>
+    <meta
+      name="description"
+      content="What Liftoff stores and why: an anonymous player id, your game progress, and your guesses. No accounts and no personal information."
+    />
+    <link rel="canonical" href="https://dailyliftoff.app/privacy.html" />
+    <meta name="theme-color" content="#7d66cf" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🚀%3C/text%3E%3C/svg%3E"
+    />
+    <style>
+      :root {
+        color-scheme: dark;
+        --night: #140f30;
+        --panel: #221a4a;
+        --ink: #f5f2ff;
+        --muted: #b3a9d8;
+        --gold: #ffd35c;
+        --cyan: #5fd8f2;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: linear-gradient(#5b46b0, var(--night) 60%) fixed;
+        color: var(--ink);
+        font:
+          17px/1.6 system-ui,
+          -apple-system,
+          "Segoe UI",
+          sans-serif;
+      }
+      main {
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 32px 16px 64px;
+      }
+      .card {
+        background: var(--panel);
+        border-radius: 8px;
+        padding: 24px;
+      }
+      h1 {
+        margin: 0 0 4px;
+        color: var(--gold);
+        font-size: 34px;
+        line-height: 1.2;
+      }
+      h2 {
+        margin: 28px 0 8px;
+        font-size: 20px;
+      }
+      p,
+      li {
+        color: var(--muted);
+      }
+      strong {
+        color: var(--ink);
+      }
+      a {
+        color: var(--cyan);
+      }
+      .back {
+        display: inline-block;
+        margin-bottom: 16px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <a class="back" href="/">← Back to Liftoff</a>
+      <div class="card">
+        <h1>Privacy</h1>
+        <p>Last updated November 4, 2026.</p>
+
+        <p>
+          Liftoff is a daily estimation game at
+          <a href="https://dailyliftoff.app">dailyliftoff.app</a>. There are no
+          accounts, and we never ask for your name, email or any other personal
+          information.
+        </p>
+
+        <h2>What stays in your browser</h2>
+        <ul>
+          <li>
+            <strong>A random player id</strong>, created the first time you
+            play, so your guesses on one day can be told apart from someone
+            else's. It is not tied to you or your device in any other way.
+          </li>
+          <li>
+            <strong>Your game progress</strong>: the run in progress, past
+            results and streak, your scratch pad notes, and whether sound is on.
+            These are kept in your browser's local storage and never sent to us,
+            except as described below.
+          </li>
+        </ul>
+        <p>Clearing this site's data in your browser deletes all of it.</p>
+
+        <h2>What we receive</h2>
+        <ul>
+          <li>
+            <strong>Your guesses</strong>, sent with your random player id, so
+            we can score them and show how other players did on the same
+            question.
+          </li>
+          <li>
+            <strong>A few game events</strong>, also with the random id: when a
+            launch is opened or finished, a result is copied to share, a past
+            launch is replayed, or the calculator or scratch pad is used. We use
+            these to see how the game is played and to improve it. Your scratch
+            pad notes themselves are never sent.
+          </li>
+          <li>
+            <strong>Page visits</strong>, counted by Vercel Web Analytics: pages
+            viewed, the referring site, country, and device type. It uses no
+            cookies and doesn't identify you.
+          </li>
+        </ul>
+        <p>
+          The game and its data are hosted by Vercel and Supabase. We don't sell
+          this data or share it with anyone else.
+        </p>
+
+        <h2>Ads</h2>
+        <p>
+          Liftoff does not show ads today. If it does in future, they will come
+          from Google AdSense, which may use cookies to show and measure ads.
+          Visitors in the European Economic Area, the UK and Switzerland will be
+          asked for consent first. You can read
+          <a
+            href="https://policies.google.com/technologies/partner-sites"
+            rel="noopener noreferrer"
+            >how Google uses information from sites that use its services</a
+          >
+          and manage ad personalization in your
+          <a href="https://myadcenter.google.com/" rel="noopener noreferrer"
+            >Google ad settings</a
+          >. This page will be updated before any ads appear.
+        </p>
+
+        <h2>Tips</h2>
+        <p>
+          If you choose to tip, the payment happens on the tip service's own
+          site, under its own privacy policy. We don't see your payment details.
+        </p>
+
+        <h2>Children</h2>
+        <p>
+          Liftoff is for a general audience and doesn't knowingly collect
+          personal information from anyone, including children.
+        </p>
+
+        <h2>Questions</h2>
+        <p>
+          Open an issue at
+          <a href="https://github.com/hjtan03/liftoff/issues"
+            >github.com/hjtan03/liftoff</a
+          >
+          and we'll get back to you.
+        </p>
+      </div>
+    </main>
+  </body>
+</html>

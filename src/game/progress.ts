@@ -1,5 +1,6 @@
 import type { LoadedQuestionSet } from "../questions/source";
-import { initialGameState, type GameState } from "./state";
+import { TIERS } from "./scoring";
+import { initialGameState, type GameState, type StageResult } from "./state";
 
 /**
  * What the browser remembers between visits: the run in progress for today's
@@ -100,6 +101,7 @@ function isSavedRunFor(
     typeof state.notes === "string" &&
     Array.isArray(state.stageResults) &&
     state.stageResults.length <= stageCount &&
+    state.stageResults.every(isStageResult) &&
     (state.phase !== "reveal" || state.stageResults[state.stageIndex] != null)
   );
 }
@@ -133,6 +135,31 @@ export function summarizeSavedRun(saved: string | null): RunSummary | null {
   } catch {
     return null;
   }
+}
+
+/**
+ * Whether a saved stage result has every field the reveal and the report
+ * read. A run that fails this starts over rather than crashing the reveal on
+ * every load until site data is cleared.
+ */
+function isStageResult(value: unknown): value is StageResult {
+  if (typeof value !== "object" || value === null) return false;
+  const result = value as Record<string, unknown>;
+  const isNumber = (key: string) =>
+    typeof result[key] === "number" && Number.isFinite(result[key]);
+  return (
+    isNumber("guess") &&
+    isNumber("points") &&
+    isNumber("shareOff") &&
+    isNumber("ratio") &&
+    typeof result.tier === "string" &&
+    Object.hasOwn(TIERS, result.tier) &&
+    typeof result.emoji === "string" &&
+    typeof result.notes === "string" &&
+    typeof result.hit === "boolean" &&
+    typeof result.exact === "boolean" &&
+    typeof result.isHigh === "boolean"
+  );
 }
 
 export function parseHistory(saved: string | null): LaunchHistory {
