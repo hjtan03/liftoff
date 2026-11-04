@@ -1,0 +1,4 @@
+# ads.txt: the ad sellers authorized to sell ads on dailyliftoff.app.
+# Liftoff shows no ads yet. Once AdSense approves the site, replace this
+# comment with the one line AdSense gives you, which looks like:
+# google.com, pub-0000000000000000, DIRECT, f08c47fec0942fa0

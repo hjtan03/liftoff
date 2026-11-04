@@ -120,6 +120,15 @@ Crowd stats for every stage of a launch, without a player's percentile. The clie
 
 One thing the game saw a player do, for the analytics: `{ "launch": 11, "name": "result_shared" }` with the same `X-Player-Id` header. `name` is one of `launch_opened`, `replay_opened`, `launch_finished`, `replay_finished`, `result_shared`, `calculator_used`, `notes_used` (`EVENT_NAMES` in `src/api/contract.ts`). Each is kept once per player per launch, so a refresh or a second share doesn't count twice. Answers `{ "recorded": true }`; `400` for a bad body or player id, `403` for a launch that hasn't started. The game sends these fire-and-forget (`trackEvent` in `src/api/client.ts`) and never waits on them.
 
+## Rate limiting
+
+The API has no rate limit of its own, and anyone can make up player ids. A
+Vercel Firewall rule caps requests per IP: Project → Firewall → Configure →
+New Rule, If _Request Path_ _starts with_ `/api/`, Then _Rate Limit_, Fixed
+Window, 60 s, 300 requests, keyed by IP, action 429. A full launch makes
+about 15 API calls, and 300 a minute leaves room for a classroom sharing
+one IP. The Hobby plan allows one rate-limit rule per project.
+
 ## Analytics
 
 Traffic (visitors, page views, referrers, countries, devices) is Vercel Web Analytics, from `<Analytics />` in `src/main.tsx`; enable it once in the project's Analytics tab. The Hobby plan counts page views only, up to 50,000 a month, and keeps a month of history.

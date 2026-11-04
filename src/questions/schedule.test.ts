@@ -1,6 +1,5 @@
 import { describe, expect, it } from "vitest";
 import {
-  computeLaunchNumber,
   daysUntilFirstLaunch,
   launchDateLabel,
   launchNumberAt,
@@ -25,14 +24,9 @@ describe("launchNumberAt", () => {
   });
 });
 
-describe("computeLaunchNumber", () => {
-  it("is the same moment everywhere: 9 p.m. in Los Angeles on the 23rd is already launch 1", () => {
-    expect(computeLaunchNumber(new Date("2026-10-24T04:00:00Z"))).toBe(1);
-  });
-  it("throws before the first launch", () => {
-    expect(() =>
-      computeLaunchNumber(new Date("2026-10-23T12:00:00Z")),
-    ).toThrow();
+describe("the same moment everywhere", () => {
+  it("is already launch 1 at 9 p.m. on the 23rd in Los Angeles", () => {
+    expect(launchNumberAt(new Date("2026-10-24T04:00:00Z"))).toBe(1);
   });
 });
 

@@ -26,7 +26,7 @@ const DISPLAY_OPERATORS: Record<string, string> = {
 };
 
 /** The formula over the canonical factor values, before the rounding rule. */
-export function unroundedResult(question: Question): number {
+function unroundedResult(question: Question): number {
   const value = evaluateExpression(
     question.formula,
     canonicalFactorValues(question.factors),

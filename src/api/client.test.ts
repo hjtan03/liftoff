@@ -36,6 +36,14 @@ describe("playerId", () => {
     expect(playerId(storage)).toBe(first);
   });
 
+  it("replaces a stored id that isn't a UUID", () => {
+    const storage = memoryStorage();
+    storage.setItem("liftoff.playerId", "not-a-uuid");
+    const id = playerId(storage);
+    expect(id).toMatch(/^[0-9a-f-]{36}$/);
+    expect(storage.getItem("liftoff.playerId")).toBe(id);
+  });
+
   it("still returns an id when storage is unavailable", () => {
     expect(playerId(null)).toMatch(/^[0-9a-f-]{36}$/);
   });

@@ -1570,3 +1570,51 @@ a {
     display: none;
   }
 }
+
+/* Between launches: the tip link and privacy, and an ad unit once ads are on. */
+.support {
+  margin: 0;
+  font-size: 14px;
+}
+.ad {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-height: 0;
+  border-top: 2px dashed var(--line);
+  padding-top: 10px;
+}
+.ad-label {
+  font-size: 12px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+/* If drawing the game ever throws: a plain card on the night sky, with a way out. */
+.crash {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+.crash-card {
+  max-width: 520px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.crash-title {
+  margin: 0;
+  font-family: var(--f-display);
+  font-weight: 400;
+  font-size: clamp(30px, 6vw, 42px);
+  color: var(--gold);
+}
+.crash-card .row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}

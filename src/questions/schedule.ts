@@ -8,7 +8,7 @@
 export const FIRST_LAUNCH_DATE = "2026-10-24";
 
 /** The time zone whose midnight starts each launch. It follows daylight saving, so the reset is always 12:00 a.m. on the East Coast. */
-export const LAUNCH_TIME_ZONE = "America/New_York";
+const LAUNCH_TIME_ZONE = "America/New_York";
 
 const MILLISECONDS_PER_DAY = 86_400_000;
 
@@ -25,11 +25,11 @@ const launchCalendar = new Intl.DateTimeFormat("en-US", {
  * still counts as one.
  */
 function launchCalendarDayMs(time: Date): number {
-  const part = (type: Intl.DateTimeFormatPartTypes) =>
-    Number(
-      launchCalendar.formatToParts(time).find((p) => p.type === type)!.value,
-    );
-  return Date.UTC(part("year"), part("month") - 1, part("day"));
+  // One formatting call, its parts read by name rather than by position.
+  const parts: Partial<Record<Intl.DateTimeFormatPartTypes, number>> = {};
+  for (const { type, value } of launchCalendar.formatToParts(time))
+    parts[type] = Number(value);
+  return Date.UTC(parts.year!, parts.month! - 1, parts.day!);
 }
 
 /**
@@ -43,16 +43,6 @@ export function launchNumberAt(time: Date): number {
         MILLISECONDS_PER_DAY,
     ) + 1
   );
-}
-
-/** Today's launch number. Throws for a time before the first launch. */
-export function computeLaunchNumber(time: Date): number {
-  const launch = launchNumberAt(time);
-  if (launch < 1)
-    throw new Error(
-      `no launch before ${FIRST_LAUNCH_DATE}, and this device’s clock says ${time.toDateString()}`,
-    );
-  return launch;
 }
 
 /** The calendar date a launch plays on, like "Sat, Oct 24". */

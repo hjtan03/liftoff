@@ -10,6 +10,7 @@ import {
 import { formatQuestionSetId, launchDateLabel } from "../questions/schedule";
 import { hrefFor } from "../route";
 import { BrandLink, IdlePadScreen, Shell } from "./Shell";
+import { AdSlot, SupportLinks } from "./Support";
 
 type Props = { today: number };
 
@@ -78,6 +79,8 @@ export function Archive({ today }: Props) {
               })}
             </ol>
           )}
+          <SupportLinks />
+          <AdSlot placement="archive" />
         </section>
       </IdlePadScreen>
     </Shell>
