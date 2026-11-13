@@ -68,6 +68,22 @@ describe("restoreRun", () => {
     ["broken JSON", "{"],
     ["a different format", JSON.stringify({ version: 99 })],
     [
+      "a damaged stage result",
+      (() => {
+        const saved = JSON.parse(serializeRun(playedFirstStage()));
+        delete saved.state.stageResults[0].tier;
+        return JSON.stringify(saved);
+      })(),
+    ],
+    [
+      "a stage result with an unknown tier",
+      (() => {
+        const saved = JSON.parse(serializeRun(playedFirstStage()));
+        saved.state.stageResults[0].tier = "constructor";
+        return JSON.stringify(saved);
+      })(),
+    ],
+    [
       "a stage out of range",
       serializeRun({ ...playedFirstStage(), stageIndex: 5 }),
     ],

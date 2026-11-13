@@ -23,17 +23,8 @@ export const TIERS: Record<Tier, TierInfo> = {
   scrubbed: { name: "Scrubbed", rule: "more than 3× off", emoji: "🔴" },
 };
 
-/** Closest first. */
-export const TIER_KEYS: readonly Tier[] = [
-  "docked",
-  "moonshot",
-  "orbit",
-  "suborbital",
-  "scrubbed",
-];
-
 /** Fuel for a guess that is right but not exact, before the falloff. */
-export const CLOSENESS_POINTS = 1000;
+const CLOSENESS_POINTS = 1000;
 export const EXACT_ANSWER_BONUS_POINTS = 250;
 export const MAX_POINTS_PER_STAGE =
   CLOSENESS_POINTS + EXACT_ANSWER_BONUS_POINTS;

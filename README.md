@@ -43,7 +43,7 @@ src/api/                   the API contract and its rules as pure functions
 api/                       Vercel functions: POST /api/guess, GET /api/crowd
 supabase/migrations/       the database schema
 e2e/                       Playwright play-through
-docs/                      roadmap, how questions work, archive
+docs/                      roadmap, how questions work, backend, analytics, tips and ads
 .github/workflows/ci.yml   checks on every PR and on main
 ```
 

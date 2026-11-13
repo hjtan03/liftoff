@@ -164,7 +164,7 @@ export const sfx = {
   },
 };
 
-export function isMuted(): boolean {
+function isMuted(): boolean {
   return muted;
 }
 

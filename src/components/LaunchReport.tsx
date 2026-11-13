@@ -8,6 +8,7 @@ import type { StageResult } from "../game/state";
 import type { LoadedQuestion } from "../questions/source";
 import { launchNumberAt } from "../questions/schedule";
 import { hrefFor } from "../route";
+import { AdSlot, SupportLinks } from "./Support";
 
 type Props = {
   launchNumber: string;
@@ -124,6 +125,8 @@ export function LaunchReport({
                 </>
               ) : null}
             </p>
+            <SupportLinks />
+            <AdSlot placement="report" />
           </section>
         )}
       </div>
